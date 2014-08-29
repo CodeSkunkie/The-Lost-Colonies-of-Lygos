@@ -1,11 +1,7 @@
-<?php
+<script>
 
-$this->require_login();
+request_data('echo', {"message":"hello"}, function(json) {
+	console.log(json);
+});
 
-echo (clean_text("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".
-		"0123456789!@#$%^&*(){}[]-_"));
-
-//session_destroy();
-
-
-?>
+</script>

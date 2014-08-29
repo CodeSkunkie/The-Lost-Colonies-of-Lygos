@@ -6,7 +6,6 @@ class User
 {
 	public $ip;
 	public $prev_page;
-	public $logged_in;
 	// Tho following fields are only used if the user is logged in.
 	public $id, $username, $email, $group;
 	
@@ -18,6 +17,7 @@ class User
 		
 		if ( $this->logged_in() )
 		{
+			//console_log('test1');
 			$this->id = $_SESSION['user_id'];
 			$this->get_user_data_from_database();
 		}
@@ -42,6 +42,7 @@ class User
 					`cookie_login_key` = '". $key ."' AND
 					`last_login` > ". (time() - (60*60*24*30)) ." ");
 			// Note: Only accepts the cookie-login data if key is less than a month old.
+			// Note: Setting a cookie on a new machine will invalidate the old cookie.
 			
 			if ( $cookie_qry->num_rows != 0 )
 			{
@@ -78,7 +79,7 @@ class User
 			WHERE `id`=". $this->id);
 		$user_qry->data_seek(0);
 		$user_row = $user_qry->fetch_assoc();
-		
+
 		$this->id = $user_row['id'];
 		$this->username = $user_row['username'];
 		$this->email = $user_row['email'];

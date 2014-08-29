@@ -33,10 +33,3 @@ a {
 a active {
 	color: white;
 }
-
-.error_border {
-	border: 1px solid #dd4b39;
-}
-.error_text {
-	color: #dd4b39;
-}

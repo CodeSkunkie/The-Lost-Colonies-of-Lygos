@@ -1,12 +1,18 @@
 <?php
 
+// Begin capturing output to a buffer.
+ob_start();
+// PHP Session management.
 session_start();
 
 // The directory path for this file on the web-server:
 define('WEBROOT', '/var/www/');
 
+// Include the most-used classes.
+require(WEBROOT .'classes/Page.php');
+require(WEBROOT .'classes/User.php');
 
-require('core_classes.php');
+require(WEBROOT .'lib.php');
 
 
 // Create a mysql object to query with the database.
@@ -20,15 +26,21 @@ $Memcached->addServer('localhost', 11211);
 
 $User = new User();
 
-// An example of how to use the Page class to create a web-page:
+// Create a web page.
 $Page = new Page($_GET['p'], 'game');
 $Page->execute();
 $Page->render();
 
 
-//echo '<br /><br />debugging output:<br />';
-//print_arr($_SESSION);
-//print_arr($_COOKIE);
+echo '<br /><br />---------------------------------------------------<br />
+	debugging output:<br />';
+print_arr($User);
+necho('Session Data:');
+print_arr($_SESSION);
+necho('Cookies:');
+print_arr($_COOKIE);
 
+// Print the entire output buffer.
+ob_flush();
 
 ?>
