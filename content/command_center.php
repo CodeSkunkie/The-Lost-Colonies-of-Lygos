@@ -5,13 +5,13 @@ $this->layout = 'game';
 
 ?>
 
-<div id="main_game_UI_div" style="width:1000px; height:650px; background-color:#151515; background-image:url('media/themes/default/images/main-game-ui-bg.png'); margin-left:auto; margin-right:auto; position:relative;">
+<div id="main_game_UI_div">
 	
-	<div id="game_secondary_screen" style="opacity: 0.7; filter: alpha(opacity=70); background-color:black; border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px; width: 620px; height: 430; position:absolute; left:190px; top:45px; display: none;">
-		<div id="map_screen" class="game_screen" style="display:none";>
+	<div id="game_secondary_screen">
+		<div class="game_screen" id="map_screen">
 			<br /><br />(Pretend you see a lot of hexagons here)
 		</div>
-		<div id="colony_management_screen" class="game_screen" style="display:none";>
+		<div class="game_screen" id="colony_management_screen">
 			<br /><br />There... There's nothing here!<br />YOR CALONY IS DEEAAADDDD
 		</div>
 	</div>
