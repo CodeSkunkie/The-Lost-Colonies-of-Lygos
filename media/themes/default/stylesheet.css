@@ -66,6 +66,6 @@ a active {
 	-webkit-border-radius: 10px;
 }
 
-#game_screen {
+.game_screen {
 	display: none;
 }

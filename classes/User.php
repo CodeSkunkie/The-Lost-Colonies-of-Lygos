@@ -7,7 +7,7 @@ class User
 	public $ip;
 	public $prev_page;
 	// Tho following fields are only used if the user is logged in.
-	public $id, $username, $email, $group;
+	public $id, $username, $email, $group, $colony_ids;
 	
 	function __construct()
 	{
@@ -84,7 +84,18 @@ class User
 		$this->username = $user_row['username'];
 		$this->email = $user_row['email'];
 		$this->group = $user_row['group'];
-			
+		
+		// Grab the IDs for colonies owned by this player.
+		$this->colony_ids = array();
+		$colony_ids_query = $Mysql->query("SELECT `id` FROM `colonies` WHERE `player_id` = '". $this->id ."'");
+		$colony_id_row = $colony_ids_query->fetch_assoc();
+		foreach ( $colony_id_row as $colony_id )
+			$this->colony_ids[] = $colony_id;
+	}
+	
+	public function fetch_data()
+	{
+		$this->get_user_data_from_database();
 	}
 	
 	// Generates a "random" text string used for automatic logins.

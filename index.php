@@ -11,6 +11,7 @@ define('WEBROOT', '/var/www/');
 // Include the most-used classes.
 require(WEBROOT .'classes/Page.php');
 require(WEBROOT .'classes/User.php');
+require(WEBROOT .'classes/Colony.php');
 
 require(WEBROOT .'lib.php');
 
