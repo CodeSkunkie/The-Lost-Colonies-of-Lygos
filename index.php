@@ -6,7 +6,7 @@ ob_start();
 session_start();
 
 // The directory path for this file on the web-server:
-define('WEBROOT', '/var/www/');
+define('WEBROOT', '');
 
 // Include the most-used classes.
 require(WEBROOT .'classes/Page.php');

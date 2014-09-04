@@ -45,8 +45,22 @@ $colony->update_resources();
 <script type="text/javascript">
 	var current_screen = 'main';
 	
+	// This is the function you will edit.
+	function build_screen_contents(name, json_data) {
+		if ( name == "map" ) {
+			// Brian's stuff goes here
+		}
+		else if ( name == "colony_management" ) {
+			var colony = json_data.colony;
+			//var buildings = json_data.buildings;
+		}
+		else
+			alert("error: There is no game-screen for that link!");
+	}
+	
 	// This is an event listener that gets called when a link is clicked
 	// that requires switching out the game screen.
+	// DO NOT EDIT THIS FUNCTION
 	$('.screen_link').click(function() {
 		// Grab the name of this screen
 		var name = $(this).attr('id').substr(9);
@@ -63,26 +77,8 @@ $colony->update_resources();
 		});
 	});
 	
-	function build_screen_contents(name, json_data) {
-		if ( name == "map" ) {
-			
-		}
-		else if ( name == "colony_management" ) {
-			var colony = json_data.colony;
-			//var buildings = json_data.buildings;
-		}
-		else
-			alert("error: There is no game-screen for that link!");
-	}
-	
-//	$('#map_hologram_div').click(function() {
-//		change_screen('map');
-//	});
-//	
-//	$('#colony_man_link_div').click(function() {
-//		change_screen('colony_management');
-//	});
-	
+	// This function manages the visual hiding and showing of the screens.
+	// DO NOT EDIT THIS FUNCTION
 	function change_screen(name) {
 		$('#game_secondary_screen').hide(300, function() {
 			$('#'+ current_screen +'_screen').hide();
