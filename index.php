@@ -13,17 +13,23 @@ require(WEBROOT .'classes/Page.php');
 require(WEBROOT .'classes/User.php');
 require(WEBROOT .'classes/Colony.php');
 
+require(WEBROOT .'global_lib.php');
 require(WEBROOT .'lib.php');
 
 
 // Create a mysql object to query with the database.
-$Mysql = new mysqli("127.0.0.1", "lygos", "3o_e}.890h.23._lm", "lygos");
+$Mysql = new mysqli("localhost", "lygos", "3o_e}.890h.23._lm", "lygos"); //127.0.0.1
 if ($Mysql->connect_errno)
     exit('Could not connect to Lygos database. Please try again later.');
 
 // Create memcached object to read and write data to the cache.
-$Memcached = new Memcached();
-$Memcached->addServer('localhost', 11211);
+if ( class_exists('Memcached') )
+{
+	$Memcached = new Memcached();
+	$Memcached->addServer('localhost', 11211);
+}
+else
+	$Memcached = false;
 
 $User = new User();
 
