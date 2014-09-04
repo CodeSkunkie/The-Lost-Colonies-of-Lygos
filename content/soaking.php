@@ -1,0 +1,1 @@
+<img src="media/images/bath_time.gif" />

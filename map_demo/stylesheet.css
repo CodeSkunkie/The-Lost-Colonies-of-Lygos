@@ -1,0 +1,35 @@
+body {
+	font-family: "courier, Arial", "Helvetica", "Times New Roman";
+	color: #3d8fe3;
+	text-align: center;
+	margin: 10px 0px 10px 0px;
+	background-color: black;
+}
+
+table {
+	border: 1px solid #3d8fe3;
+	border-spacing: 0px;
+}
+
+table#map_2d td {
+	padding: 0px;
+	width: 60px;
+	height: 60px;
+}
+
+td {
+	text-align: center;
+	border: 1px solid #3d8fe3;
+	padding-top: 7px;
+	padding-bottom: 7px;
+	padding-right: 7px;
+	padding-left: 7px;
+}
+
+a {
+	color: #3d8fe3;
+}
+
+a active {
+	color: white;
+}
