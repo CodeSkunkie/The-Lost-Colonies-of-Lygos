@@ -3,7 +3,7 @@
 // PHP Session management.
 session_start();
 
-define('WEBROOT', '/var/www/');
+define('WEBROOT', '../');
 
 // Include the most-used classes.
 require(WEBROOT .'classes/JsonScript.php');
@@ -19,13 +19,18 @@ function return_error($error)
 //return_error('test');
 
 // Create a mysql object to query with the database.
-$Mysql = new mysqli("127.0.0.1", "lygos", "3o_e}.890h.23._lm", "lygos");
+$Mysql = new mysqli("localhost", "lygos", "3o_e}.890h.23._lm", "lygos");
 if ($Mysql->connect_errno)
 	return_error('db_connect');
 
 // Create memcached object to read and write data to the cache.
-$Memcached = new Memcached();
-$Memcached->addServer('localhost', 11211);
+if ( class_exists('Memcached') )
+{
+	$Memcached = new Memcached();
+	$Memcached->addServer('localhost', 11211);
+}
+else
+	$Memcached = false;
 
 $User = new User();
 
