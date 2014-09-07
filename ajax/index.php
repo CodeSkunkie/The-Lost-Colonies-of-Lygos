@@ -9,6 +9,8 @@ define('WEBROOT', '../');
 require(WEBROOT .'classes/JsonScript.php');
 require(WEBROOT .'classes/User.php');
 
+require(WEBROOT .'global_lib.php');
+
 function return_error($error)
 {
 	header('Content-type: application/json');
