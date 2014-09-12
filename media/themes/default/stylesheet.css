@@ -167,4 +167,18 @@ a active {
 #building_info_text_div {
 	padding: 10px 20px;
 	text-align:left;
+
+.maximize_screen {
+	position:absolute;
+	top:0px;
+	right:0px;
+}
+
+#messaging_div_mini {
+	position:absolute;
+	top:148px;
+	left:836px;
+	height:295px;
+	width:150px;
+	color:#ffffff;
 }
