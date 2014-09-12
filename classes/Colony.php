@@ -14,7 +14,7 @@ class Colony
 	{
 		require(WEBROOT .'classes/Colony_Resources.php');
 		require(WEBROOT .'classes/Colony_Resource.php');
-		require(WEBROOT .'classes/Colony_Building.php');
+		
 		$this->id = $id;
 		$this->fetch_data();
 	}
@@ -33,8 +33,12 @@ class Colony
 
 		
 		foreach ( $colony_row as $field => $value )
+		{
+			if ( $field == 'buildings' )
+				continue;
+			
 			$this->$field = $value;
-		
+		}
 		$this->resources = new Colony_Resources($colony_row);
 	}
 	
@@ -46,6 +50,9 @@ class Colony
 		$qry_str = "UPDATE `colonies` SET ";
 		foreach ( $this as $field => $value )
 		{
+			if ( $field == 'buildings' )
+				continue;
+			
 			if ( $field == 'resources' )
 			{
 				// Construct the resource portion of the query string.

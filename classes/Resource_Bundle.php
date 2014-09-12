@@ -9,7 +9,7 @@ class Resource_Bundle
 	{
 		foreach ( $this as $field => $amount )
 		{
-			$this->$field = $amount;
+			$this->$field = $$field;
 		}
 	}
 }

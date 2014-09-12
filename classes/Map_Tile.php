@@ -20,7 +20,6 @@ class Map_Tile extends Database_Row
 			$this->coord_y = $tileID_or_coords['y'];
 			$this->generate_elements();
 			$this->save_data();
-			echon($this->a);
 		}
 		else
 		{

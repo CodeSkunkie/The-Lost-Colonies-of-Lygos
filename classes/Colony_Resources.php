@@ -33,7 +33,7 @@ class Colony_Resources
 	{
 		foreach ( $this as $field => $resource )
 		{
-			echo '['. $field .']: '. round($resource->stock) .' / '. $resource->capacity .'<br />';
+			echo '<image src="media/themes/default/images/leaf.png" /> '. round($resource->stock) .' / '. $resource->capacity .'<br />';
 			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 			if ( $resource->consumption_rate == 0 )
 				echo '+'. $resource->production_rate .' per hour';
