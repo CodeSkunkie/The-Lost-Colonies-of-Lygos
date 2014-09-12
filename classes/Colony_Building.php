@@ -1,9 +1,14 @@
 <?php
 
-class Colony_Building
+class Colony_Building extends Database_Row
 {
+	// Fields taken directly from the database:
 	public $id, $colony_id, $type, $level;
+	
+	// Extra fields:
 	public $name;
+	protected $db_table_name = 'buildings';
+	protected $extra_fields = array('db_table_name', 'objects');
 	
 	function __construct($type)
 	{
@@ -23,18 +28,6 @@ class Colony_Building
 	{
 		$resource1_rate += $this->level * 12;
 		$this->level++;
-	}
-	
-	// Retrieves this object's data from the database.
-	public function fetch_data()
-	{
-		
-	}
-	
-	// Saves this object's data to the database.
-	public function save_data()
-	{
-	
 	}
 }
 

@@ -8,6 +8,7 @@ define('WEBROOT', '../');
 // Include the most-used classes.
 require(WEBROOT .'classes/JsonScript.php');
 require(WEBROOT .'classes/User.php');
+require(WEBROOT .'classes/Database_Row.php');
 
 require(WEBROOT .'global_lib.php');
 
