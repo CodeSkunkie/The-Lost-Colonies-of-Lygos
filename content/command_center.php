@@ -21,6 +21,9 @@ $colony_tile = new Map_Tile($colony->tile_id);
 		<div class="game_screen" id="colony_management_screen">
 			<br /><br />There... There is nothing here!<br />YOR CALONY IS DEEAAADDDD
 		</div>
+		<div class="game_screen" id="messaging_screen">
+			<!-- HTML for the messaging screen goes here -->
+		</div>
 	</div>
 	
 	
@@ -40,6 +43,14 @@ $colony_tile = new Map_Tile($colony->tile_id);
 		[construction / upgrade jobs progress]
 	</div>
 	
+	<div id="messaging_div_mini" style="position:absolute; top:148px; left:836px; height:295px; width:150px; text-align:left; color:#ffffff;" >
+		<div class="menu_title_mini">messaging</div>
+		<div class="maximize_screen">
+			<a href="javascript:get_messages();"><img src="media/images/maximize.gif"></a>
+		</div>
+		
+	</div>
+	
 	
 </div>
 
@@ -47,6 +58,7 @@ $colony_tile = new Map_Tile($colony->tile_id);
 <script type="text/javascript">
 	// Keep track of which game screen is currently being displayed.
 	var current_screen;
+	var player_id = <?php echo $User->id; ?>;
 	
 	// Keep track of which tile is at the center of the map screen.
 	// Center the map on this player's colony to start with.
@@ -64,6 +76,29 @@ $colony_tile = new Map_Tile($colony->tile_id);
 			{
 				// Populate the content of this screen.
 				var colony = json_data.colony;
+				
+				// Display this screen.
+				change_screen(name);
+			}
+			else
+				alert(json_data.ERROR);
+		});
+	});
+	
+	// This function is called when someone clicks the messaging link.
+	function get_messages () {
+		// Grab the name of this screen
+		var name = 'messaging';
+		// Call the data-fetching script for this screen.
+		request_data('game_screen_' + name, function(json_data) {
+			// If data was successfully fetched...
+			if ( json_data.ERROR == "" )
+			{
+				//Iterate through the messages
+				//Check for unread messages
+				//Display messages
+				
+				//Separate query to check if there are new messages
 				
 				// Display this screen.
 				change_screen(name);

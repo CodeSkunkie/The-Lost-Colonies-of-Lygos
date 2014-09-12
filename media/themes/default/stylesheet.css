@@ -69,3 +69,18 @@ a active {
 .game_screen {
 	display: none;
 }
+
+.maximize_screen {
+	position:absolute;
+	top:0px;
+	right:0px;
+}
+
+#messaging_div_mini {
+	position:absolute;
+	top:148px;
+	left:836px;
+	height:295px;
+	width:150px;
+	color:#ffffff;
+}
