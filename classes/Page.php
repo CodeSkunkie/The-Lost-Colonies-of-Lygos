@@ -74,7 +74,7 @@ class Page
 				<title>'. $this->page_title .'</title>
 				<meta name="description" content="'. $this->meta_description .'">
 				<!-- <link href="media/themes/default/favicon.png" rel="shortcut icon"/> -->
-				<link rel="stylesheet" type="text/css" href="media/themes/default/stylesheet.css" />
+				<link rel="stylesheet" type="text/css" href="media/themes/default/stylesheet2.css" />
 				<script src="http://code.jquery.com/jquery-1.9.0.min.js" ></script>
 				<script src="javascript/lib.js"></script>
 			</head>';

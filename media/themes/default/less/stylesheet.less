@@ -1,0 +1,207 @@
+body {
+    font-family: "courier, Arial", "Helvetica", "Times New Roman";
+    color: #3d8fe3;
+    text-align: center;
+    margin: 10px 0px 10px 0px;
+    background-color: black;
+}
+
+table {
+    border: 1px solid #3d8fe3;
+    border-spacing: 0px;
+}
+
+table#map_2d td {
+    padding: 0px;
+    width: 60px;
+    height: 60px;
+}
+
+td {
+    text-align: center;
+    border: 1px solid #3d8fe3;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    padding-right: 7px;
+    padding-left: 7px;
+}
+
+a {
+    color: #3d8fe3;
+}
+
+a active {
+    color: white;
+}
+
+h3 {
+    margin: 5px;
+}
+
+.error_border {
+    border: 1px solid #dd4b39;
+}
+.error_text {
+    color: #dd4b39;
+}
+
+#main_game_UI_div {
+    width: 1000px; 
+    height: 650px; 
+    background-color: #151515; 
+    background-image: url('images/main-game-ui-bg.png'); 
+    margin-left: auto; 
+    margin-right: auto; 
+    position: relative;
+}
+
+#game_secondary_screen {
+    position: absolute; 
+    left: 190px; 
+    top: 45px; 
+    width: 620px; 
+    height: 430px; 
+    display: none;
+    border-radius: 10px; 
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px;
+}
+
+#game_secondary_screen_backdrop {
+    position: absolute; 
+    left: 190px; 
+    top: 45px; 
+    width: 620px; 
+    height: 430px; 
+    display: none;
+    opacity: 0.7; 
+    filter: alpha(opacity=70); 
+    background-color: black; 
+    border-radius: 10px; 
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px;
+}
+
+#buildings_container {
+    position: relative;
+}
+
+.game_screen {
+    display: none;
+}
+
+.building_img {
+    position: absolute;
+    z-index: 100;
+}
+
+#building_0img {
+    left: 200px;
+    top: 98px;
+}
+
+#building_1img {
+    left: 515px;
+    top: 64px;
+}
+
+#building_2img {
+    left: 350px;
+    top: 240px;
+}
+
+#building_3img {
+    left: 355px;
+    top: 340px;
+}
+
+#building_4img {
+    left: 325px;
+    top: 40px;
+}
+
+#building_info_div1 {
+    display: none;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    height:410px;
+    width:200px;
+    background-color: white;
+    opacity: 0.15; 
+    filter: alpha(opacity=15); 
+    border-radius: 10px; 
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px;
+}
+
+#building_info_div2 {
+    display: none;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    height:410px;
+    width:390px;
+    z-index: 150;
+    background-color: #202020;
+    border-radius: 10px; 
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px;
+}
+
+#building_title_div {
+    background-color: #3670ab;
+    color: white;
+    padding: 7px 5px;
+    font-size: 16px;
+    border-top-left-radius: 6px; 
+    border-top-right-radius: 6px; 
+    -moz-border-radius: 6px; 
+    -webkit-border-top-left-radius: 6px;
+    -webkit-border-top-right-radius: 6px;
+}
+
+#unselect_bldg_btn {
+    display: none;
+    position: absolute;
+    top: 25px;
+    right: 425px;
+}
+
+#building_info_text_div {
+    padding: 10px 20px;
+    text-align:left;
+}
+
+.maximize_screen {
+    position:absolute;
+    top:0px;
+    right:0px;
+}
+
+#messaging_div_mini {
+    position:absolute;
+    top:148px;
+    left:836px;
+    height:295px;
+    width:150px;
+    color:#ffffff;
+}
+
+#register {
+    margin-left: auto;
+    margin-right: auto;
+    width: 8%;
+
+    .inputFields {
+        text-align: left;
+        padding: 5px;
+
+        input[type="text"] {
+            size: 15;
+        }
+        input[type="password"] {
+            size: 15;
+        }
+    }
+}
