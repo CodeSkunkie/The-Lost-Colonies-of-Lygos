@@ -51,6 +51,17 @@ a active {
 	position: relative;
 }
 
+#resource_info_div {
+	position: absolute;
+	top:25px;
+	left:10px;
+	height:260px;
+	width:150px;
+	text-align: left;
+	color: white;
+	padding-top:28px;
+}
+
 #game_secondary_screen {
 	position: absolute; 
 	left: 190px; 
@@ -76,6 +87,9 @@ a active {
 	border-radius: 10px; 
 	-moz-border-radius: 10px; 
 	-webkit-border-radius: 10px;
+}
+.game_screen {
+	display: none;
 }
 
 #buildings_container {
