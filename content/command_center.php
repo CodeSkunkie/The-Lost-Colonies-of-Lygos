@@ -114,7 +114,7 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	});
 	
 	// This function is called when someone clicks the messaging link.
-	function get_messages () {
+	function get_messages () { 
 		// Grab the name of this screen
 		var name = 'messaging';
 		// Call the data-fetching script for this screen.
@@ -122,9 +122,16 @@ $colony_tile = new Map_Tile($colony->tile_id);
 			// If data was successfully fetched...
 			if ( json_data.ERROR == "" )
 			{
+				console.log(json_data);
+				
+				
 				//Iterate through the messages
-				//Check for unread messages
-				//Display messages
+				// Populate the content of this screen.
+				for ( var i in json_data.messages )
+				{
+					var message = json_data.messages[i];
+					
+				}
 				
 				//Separate query to check if there are new messages
 				
@@ -134,7 +141,7 @@ $colony_tile = new Map_Tile($colony->tile_id);
 			else
 				alert(json_data.ERROR);
 		});
-	});
+	}
 	
 	// This function is called when someone clicks the map hologram.
 	$('#link_div_map').click(function() {
