@@ -50,9 +50,16 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	
 	<div id="messaging_div_mini" style="position:absolute; top:148px; left:836px; height:295px; width:150px; text-align:left; color:#ffffff;" >
 		<div class="menu_title_mini">messaging</div>
-		<div class="maximize_screen">
-			<a href="javascript:get_messages();"><img src="media/images/maximize.gif"></a>
-		</div>
+		
+		<img src="media/images/maximize.gif" onclick="javascript:get_messages();" class="maximize_screen">
+		
+		<table id="message_display_table_mini">
+			<tr class="message_display_row">
+				<td class="message_display_col_from" id="from_mini">FROM</td>
+				<td class="message_display_col_subject" id="subject_mini">SUBJECT</td>
+
+			</tr>
+		</table>
 		
 	</div>
 	
@@ -130,7 +137,9 @@ $colony_tile = new Map_Tile($colony->tile_id);
 				for ( var i in json_data.messages )
 				{
 					var message = json_data.messages[i];
-					
+					//$('<a>', {
+					//	"href":'javascript:go_to_message('+message.id+');',
+					//}).appendTo('#message_d
 				}
 				
 				//Separate query to check if there are new messages

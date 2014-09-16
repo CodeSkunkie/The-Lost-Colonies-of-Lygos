@@ -187,7 +187,7 @@ a active {
 	position:absolute;
 	top:1px;
 	right:1px;
-	width:24px;
+	
 
 }
 
@@ -198,4 +198,40 @@ a active {
 	height:295px;
 	width:150px;
 	color:#ffffff;
+}
+
+#message_display_table_mini {
+	position:absolute;
+	top:30px;
+	width:100%;
+	border: 1px solid #000000;
+	background-color:#CCCCCC;
+	color:#000000;
+	font-size:11px;
+	padding:0px;	
+}
+
+.message_display_row {
+	border: 1px solid #000000;
+	padding:0px
+	
+}
+
+.message_display_col{
+	border: 1px solid #000000;
+	padding:1px;
+}
+
+#from_mini {
+	width:30%;
+	background-color:#999999;
+	border: 1px solid #000000;
+	padding:1px;
+}
+
+#subject_mini {
+	width:70%;
+	background-color:#999999;
+	border: 1px solid #000000;
+	padding:1px;
 }
