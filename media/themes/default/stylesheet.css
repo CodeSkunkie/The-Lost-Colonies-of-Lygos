@@ -198,6 +198,7 @@ a active {
 	height:295px;
 	width:150px;
 	color:#ffffff;
+	overflow:auto;
 }
 
 #message_display_table_mini {

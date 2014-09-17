@@ -51,14 +51,18 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	<div id="messaging_div_mini" style="position:absolute; top:148px; left:836px; height:295px; width:150px; text-align:left; color:#ffffff;" >
 		<div class="menu_title_mini">messaging</div>
 		
-		<img src="media/images/maximize.gif" onclick="javascript:get_messages();" class="maximize_screen">
+		<img src="media/images/maximize.gif" onclick="javascript:maximize_messages();" class="maximize_screen">
+		
+		<a href>
 		
 		<table id="message_display_table_mini">
+			<!--
 			<tr class="message_display_row">
 				<td class="message_display_col_from" id="from_mini">FROM</td>
 				<td class="message_display_col_subject" id="subject_mini">SUBJECT</td>
 
 			</tr>
+			-->
 		</table>
 		
 	</div>
@@ -83,6 +87,9 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	var colony_id = <?php echo $colony->id; ?>;
 	var theme = 'default';
 	var buildings = new Array();
+
+	//Check for new messages every 60 seconds
+	setInterval(function(){get_messages()}, 60000);
 	
 	// This function is called when someone clicks the colony management link.
 	$('#link_div_colony_management').click(function() {
@@ -120,7 +127,19 @@ $colony_tile = new Map_Tile($colony->tile_id);
 		});
 	});
 	
-	// This function is called when someone clicks the messaging link.
+	// This function is called when someone clicks the maximize button
+	// on the messaging mini div. It changes the main screen to the
+	// messaging screen and it gets new messages from the database
+	function maximize_messages () {
+		// Grab the name of this screen
+		var name = 'messaging';
+		change_screen(name);
+		get_messages();
+		
+	}
+	
+	// This function is called every 60 seconds and gets new messages
+	// from the database
 	function get_messages () { 
 		// Grab the name of this screen
 		var name = 'messaging';
@@ -133,19 +152,36 @@ $colony_tile = new Map_Tile($colony->tile_id);
 				
 				
 				//Iterate through the messages
-				// Populate the content of this screen.
+				// Clear the content from the mini div
+				$('#message_display_table_mini tr').remove();
+				// Populate the content of the mini div
 				for ( var i in json_data.messages )
 				{
 					var message = json_data.messages[i];
-					//$('<a>', {
-					//	"href":'javascript:go_to_message('+message.id+');',
-					//}).appendTo('#message_d
+					$('<a>', {
+						"href":'javascript:go_to_message('+message.id+');',
+						"class":'message_link'
+					}).appendTo('#message_display_table_mini')
+					.append(
+						$('<tr>', {
+							"class":'message_display_row',
+						}).append(
+							$('<td>', {
+								"class":'message_display_col',
+								"id":'from_mini'
+							}).text("from"),
+							$('<td>', {
+								"class":'message_display_row',
+								"id":'subject_mini'
+							}).text("subject")
+						)
+					);
+					
 				}
 				
-				//Separate query to check if there are new messages
 				
-				// Display this screen.
-				change_screen(name);
+				
+				
 			}
 			else
 				alert(json_data.ERROR);
@@ -194,14 +230,16 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	// This function manages the visual hiding and showing of the screens.
 	// DO NOT EDIT THIS FUNCTION
 	function change_screen(name) {
-		$('#game_secondary_screen_backdrop').hide(300);
-		$('#game_secondary_screen').hide(300, function() {
-			$('.game_screen').hide();
-			$('#'+ name + '_screen').show();
-			$('#game_secondary_screen').show(300);
-			$('#game_secondary_screen_backdrop').show(300);
-			current_screen = name;
-		});
+		if(current_screen!=name){
+			$('#game_secondary_screen_backdrop').hide(300);
+			$('#game_secondary_screen').hide(300, function() {
+				$('.game_screen').hide();
+				$('#'+ name + '_screen').show();
+				$('#game_secondary_screen').show(300);
+				$('#game_secondary_screen_backdrop').show(300);
+				current_screen = name;
+			});
+		}
 	}
 	
 	// Interpose the login form over the rest of the game screens.
