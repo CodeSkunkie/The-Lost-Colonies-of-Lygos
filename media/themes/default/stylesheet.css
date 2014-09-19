@@ -205,34 +205,77 @@ a active {
 	position:absolute;
 	top:30px;
 	width:100%;
-	border: 1px solid #000000;
-	background-color:#CCCCCC;
+	border: none;
+	background-color:#5a5a5a;
 	color:#000000;
 	font-size:11px;
-	padding:0px;	
+	padding:0px;
 }
 
 .message_display_row {
 	border: 1px solid #000000;
-	padding:0px
+	padding:0px;
+	width:100%;
+	
+}
+
+.message_display_row_spacer {
+	border: none;
+	padding:0px;
+	width:100%;
+	height:4px;
 	
 }
 
 .message_display_col{
 	border: 1px solid #000000;
-	padding:1px;
+	padding:0px;
+	text-align:left;
 }
 
-#from_mini {
+#title_mini {
 	width:30%;
 	background-color:#999999;
 	border: 1px solid #000000;
 	padding:1px;
+	font-weight:bold;
 }
 
-#subject_mini {
+#content_mini {
 	width:70%;
-	background-color:#999999;
+	background-color:#CCCCCC;
 	border: 1px solid #000000;
 	padding:1px;
+}
+
+#messaging_menu {
+	postion:absolute;
+	top:50px;
+	left:50px;
+	background-color:#FFFFFF;
+	width:144px;
+	height:24px;
+}
+
+.messaging_button {
+	position:absolute;
+	top:5px;
+	color:#000000;
+	font-weight:bold;
+	font-size:10pt;
+}
+
+#inbox_button {
+	position:absolute;
+	left:4px;
+}
+
+#sent_button {
+	position:absolute;
+	left:68px;
+}
+
+#refresh_messages {
+	position:absolute;
+	left:120px;
 }

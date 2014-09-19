@@ -26,7 +26,12 @@ $colony_tile = new Map_Tile($colony->tile_id);
 			<div id="unselect_bldg_btn" onclick="javascript:unselect_building();">[X]</div>
 		</div>
 		<div class="game_screen" id="messaging_screen">
-			<!-- HTML for the messaging screen goes here -->
+			<div id="messaging_menu">
+				<div class="messaging_button" id="inbox_button" onclick="javascript:display_inbox()">INBOX</div>
+				<div class="messaging_button" id="sent_button" onclick="javascript:display_sent()">SENT</div>
+				<img src="media/images/refresh.png" onclick="javascript:get_messages();" id="refresh_messages">
+			</div>
+			<table id="message_display_table"></table>
 		</div>
 	</div>
 	
@@ -49,21 +54,9 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	</div>
 	
 	<div id="messaging_div_mini" style="position:absolute; top:148px; left:836px; height:295px; width:150px; text-align:left; color:#ffffff;" >
-		<div class="menu_title_mini">messaging</div>
-		
+		<div class="menu_title_mini">MESSAGING</div>
 		<img src="media/images/maximize.gif" onclick="javascript:maximize_messages();" class="maximize_screen">
-		
-		<a href>
-		
-		<table id="message_display_table_mini">
-			<!--
-			<tr class="message_display_row">
-				<td class="message_display_col_from" id="from_mini">FROM</td>
-				<td class="message_display_col_subject" id="subject_mini">SUBJECT</td>
-
-			</tr>
-			-->
-		</table>
+		<table id="message_display_table_mini"></table>
 		
 	</div>
 	
@@ -88,6 +81,8 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	var theme = 'default';
 	var buildings = new Array();
 
+	//Populate messages
+	get_messages();
 	//Check for new messages every 60 seconds
 	setInterval(function(){get_messages()}, 60000);
 	
@@ -158,24 +153,41 @@ $colony_tile = new Map_Tile($colony->tile_id);
 				for ( var i in json_data.messages )
 				{
 					var message = json_data.messages[i];
-					$('<a>', {
-						"href":'javascript:go_to_message('+message.id+');',
-						"class":'message_link'
+					
+					$('<tr>', {
+						"class":'message_display_row',
 					}).appendTo('#message_display_table_mini')
 					.append(
-						$('<tr>', {
-							"class":'message_display_row',
-						}).append(
-							$('<td>', {
-								"class":'message_display_col',
-								"id":'from_mini'
-							}).text("from"),
-							$('<td>', {
-								"class":'message_display_row',
-								"id":'subject_mini'
-							}).text("subject")
-						)
+						$('<td>', {
+							"class":'message_display_col',
+							"id":'title_mini'
+						}).text("FROM"),
+						$('<td>', {
+							"class":'message_display_col',
+							"id":'content_mini'
+						}).text(message.from_player) //TODO: Convert this id into the actual player name
 					);
+					
+					$('<tr>', {
+						"class":'message_display_row',
+					}).appendTo('#message_display_table_mini')
+					.append(
+						$('<td>', {
+							"class":'message_display_col',
+							"id":'title_mini'
+						}).text("SUBJECT"),
+						$('<td>', {
+							"class":'message_display_col',
+							"id":'content_mini'
+						}).text(message.subject)
+					);
+					
+					$('<tr>', {
+						"class":'message_display_row_spacer',
+					}).appendTo('#message_display_table_mini')
+					
+					
+					
 					
 				}
 				
@@ -230,16 +242,15 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	// This function manages the visual hiding and showing of the screens.
 	// DO NOT EDIT THIS FUNCTION
 	function change_screen(name) {
-		if(current_screen!=name){
-			$('#game_secondary_screen_backdrop').hide(300);
-			$('#game_secondary_screen').hide(300, function() {
-				$('.game_screen').hide();
-				$('#'+ name + '_screen').show();
-				$('#game_secondary_screen').show(300);
-				$('#game_secondary_screen_backdrop').show(300);
-				current_screen = name;
-			});
-		}
+		
+		$('#game_secondary_screen_backdrop').hide(300);
+		$('#game_secondary_screen').hide(300, function() {
+			$('.game_screen').hide();
+			$('#'+ name + '_screen').show();
+			$('#game_secondary_screen').show(300);
+			$('#game_secondary_screen_backdrop').show(300);
+			current_screen = name;
+		});
 	}
 	
 	// Interpose the login form over the rest of the game screens.
