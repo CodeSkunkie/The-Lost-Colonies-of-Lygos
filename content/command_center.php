@@ -40,6 +40,7 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	</div>
 	
 	<div id="resource_info_div" style="position:absolute; top:25px; left:10px; height:260px; width:150px; text-align:left; color:#ffffff;" >
+		<div>RESOURCES</div>
 		<?php $colony->resources->print_summary(); ?>
 	</div>
 	
@@ -54,7 +55,6 @@ $colony_tile = new Map_Tile($colony->tile_id);
 		</div>
 		
 	</div>
-	
 	
 </div>
 
