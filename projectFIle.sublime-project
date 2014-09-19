@@ -1,0 +1,19 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "."
+        }
+    ],
+    "settings":
+    {
+        "less2css":
+        {
+            "outputDir": "./media/themes/default",
+            "outputFile": "stylesheet.css",
+            "minify": false
+        }
+    }
+}
+

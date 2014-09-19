@@ -18,7 +18,12 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	
 	<div id="game_secondary_screen_backdrop"></div>
 	<div id="game_secondary_screen">
-		<div class="game_screen" id="map_screen"><!-- HTML for the map screen goes here --></div>
+		<div class="game_screen" id="map_screen">
+			<!-- HTML for brian the map screen goes here -->
+			<div id="sector_info_div"></div>
+			<div id="navigation_panel_div"></div>
+			<div id="map_container_div"></div>
+		</div>
 		<div class="game_screen" id="colony_management_screen">
 			<div id="buildings_container"></div>
 			<div id="building_info_div1"></div>
@@ -200,7 +205,7 @@ $colony_tile = new Map_Tile($colony->tile_id);
 		});
 	}
 	
-	// This function is called when someone clicks the map hologram.
+	// This function is called when someone clicks the map hologram. brian
 	$('#link_div_map').click(function() {
 		// Grab the name of this screen
 		var name = $(this).attr('id').substr(9);
@@ -219,21 +224,59 @@ $colony_tile = new Map_Tile($colony->tile_id);
 				// TODO: figure out how to _actually_ iterate over the axial coordinate system.
 				//		 go here and search 'axial coordinates':
 				//		 http://www.redblobgames.com/grids/hexagons/
-				for (var i=0; i<10; i++) 
+				// center_tile_x, center_tile_y are x,y of player home base tile (in database?)
+				
+				// x,y offsets for start of map area
+				var div_y_offset=100;
+				var div_x_offset=177;
+				var rel_x=0;
+				var rel_y=-2;
+
+				// 19 map tiles are shown at once, center tile is #10
+				// 1st tile is (center-0,center-2)
+				for (var i=0; i<19; i++) 
 				{
-					jQuery('<img>', {
-						"id": 'map_tile'+ i +'div',
+					if (i==3) {rel_x+=4; rel_y++;}
+					else if (i==7) {rel_x+=5; rel_y++;}
+					else if (i==12) {rel_x+=5; rel_y++;}
+					else if (i==16) {rel_x+=4; rel_y++;}
+
+					var div=jQuery('<img>', {
+						"id": 'map_tile'+ i + 'div',
 						"class": 'map_tile_div',
-						"src": 'media/images/banana.png'
-					}).appendTo('#'+ name +'_screen');
-					$('#map_tile'+ i).hover(function() {
+						"src": 'media/images/banana.png',
+						"title": '(' + (center_tile_x+i-rel_x) + ',' + (center_tile_y+rel_y) + ')',
+						"x": (center_tile_x+i-rel_x),
+						"y": (center_tile_y+rel_y)
+					});
+					if (i<3) div.offset({top:div_y_offset,left:div_x_offset});
+					else if (i<7) div.offset({top:div_y_offset+60,left:div_x_offset-245});
+					else if (i<8) div.offset({top:div_y_offset+121,left:div_x_offset-560});
+					else if (i<12) div.offset({top:div_y_offset+40,left:div_x_offset});
+					else if (i<16) div.offset({top:div_y_offset+101,left:div_x_offset-316});
+					else div.offset({top:div_y_offset+81,left:div_x_offset-177});
+					div.appendTo('#'+ name +'_screen');
+					/*$(document).ready(function() {
+						div.bind('mouseover mouseout click', function(event) {
+    					var $tgt = $(event.target);
+    					if (!$tgt.closest('.syntax_hilite').length) {
+      						$tgt.toggleClass(event.type == 'click' ? 'outline-element-clicked' : 'outline-element');
+      						alert(div)
+    						}
+    					//alert($tgt);
+  						});
+					});*/
+					
+					/*$('#map_tile'+ i).hover(function() {
+						$(this).toggleClass('highLight')
+						//$("p").css("background-color","yellow");
 						// display this tile's info in the hover-over info box.
 						// (see UI mock-up)
-					});
+					});*/
 				}
 				// Display this screen.
 				change_screen(name);
-			}
+			}   
 			else
 				alert(json_data.ERROR);
 		});
