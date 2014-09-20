@@ -185,6 +185,7 @@ h3 {
   margin-left: auto;
   margin-right: auto;
   width: 8%;
+ }
 
 #message_display_table_mini {
 	position:absolute;
@@ -201,6 +202,7 @@ h3 {
 	border: 1px solid #000000;
 	padding:0px;
 	width:100%;
+}
 	
 #register .inputFields {
   text-align: left;
@@ -208,6 +210,7 @@ h3 {
 }
 #register .inputFields input[type="text"] {
   size: 15;
+}
 
 .message_display_row_spacer {
 	border: none;
@@ -221,6 +224,8 @@ h3 {
 	border: 1px solid #000000;
 	padding:0px;
 	text-align:left;
+}
+
 #register .inputFields input[type="password"] {
   size: 15;
 }
@@ -241,9 +246,9 @@ h3 {
 }
 
 #messaging_menu {
-	postion:absolute;
-	top:50px;
-	left:50px;
+	position:absolute;
+	top:40px;
+	left:40px;
 	background-color:#FFFFFF;
 	width:144px;
 	height:24px;
@@ -270,4 +275,95 @@ h3 {
 #refresh_messages {
 	position:absolute;
 	left:120px;
+}
+
+#message_display_container {
+	position:absolute;
+	top:68px;
+	left:40px;
+	width:162px;
+	height:310px;
+	background-color:#ffffff;
+	overflow:scroll;
+}
+
+.message_viewed {
+	color:#000000;
+	background-color:#999999;
+	border:1px solid #ffffff;
+	font-size:11px;
+	margin:2px;
+}
+
+.message_unviewed{
+	color:#000000;
+	background-color:#DDDDDD;
+	border:1px solid #000000;
+	font-size:11px;
+	margin:3px;	
+}
+
+.message_unviewed:hover{
+	background-color:#ffffbb;
+	border:1px solid #3d8fe3;
+}
+
+.message_viewed:hover{
+	background-color:#ffffbb;
+	border:1px solid #3d8fe3;
+}
+
+#message_viewer{
+	position:absolute;
+	top:40px;
+	left:220px;
+	width:350px;
+	height:140px;
+}
+
+#message_viewer_subject{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:80px;
+	height:120px;
+	background-color:#ffffbb;
+	color:#000000;
+	font-size:10pt;
+	font-weight:bold;
+}
+
+#message_viewer_from{
+	position:absolute;
+	top:130px;
+	left:0px;
+	width:80px;
+	height:30px;
+	background-color:#3d8fe3;
+	color:#ffffff;
+	font-size:10pt;
+	font-weight:bold;
+}
+
+#message_viewer_message{
+	position:absolute;
+	top:0px;
+	left:90px;
+	width:235px;
+	height:120px;
+	background-color:#ffffff;
+	color:#000000;
+	padding:20px;
+	text-indent:20px;
+	font-size:12pt;
+	text-align:left;
+	overflow:scroll;
+}
+
+#message_composer{
+	position:absolute;
+	top:195px;
+	left:220px;
+	width:350px;
+	height:180px;
 }
