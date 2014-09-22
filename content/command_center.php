@@ -18,7 +18,12 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	
 	<div id="game_secondary_screen_backdrop"></div>
 	<div id="game_secondary_screen">
-		<div class="game_screen" id="map_screen"><!-- HTML for the map screen goes here --></div>
+		<div class="game_screen" id="map_screen">
+			<!-- HTML for brian the map screen goes here -->
+			<div id="sector_info_div"></div>
+			<div id="navigation_panel_div"></div>
+			<div id="map_container_div"></div>
+		</div>
 		<div class="game_screen" id="colony_management_screen">
 			<div id="buildings_container"></div>
 			<div id="building_info_div1"></div>
@@ -26,7 +31,14 @@ $colony_tile = new Map_Tile($colony->tile_id);
 			<div id="unselect_bldg_btn" onclick="javascript:unselect_building();">[X]</div>
 		</div>
 		<div class="game_screen" id="messaging_screen">
-			<!-- HTML for the messaging screen goes here -->
+			<div id="messaging_menu">
+				<div class="messaging_button" id="inbox_button" onclick="javascript:display_inbox()">INBOX</div>
+				<div class="messaging_button" id="sent_button" onclick="javascript:display_sent()">SENT</div>
+				<img src="media/images/refresh.png" onclick="javascript:get_messages();" id="refresh_messages">
+			</div>
+			<div id="message_display_container"></div>
+			<div id="message_viewer"></div>
+			<div id="message_composer"></div>
 		</div>
 	</div>
 	
@@ -49,10 +61,9 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	</div>
 	
 	<div id="messaging_div_mini" style="position:absolute; top:148px; left:836px; height:295px; width:150px; text-align:left; color:#ffffff;" >
-		<div class="menu_title_mini">messaging</div>
-		<div class="maximize_screen">
-			<a href="javascript:get_messages();"><img src="media/images/maximize.gif"></a>
-		</div>
+		<div class="menu_title_mini">MESSAGING</div>
+		<img src="media/images/maximize.gif" onclick="javascript:maximize_messages();" class="maximize_screen">
+		<table id="message_display_table_mini"></table>
 		
 	</div>
 	
@@ -76,6 +87,15 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	var colony_id = <?php echo $colony->id; ?>;
 	var theme = 'default';
 	var buildings = new Array();
+
+	//Inbox or Sent? variable
+	var inbox=true;
+	//Populate messages
+	get_messages();
+	//Generate message composer
+	generate_message_composer();
+	//Check for new messages every 60 seconds
+	setInterval(function(){get_messages()}, 60000);
 	
 	// This function is called when someone clicks the colony management link.
 	$('#link_div_colony_management').click(function() {
@@ -113,8 +133,20 @@ $colony_tile = new Map_Tile($colony->tile_id);
 		});
 	});
 	
-	// This function is called when someone clicks the messaging link.
-	function get_messages () {
+	// This function is called when someone clicks the maximize button
+	// on the messaging mini div. It changes the main screen to the
+	// messaging screen and it gets new messages from the database
+	function maximize_messages () {
+		// Grab the name of this screen
+		var name = 'messaging';
+		change_screen(name);
+		get_messages();
+		
+	}
+	
+	// This function is called every 60 seconds and gets new messages
+	// from the database
+	function get_messages () { 
 		// Grab the name of this screen
 		var name = 'messaging';
 		// Call the data-fetching script for this screen.
@@ -122,21 +154,176 @@ $colony_tile = new Map_Tile($colony->tile_id);
 			// If data was successfully fetched...
 			if ( json_data.ERROR == "" )
 			{
+				console.log(json_data);
+				
+				
 				//Iterate through the messages
-				//Check for unread messages
-				//Display messages
+				// Clear the content from the mini div
+				$('#message_display_table_mini tr').remove();
+				// Clear the content from the inbox div
+				$('#message_display_container div').remove();
 				
-				//Separate query to check if there are new messages
+				// Populate the content of the mini div
+				for ( var i in json_data.messages )
+				{
+					var message = json_data.messages[i];
+					var message_class = "";
+					if(message.viewed==1){
+						message_class="message_viewed";
+					}else if(message.viewed==0){
+						message_class="message_unviewed";
+					}
+					
+					$('<tr>', {
+						"class":'message_display_row',
+					}).appendTo('#message_display_table_mini')
+					.append(
+						$('<td>', {
+							"class":'message_display_col',
+							"id":'title_mini'
+						}).text("FROM"),
+						$('<td>', {
+							"class":'message_display_col',
+							"id":'content_mini'
+						}).text(message.from_player) //TODO: Convert this id into the actual player name
+					);
+					
+					$('<tr>', {
+						"class":'message_display_row',
+					}).appendTo('#message_display_table_mini')
+					.append(
+						$('<td>', {
+							"class":'message_display_col',
+							"id":'title_mini'
+						}).text("SUBJECT"),
+						$('<td>', {
+							"class":'message_display_col',
+							"id":'content_mini'
+						}).text(message.subject)
+					);
+					
+						$('<tr>', {
+							"class":'message_display_row_spacer',
+						}).appendTo('#message_display_table_mini')
+					
+					if(inbox){	
+						$('<div>', {
+							"class":message_class,
+							"onclick":'javascript:go_to_message('+message.id+');'
+						}).appendTo('#message_display_container')
+							.text("Player "+ message.from_player+" sent you a message about \""
+							+message.subject+"\" saying \""
+							+message.message.substring(0,22)+"...\"");
+					}
+				}
+				for( var i in json_data.messages_sent){
+					var message = json_data.messages_sent[i];
+					if(!inbox){
+						$('<div>', {
+							"class":'message_viewed',
+							"onclick":'javascript:go_to_message('+message.id+');'
+						}).appendTo('#message_display_container')
+							.text("You sent Player "+ message.to_player+" a message about \""
+							+message.subject+"\" saying \""
+							+message.message.substring(0,22)+"...\"");
+					}
+					
+					
+				}
 				
-				// Display this screen.
-				change_screen(name);
+				
+				
+				
 			}
 			else
 				alert(json_data.ERROR);
 		});
-	});
+	}
 	
-	// This function is called when someone clicks the map hologram.
+	//The two functions below switch the message container between
+	//displaying the inbox and the sent messages by toggling a
+	//boolean value. They have corresponding buttons on the main
+	//messages div
+	function display_inbox(){
+		inbox=true;
+		get_messages();
+	}
+	function display_sent(){
+		inbox=false;
+		get_messages();
+	}
+	
+	//The following function is called when a message is clicked
+	//The specific message will be pulled up in the message viewing div
+	function go_to_message(message_id){
+		//clear any previous message
+		$('#message_viewer div').remove();
+		// Grab the name of this screen
+		var name = 'messaging';
+		// Call the data-fetching script for this screen.
+		request_data('game_screen_' + name, function(json_data) {
+			// If data was successfully fetched...
+			if ( json_data.ERROR == "" )
+			{
+				console.log(json_data);
+		
+				for( var i in json_data.messages){
+					var message = json_data.messages[i];
+					if(message.id==message_id){
+						$('<div>',{
+							"id":'message_viewer_subject'
+						}).appendTo('#message_viewer')
+							.text("SUBJECT: "+message.subject);
+						$('<div>',{
+							"id":'message_viewer_from'
+						}).appendTo('#message_viewer')
+							.text("FROM: Player "+message.from_player);
+						$('<div>',{
+							"id":'message_viewer_message'
+						}).appendTo('#message_viewer')
+							.text(message.message);
+					}
+				}
+				for( var i in json_data.messages_sent){
+					var message = json_data.messages_sent[i];
+					if(message.id==message_id){
+						$('<div>',{
+							"id":'message_viewer_subject'
+						}).appendTo('#message_viewer')
+							.text("SUBJECT: "+message.subject);
+						$('<div>',{
+							"id":'message_viewer_from'
+						}).appendTo('#message_viewer')
+							.text("FROM: Player "+message.from_player);
+						$('<div>',{
+							"id":'message_viewer_message'
+						}).appendTo('#message_viewer')
+							.text(message.message);
+					}
+				}
+			}
+			else
+				alert(json_data.ERROR);
+		});
+		
+	}
+	
+	//This function is called when the page loads
+	//It populates the messaging screen with the 
+	//necessary elements to compose a message
+	function generate_message_composer(){
+		$('<textfield>', {
+			"id":'to_field'
+		}).appendTo('#message_composer');
+		$('<textfield>', {
+			"id":'subject_field'
+		}).appendTo('#message_composer');
+		$('<textfield>', {
+			"id":'message_field'
+		}).appendTo('#message_composer');
+	}
+	
+	// This function is called when someone clicks the map hologram. brian
 	$('#link_div_map').click(function() {
 		// Grab the name of this screen
 		var name = $(this).attr('id').substr(9);
@@ -155,21 +342,59 @@ $colony_tile = new Map_Tile($colony->tile_id);
 				// TODO: figure out how to _actually_ iterate over the axial coordinate system.
 				//		 go here and search 'axial coordinates':
 				//		 http://www.redblobgames.com/grids/hexagons/
-				for (var i=0; i<10; i++) 
+				// center_tile_x, center_tile_y are x,y of player home base tile (in database?)
+				
+				// x,y offsets for start of map area
+				var div_y_offset=100;
+				var div_x_offset=177;
+				var rel_x=0;
+				var rel_y=-2;
+
+				// 19 map tiles are shown at once, center tile is #10
+				// 1st tile is (center-0,center-2)
+				for (var i=0; i<19; i++) 
 				{
-					jQuery('<img>', {
-						"id": 'map_tile'+ i +'div',
+					if (i==3) {rel_x+=4; rel_y++;}
+					else if (i==7) {rel_x+=5; rel_y++;}
+					else if (i==12) {rel_x+=5; rel_y++;}
+					else if (i==16) {rel_x+=4; rel_y++;}
+
+					var div=jQuery('<img>', {
+						"id": 'map_tile'+ i + 'div',
 						"class": 'map_tile_div',
-						"src": 'media/images/banana.png'
-					}).appendTo('#'+ name +'_screen');
-					$('#map_tile'+ i).hover(function() {
+						"src": 'media/images/banana.png',
+						"title": '(' + (center_tile_x+i-rel_x) + ',' + (center_tile_y+rel_y) + ')',
+						"x": (center_tile_x+i-rel_x),
+						"y": (center_tile_y+rel_y)
+					});
+					if (i<3) div.offset({top:div_y_offset,left:div_x_offset});
+					else if (i<7) div.offset({top:div_y_offset+60,left:div_x_offset-245});
+					else if (i<8) div.offset({top:div_y_offset+121,left:div_x_offset-560});
+					else if (i<12) div.offset({top:div_y_offset+40,left:div_x_offset});
+					else if (i<16) div.offset({top:div_y_offset+101,left:div_x_offset-316});
+					else div.offset({top:div_y_offset+81,left:div_x_offset-177});
+					div.appendTo('#'+ name +'_screen');
+					/*$(document).ready(function() {
+						div.bind('mouseover mouseout click', function(event) {
+    					var $tgt = $(event.target);
+    					if (!$tgt.closest('.syntax_hilite').length) {
+      						$tgt.toggleClass(event.type == 'click' ? 'outline-element-clicked' : 'outline-element');
+      						alert(div)
+    						}
+    					//alert($tgt);
+  						});
+					});*/
+					
+					/*$('#map_tile'+ i).hover(function() {
+						$(this).toggleClass('highLight')
+						//$("p").css("background-color","yellow");
 						// display this tile's info in the hover-over info box.
 						// (see UI mock-up)
-					});
+					});*/
 				}
 				// Display this screen.
 				change_screen(name);
-			}
+			}   
 			else
 				alert(json_data.ERROR);
 		});
@@ -178,6 +403,7 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	// This function manages the visual hiding and showing of the screens.
 	// DO NOT EDIT THIS FUNCTION
 	function change_screen(name) {
+		
 		$('#game_secondary_screen_backdrop').hide(300);
 		$('#game_secondary_screen').hide(300, function() {
 			$('.game_screen').hide();

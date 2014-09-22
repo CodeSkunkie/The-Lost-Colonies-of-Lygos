@@ -11,7 +11,7 @@
         "less2css":
         {
             "outputDir": "./media/themes/default",
-            "outputFile": "stylesheet2.css",
+            "outputFile": "stylesheet.css",
             "minify": false
         }
     }
