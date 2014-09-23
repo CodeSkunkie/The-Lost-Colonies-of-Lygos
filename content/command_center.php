@@ -394,36 +394,49 @@ $colony_tile = new Map_Tile($colony->tile_id);
 				//		 http://www.redblobgames.com/grids/hexagons/
 				// center_tile_x, center_tile_y are x,y of player home base tile (in database?)
 				
-				// x,y offsets for start of map area
+				// screen x,y offsets for top left of map area
 				var div_y_offset=100;
-				var div_x_offset=177;
+				var div_x_offset=260;
+
+				// used to number tiles with coordinates
 				var rel_x=0;
 				var rel_y=-2;
 
-				// 19 map tiles are shown at once, center tile is #10
+				// 22 map tiles are shown at once, center tile is 12th tile (i=11)
 				// 1st tile is (center-0,center-2)
-				for (var i=0; i<19; i++) 
-				{
-					if (i==3) {rel_x+=4; rel_y++;}
-					else if (i==7) {rel_x+=5; rel_y++;}
-					else if (i==12) {rel_x+=5; rel_y++;}
-					else if (i==16) {rel_x+=4; rel_y++;}
 
+				// adds map tile divs to map
+				for (var i=0; i<23; i++)
+				{
+					// sets up tile offsets and coordinates
+					if (i==4) {div_y_offset-=93; div_x_offset-=330; rel_x=-1; rel_y++;}
+					else if (i==7) {div_y_offset-=61; div_x_offset+=588;}
+					else if (i==9) {div_y_offset-=124; div_x_offset-=396; rel_x=-2; rel_y++;}
+					else if (i==14) {div_y_offset-=184; div_x_offset+=192; rel_x=-3; rel_y++;}
+					else if (i==19) {div_y_offset-=93; div_x_offset-=330; rel_x=-3; rel_y++;}
+					else if (i==21) {div_y_offset-=61; div_x_offset+=378;}
+
+					// actually create divs with initial 'empty' tile image
 					var div=jQuery('<img>', {
 						"id": 'map_tile'+ i + 'div',
 						"class": 'map_tile_div',
-						"src": 'media/images/banana.png',
-						"title": '(' + (center_tile_x+i-rel_x) + ',' + (center_tile_y+rel_y) + ')',
-						"x": (center_tile_x+i-rel_x),
+						"src": 'media/themes/default/images/tile_empty.png',
+						"title": '(' + (center_tile_x+rel_x) + ',' + (center_tile_y+rel_y) + ')',
+						"x": (center_tile_x+rel_x),
 						"y": (center_tile_y+rel_y)
 					});
-					if (i<3) div.offset({top:div_y_offset,left:div_x_offset});
-					else if (i<7) div.offset({top:div_y_offset+60,left:div_x_offset-245});
-					else if (i<8) div.offset({top:div_y_offset+121,left:div_x_offset-560});
-					else if (i<12) div.offset({top:div_y_offset+40,left:div_x_offset});
-					else if (i<16) div.offset({top:div_y_offset+101,left:div_x_offset-316});
-					else div.offset({top:div_y_offset+81,left:div_x_offset-177});
-					div.appendTo('#'+ name +'_screen');
+
+					// set position of tile
+					div.offset({top:div_y_offset,left:div_x_offset});
+
+					// sets positioning type for browser compatibility and adds to map div
+					div.css("position", "relative").appendTo('#'+ name +'_screen');
+
+					// move tile offsets down and to the right
+					div_x_offset-=18;
+					div_y_offset+=31;
+					rel_x++;
+
 					/*$(document).ready(function() {
 						div.bind('mouseover mouseout click', function(event) {
     					var $tgt = $(event.target);
@@ -434,7 +447,6 @@ $colony_tile = new Map_Tile($colony->tile_id);
     					//alert($tgt);
   						});
 					});*/
-					
 					/*$('#map_tile'+ i).hover(function() {
 						$(this).toggleClass('highLight')
 						//$("p").css("background-color","yellow");
