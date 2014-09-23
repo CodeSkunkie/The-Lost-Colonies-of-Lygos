@@ -26,7 +26,7 @@ function request_data(script_name, input, callback_function)
 		if ( json.ERROR != '' )
 			request_error_handler(json.ERROR);
 		else
-			callback_function(json);
+			return callback_function(json);
 	})
 	.fail(function() {
 		request_error_handler('AJAX_failed');
