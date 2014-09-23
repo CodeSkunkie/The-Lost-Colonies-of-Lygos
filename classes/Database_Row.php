@@ -53,6 +53,9 @@ abstract class Database_Row
 			// Skip over any of the non-database fields.
 			if ( in_array($field, $this->extra_fields) )
 				continue;
+			// Never change the row ID!
+			if ( $field == 'id' )
+				continue;
 			
 			$qry_str_part2 .= " `". $field ."` = '". $value ."', ";
 		}

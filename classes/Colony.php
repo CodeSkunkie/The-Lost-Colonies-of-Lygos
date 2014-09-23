@@ -31,14 +31,16 @@ class Colony
 		$colony_qry->data_seek(0);
 		$colony_row = $colony_qry->fetch_assoc();
 
-		
-		foreach ( $colony_row as $field => $value )
+		// This loop is going through all DB fields instead of object fields.
+		// The resource fields are being pulled from their raw fields.
+		foreach ( $this as $field => $value )
 		{
-			if ( $field == 'buildings' )
+			if ( $field == 'resources' )
 				continue;
 			
-			$this->$field = $value;
+			$this->$field = $colony_row[$field];
 		}
+		//print_arr($this);
 		$this->resources = new Colony_Resources($colony_row);
 	}
 	
@@ -50,7 +52,8 @@ class Colony
 		$qry_str = "UPDATE `colonies` SET ";
 		foreach ( $this as $field => $value )
 		{
-			if ( $field == 'buildings' )
+			// Never change the row ID!
+			if ( $field == 'id' )
 				continue;
 			
 			if ( $field == 'resources' )
@@ -78,27 +81,52 @@ class Colony
 		$qry_str .= " WHERE `id`= '". $this->id ."'";
 		// Run the constructed query to update a colony's resources.
 		$Mysql->query($qry_str);
-		//echo $qry_str;
+		//nechon( $qry_str);
 	}
 	
-	// Increase this colony's resources by the given amount and save to database.
+	// Increase this colony's resources by the given amount.
+	// DOES NOT SAVE TO THE DATABASE for reasons of efficiency.
 	// $resource_bundle is an object of type Resource_Bundle.
 	public function add_resources($resource_bundle)
 	{
-		
 		$this->update_resources();
-		$this->save_data();
+		foreach ( $resource_bundle as $key => $val )
+		{
+			$this->resources->$key->stock += $val;
+			
+			// Don't let the stock quantity go below zero.
+			if ( $this->resources->$key->stock < 0 )
+				$this->resources->$key->stock = 0;
+		}
 	}
 	
-	// Decrease this colony's resources by the given amount and save to database.
+	// Decrease this colony's resources by the given amount.
+	// DOES NOT SAVE TO THE DATABASE for reasons of efficiency.
 	// $resource_bundle is an object of type Resource_Bundle.
 	public function subtract_resources($resource_bundle)
 	{
 		foreach ( $resource_bundle as $key => $value )
 			$resource_bundle->$key *= -1;
+		
 		$this->add_resources($resource_bundle);
 	}
 	
+	// Increase this colony's resources by the given amount.
+	// DOES NOT SAVE TO THE DATABASE for reasons of efficiency.
+	// $resource_bundle is an object of type Resource_Bundle.
+	public function can_afford($resource_bundle)
+	{
+		foreach ( $resource_bundle as $key => $val )
+		{
+			if ( $this->resources->$key->stock - $val < 0 )
+				return false;
+		}
+		
+		return true;
+	}
+	
+	
+	// DOES NOT SAVE CHANGES TO THE DATABASE for reasons of efficiency.
 	public function update_resources()
 	{
 		global $Mysql;
@@ -107,13 +135,7 @@ class Colony
 		$seconds_passed = time() - $this->last_resource_update;
 		$hours_passed = $seconds_passed / 3600;
 		$this->resources->update($hours_passed);
-		
-		// Save the updated resource values to the database.
-		// To reduce CPU load, this is only run at most every 15 minutes for a givev player.
-		if ( $hours_passed > 0.25 )
-		{
-			$this->save_data();
-		}
+		$this->last_resource_update = time();
 	}
 	
 	// This function gets called when a user click the button to upgrade a building.

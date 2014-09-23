@@ -11,7 +11,6 @@ $colony->update_resources();
 $colony_tile = new Map_Tile($colony->tile_id);
 //print_r($colony);
 
-
 ?>
 
 <div id="main_game_UI_div">
@@ -53,7 +52,9 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	
 	<div id="resource_info_div" style="position:absolute; top:25px; left:10px; height:260px; width:150px; text-align:left; color:#ffffff;" >
 		<div>RESOURCES</div>
-		<?php $colony->resources->print_summary(); ?>
+		<div id="col_res_out_div">
+			<?php $colony->resources->print_summary(); ?>
+		</div>
 	</div>
 	
 	<div id="job_queue_div" style="position:absolute; top:310px; left:10px; height:260px; width:150px; text-align:left; color:#ffffff;" >
@@ -103,9 +104,14 @@ $colony_tile = new Map_Tile($colony->tile_id);
 		var name = $(this).attr('id').substr(9);
 		// Call the data-fetching script for this screen.
 		request_data('game_screen_' + name, {"colony_id": colony_id}, function(json_data) {
-			// If data was successfully fetched...
-			if ( json_data.ERROR == "" )
+			// Script successfully called.
+			
+			// Check to see if the script returned any warnings.
+			if ( typeof json_data.WARNING != 'undefined' )
+				alert('Warning: '+ json_data.WARNING);
+			else
 			{
+				// No warnings occurred.
 				// Erase any old contents on this screen.
 				$('#buildings_container').html('');
 				
@@ -126,10 +132,6 @@ $colony_tile = new Map_Tile($colony->tile_id);
 				// Display this screen.
 				change_screen(name);
 			}
-			else if ( json_data.ERROR == 'login_required' )
-				display_login_form();
-			else
-				alert(json_data.ERROR);
 		});
 	});
 	
@@ -467,6 +469,10 @@ $colony_tile = new Map_Tile($colony->tile_id);
 		$('<div/>', {
 			"text": "upgrade cost: "+ building.update_cost.food
 		}).appendTo('#building_info_text_div');
+		$('<button/>', {
+			"text": "upgrade ",
+			"onclick": "javascript: upgrade_building('"+ colony_id +"', '"+ building.id +"', '"+ building.type +"' )"
+		}).appendTo('#building_info_text_div');
 		
 		
 		// animate the opening of div1.
@@ -505,6 +511,44 @@ $colony_tile = new Map_Tile($colony->tile_id);
 		$('#unselect_bldg_btn').hide();
 		
 		selected_building_type = false;
+	}
+	
+	function upgrade_building(colony_id, building_id, building_type)
+	{
+		request_data('upgrade_building', 
+			{
+				"colony_id": colony_id, 
+				"building_id": building_id, 
+				"building_type": building_type
+			}, 
+			function(json_data) {
+				// Script successfully called.
+				// Check for warnings.
+				if ( typeof json_data.WARNING != 'undefined' )
+				{
+					if ( json_data.WARNING == 'insufficient_resources' )
+						alert('You do not have enough resources to perform the requested upgrade.');
+					else
+						alert(json_data.WARNING);
+				}
+				else
+				{
+					// No warnings were returned by the script.
+					refresh_jobs_queue();
+					refresh_resources_display();
+				}
+			}
+		);
+	}
+	
+	function refresh_jobs_queue()
+	{
+		// TODO: implement
+	}
+	
+	function refresh_resources_display()
+	{
+		// TODO: implement
 	}
 	
 </script>

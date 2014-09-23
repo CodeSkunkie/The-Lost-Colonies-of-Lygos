@@ -15,7 +15,13 @@ require(WEBROOT .'global_lib.php');
 function return_error($error)
 {
 	header('Content-type: application/json');
-	echo json_encode(array('ERROR', $error));
+	echo json_encode(array('ERROR' => $error));
+	exit();
+}
+function return_warning($warning)
+{
+	header('Content-type: application/json');
+	echo json_encode(array('WARNING' => $warning, 'ERROR' => ''));
 	exit();
 }
 

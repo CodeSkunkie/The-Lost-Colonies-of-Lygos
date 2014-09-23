@@ -25,25 +25,31 @@ abstract class Colony_Building extends Database_Row
 	}
 	
 	// This function gets called whenever this building gets upgraded.
+	public function begin_upgrade()
+	{
+		
+	}
+	
+	// This function gets called whenever this building gets upgraded.
 	public function finish_upgrade()
 	{
 		$this->level++;
 	}
 	
-	public function fetch_data()
-	{
-		global $Mysql;
-		
-		$colony_qry = $Mysql->query("SELECT * FROM `buildings` 
-			WHERE `colony_id` = '". $this->colony_id ."' AND
-				`type` = '". $this->type ."'" );
-		$colony_qry->data_seek(0);
-		$colony_row = $colony_qry->fetch_assoc();
-
-		
-		foreach ( $colony_row as $field => $value )
-			$this->$field = $value;
-	}
+//	public function fetch_data()
+//	{
+//		global $Mysql;
+//		
+//		$colony_qry = $Mysql->query("SELECT * FROM `buildings` 
+//			WHERE `colony_id` = '". $this->colony_id ."' AND
+//				`type` = '". $this->type ."'" );
+//		$colony_qry->data_seek(0);
+//		$colony_row = $colony_qry->fetch_assoc();
+//
+//		
+//		foreach ( $colony_row as $field => $value )
+//			$this->$field = $value;
+//	}
 }
 
 ?>

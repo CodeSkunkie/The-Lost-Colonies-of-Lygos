@@ -20,8 +20,7 @@ class Energy_Building extends Colony_Building
 		}
 		else
 		{
-			$this->colony_id = $colony_id;
-			$this->type = $type;
+			$this->id = $id_or_db_row;
 			$this->fetch_data();
 		}
 	}
