@@ -59,7 +59,7 @@ else
 			WHERE lower(`username`)='". strtolower($username) ."'");
 	//doesn't recognize case sensitve email
 	$register_email_qry = $Mysql->query("SELECT `id` FROM `players` 
-			WHERE `email`='". $email ."'");
+			WHERE lower(`email`)='". strtolower($email) ."'");
 	if (empty($email) || strlen($email) < 4) {
 		// Email too short to be valid
 		$register_error_message = "Please enter in a proper email address";
@@ -95,18 +95,19 @@ else
 		$password_failed = true;
 		print_register_form($username, $email, $user_failed, $email_failed, $password_failed, $register_error_message);
 	} else {
-		//Register successful   now()
+		//Register successful  
+		//haven't put it in yet, make colony
 		$Mysql->query("INSERT INTO `players` 
 			SET `username`='". $username ."',
 				`email` = '". $email ."',
-				`group` = 'user',
-				`password` = '". password_hash($password, PASSWORD_DEFAULT) ."'");
+				`group` = 'player',
+				`password` = password('".  $password ."')");
 		$Mysql->query("INSERT INTO `users` 
 			SET `username`='". $username ."',
 				`email` = '". $email ."',
-				`group` = 'user',
-				`date_registered` = now(),
-				`password` = '". password_hash($password, PASSWORD_DEFAULT) ."'");
+				`group` = 'player',
+				`date_registered` = '". time() . "',
+				`password` = password('".  $password ."')");
 	}
 	$register_email_qry->close(); 
 	$register_user_qry->close(); 
