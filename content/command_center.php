@@ -8,7 +8,6 @@ require(WEBROOT .'classes/Map_Tile.php');
 $colony = new Colony($User->colony_ids[0]);
 $colony->update_resources();
 
-$colony_tile = new Map_Tile($colony->tile_id);
 //print_r($colony);
 
 ?>
@@ -82,8 +81,8 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	
 	// Keep track of which tile is at the center of the map screen.
 	// Center the map on this player's colony to start with.
-	var center_tile_x = <?php echo $colony_tile->coord_x; ?>;
-	var center_tile_y = <?php echo $colony_tile->coord_y; ?>;
+	var center_tile_x = <?php echo $colony->x_coord; ?>;
+	var center_tile_y = <?php echo $colony->y_coord; ?>;
 	
 	var colony_id = <?php echo $colony->id; ?>;
 	var theme = 'default';

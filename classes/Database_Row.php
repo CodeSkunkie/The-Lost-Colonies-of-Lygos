@@ -17,6 +17,8 @@ abstract class Database_Row
 		
 		$table_qry = $Mysql->query("SELECT * FROM `". $this->db_table_name ."` 
 			WHERE `id` = '". $this->id ."'");
+		echon("SELECT * FROM `". $this->db_table_name ."` 
+			WHERE `id` = '". $this->id ."'");
 		$table_qry->data_seek(0);
 		$table_row =  $table_qry->fetch_assoc();
 		

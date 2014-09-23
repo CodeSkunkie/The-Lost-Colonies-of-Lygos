@@ -3,7 +3,7 @@
 class Colony
 {
 	// Data taken directly from the "Colonies" database table:
-	public $id, $player_id, $tile_id, $last_resource_update, $resources;
+	public $id, $player_id, $x_coord, $y_coord, $last_resource_update, $resources;
 	// $resources is an object with the form:
 	//		$resources->resource1->stock where 'stock' can be
 	//		'stock', 'capacity', 'production_rate', or 'consumption_rate', and
