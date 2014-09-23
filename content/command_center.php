@@ -154,7 +154,7 @@ $colony_tile = new Map_Tile($colony->tile_id);
 			// If data was successfully fetched...
 			if ( json_data.ERROR == "" )
 			{
-				console.log(json_data);
+				//console.log(json_data);
 				
 				
 				//Iterate through the messages
@@ -209,6 +209,7 @@ $colony_tile = new Map_Tile($colony->tile_id);
 					if(inbox){	
 						$('<div>', {
 							"class":message_class,
+							"id":'message'+message.id,
 							"onclick":'javascript:go_to_message('+message.id+');'
 						}).appendTo('#message_display_container')
 							.text("Player "+ message.from_player+" sent you a message about \""
@@ -221,6 +222,7 @@ $colony_tile = new Map_Tile($colony->tile_id);
 					if(!inbox){
 						$('<div>', {
 							"class":'message_viewed',
+							"id":'message'+message.id,
 							"onclick":'javascript:go_to_message('+message.id+');'
 						}).appendTo('#message_display_container')
 							.text("You sent Player "+ message.to_player+" a message about \""
@@ -312,16 +314,64 @@ $colony_tile = new Map_Tile($colony->tile_id);
 	//It populates the messaging screen with the 
 	//necessary elements to compose a message
 	function generate_message_composer(){
-		$('<textfield>', {
-			"id":'to_field'
+		$('#message_composer').empty();
+		
+		$('<p>', {
+			"id":'to_title',
+		}).appendTo('#message_composer')
+			.text("Send to Player ID:");
+		$('<input>', {
+			"id":'to_field',
+			"type":'number',
+			"maxlength":'5'
 		}).appendTo('#message_composer');
-		$('<textfield>', {
-			"id":'subject_field'
+		$('<p>', {
+			"id":'subject_title',
+		}).appendTo('#message_composer')
+			.text("Subject:");
+		$('<input>', {
+			"id":'subject_field',
+			"type":'text',
+			"maxlength":'20'
 		}).appendTo('#message_composer');
-		$('<textfield>', {
+		$('<textarea>', {
 			"id":'message_field'
 		}).appendTo('#message_composer');
+		$('<input>', {
+			"id":'message_submit',
+			"type":'submit',
+			"value":'Send Message'
+		}).appendTo('#message_composer');
+		
 	}
+	
+	//This function submits the form
+	$('#message_submit').click(function() {
+		
+		var from = player_id;
+		var to = $("#to_field").val();
+		var message = $("#message_field").val();
+		var subject = $("#subject_field").val();
+		var viewed = 0;
+		var time = <?php echo time() ?>;
+		// Returns successful data submission message when the entered information is stored in database.
+		var form_object = {"from1": from, "to1": to , "message1": message , "subject1": subject, "viewed1":viewed,"time1":time};
+		if(to==''||message==''||subject==''){
+			alert("Do you even message, bro?");
+		} else {
+			request_data('message_submit', form_object , function(json_data){
+				generate_message_composer();
+			});
+		}
+	});
+	
+	//Set messages as read when you click on them
+	$('#message_unviewed').click(function(){
+		var message_id = $(this).attr('id').substring(7);
+		request_data('message_read', {"viewed":1,"id":message_id},function(json_data){	
+			get_messages();
+		})
+	});
 	
 	// This function is called when someone clicks the map hologram. brian
 	$('#link_div_map').click(function() {

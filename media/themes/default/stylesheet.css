@@ -250,7 +250,7 @@ h3 {
 	top:40px;
 	left:40px;
 	background-color:#FFFFFF;
-	width:144px;
+	width:162px;
 	height:24px;
 }
 
@@ -264,17 +264,17 @@ h3 {
 
 #inbox_button {
 	position:absolute;
-	left:4px;
+	left:20px;
 }
 
 #sent_button {
 	position:absolute;
-	left:68px;
+	left:80px;
 }
 
 #refresh_messages {
 	position:absolute;
-	left:120px;
+	left:138px;
 }
 
 #message_display_container {
@@ -349,21 +349,75 @@ h3 {
 	position:absolute;
 	top:0px;
 	left:90px;
-	width:235px;
-	height:120px;
+	width:255px;
+	height:140px;
 	background-color:#ffffff;
 	color:#000000;
-	padding:20px;
+	padding:10px;
 	text-indent:20px;
-	font-size:12pt;
+	font-size:10pt;
 	text-align:left;
-	overflow:scroll;
+	overflow-y:scroll;
 }
 
 #message_composer{
 	position:absolute;
-	top:195px;
+	top:210px;
 	left:220px;
+	width:367px;
+	height:168px;
+	background-color:#999999;
+}
+
+#to_title{
+	position:absolute;
+	top:0px;
+	left:8px;
+	color:#ffffff;
+	font-size:10pt;
+	font-weight:bold;
+}
+
+#to_field{
+	position:absolute;
+	top:5px;
+	left:125px;
+	color:#000000;
+	font-size:10pt;
+	width:112px;
+}
+
+#subject_title{
+	position:absolute;
+	top:25px;
+	left:8px;
+	color:#ffffff;
+	font-size:10pt;
+	font-weight:bold;
+}
+
+#subject_field{
+	position:absolute;
+	top:31px;
+	left:62px;
+	color:#000000;
+	font-size:10pt;
+}
+
+#message_field{
+	position:absolute;
+	top:60px;
+	left:8px;
+	height:100px;
 	width:350px;
-	height:180px;
+	overflow:scroll;
+	resize:none;
+}
+
+#message_submit{
+	position:absolute;
+	top:5px;
+	left:246;
+	height:50px;
+	width:112px;
 }
