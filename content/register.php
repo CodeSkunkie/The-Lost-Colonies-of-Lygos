@@ -109,6 +109,52 @@ else
 				`date_registered` = '". time() . "',
 				`password` = password('".  $password ."')");
 	}
+	// Check auth credentials against the database.
+	$login_qry = $Mysql->query("SELECT `id` FROM `users` 
+			WHERE lower(`username`)='". strtolower($username) ."' AND 
+				`password`=password('". $password ."')");
+	// Fetch the user's row from the previous database query.
+	$login_qry->data_seek(0);
+	$user_row = $login_qry->fetch_assoc();
+	
+	// Save the user-id to the User object.
+	$User->id = $user_row['id'];
+			
+	// Save this user's id in the browsing session.
+	$_SESSION['user_id'] = $User->id;
+	
+	// Save some of the other user-data into the user object:
+	$User->get_user_data_from_database();
+	
+	// Save login data to a cookie?
+	if ( $remember_me == 'true' )
+	{
+		// Generate a temporary login key.
+		$key = $User->generate_cookie_key();
+		
+		// Save user-id and key to a cookie.
+		setcookie('pid', $User->id, (time()+30*24*60*60));
+		setcookie('key', $key, (time()+30*24*60*60));
+		
+		// Save key to the database for later comparison.
+		$Mysql->query("UPDATE `users` 
+			SET `cookie_login_key` = '". $key ."',
+				`last_login` = ". time() ."
+			WHERE `id` = ". $User->id ." ");
+	}
+	
+	// Log-in completed. Redirect to a new page.
+	if ( isset($_SESSION['post-login']) )
+	{
+		// User tried to access a login-required page before logging in.
+		// Send them back to that page now.
+		header('Location: /?'. $_SESSION['post-login']);
+		unset($_SESSION['post-login']);
+	}
+	else{
+		header('Location: /?p=command_center');
+	}
+	
 	$register_email_qry->close(); 
 	$register_user_qry->close(); 
 }

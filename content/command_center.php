@@ -155,7 +155,7 @@ $colony->update_resources();
 			// If data was successfully fetched...
 			if ( json_data.ERROR == "" )
 			{
-				console.log(json_data);
+				//console.log(json_data);
 				
 				
 				//Iterate through the messages
@@ -210,6 +210,7 @@ $colony->update_resources();
 					if(inbox){	
 						$('<div>', {
 							"class":message_class,
+							"id":'message'+message.id,
 							"onclick":'javascript:go_to_message('+message.id+');'
 						}).appendTo('#message_display_container')
 							.text("Player "+ message.from_player+" sent you a message about \""
@@ -222,6 +223,7 @@ $colony->update_resources();
 					if(!inbox){
 						$('<div>', {
 							"class":'message_viewed',
+							"id":'message'+message.id,
 							"onclick":'javascript:go_to_message('+message.id+');'
 						}).appendTo('#message_display_container')
 							.text("You sent Player "+ message.to_player+" a message about \""
@@ -313,16 +315,64 @@ $colony->update_resources();
 	//It populates the messaging screen with the 
 	//necessary elements to compose a message
 	function generate_message_composer(){
-		$('<textfield>', {
-			"id":'to_field'
+		$('#message_composer').empty();
+		
+		$('<p>', {
+			"id":'to_title',
+		}).appendTo('#message_composer')
+			.text("Send to Player ID:");
+		$('<input>', {
+			"id":'to_field',
+			"type":'number',
+			"maxlength":'5'
 		}).appendTo('#message_composer');
-		$('<textfield>', {
-			"id":'subject_field'
+		$('<p>', {
+			"id":'subject_title',
+		}).appendTo('#message_composer')
+			.text("Subject:");
+		$('<input>', {
+			"id":'subject_field',
+			"type":'text',
+			"maxlength":'20'
 		}).appendTo('#message_composer');
-		$('<textfield>', {
+		$('<textarea>', {
 			"id":'message_field'
 		}).appendTo('#message_composer');
+		$('<input>', {
+			"id":'message_submit',
+			"type":'submit',
+			"value":'Send Message'
+		}).appendTo('#message_composer');
+		
 	}
+	
+	//This function submits the form
+	$('#message_submit').click(function() {
+		
+		var from = player_id;
+		var to = $("#to_field").val();
+		var message = $("#message_field").val();
+		var subject = $("#subject_field").val();
+		var viewed = 0;
+		var time = <?php echo time() ?>;
+		// Returns successful data submission message when the entered information is stored in database.
+		var form_object = {"from1": from, "to1": to , "message1": message , "subject1": subject, "viewed1":viewed,"time1":time};
+		if(to==''||message==''||subject==''){
+			alert("Do you even message, bro?");
+		} else {
+			request_data('message_submit', form_object , function(json_data){
+				generate_message_composer();
+			});
+		}
+	});
+	
+	//Set messages as read when you click on them
+	$('#message_unviewed').click(function(){
+		var message_id = $(this).attr('id').substring(7);
+		request_data('message_read', {"viewed":1,"id":message_id},function(json_data){	
+			get_messages();
+		})
+	});
 	
 	// This function is called when someone clicks the map hologram. brian
 	$('#link_div_map').click(function() {
@@ -345,36 +395,49 @@ $colony->update_resources();
 				//		 http://www.redblobgames.com/grids/hexagons/
 				// center_tile_x, center_tile_y are x,y of player home base tile (in database?)
 				
-				// x,y offsets for start of map area
+				// screen x,y offsets for top left of map area
 				var div_y_offset=100;
-				var div_x_offset=177;
+				var div_x_offset=260;
+
+				// used to number tiles with coordinates
 				var rel_x=0;
 				var rel_y=-2;
 
-				// 19 map tiles are shown at once, center tile is #10
+				// 22 map tiles are shown at once, center tile is 12th tile (i=11)
 				// 1st tile is (center-0,center-2)
-				for (var i=0; i<19; i++) 
-				{
-					if (i==3) {rel_x+=4; rel_y++;}
-					else if (i==7) {rel_x+=5; rel_y++;}
-					else if (i==12) {rel_x+=5; rel_y++;}
-					else if (i==16) {rel_x+=4; rel_y++;}
 
+				// adds map tile divs to map
+				for (var i=0; i<23; i++)
+				{
+					// sets up tile offsets and coordinates
+					if (i==4) {div_y_offset-=93; div_x_offset-=330; rel_x=-1; rel_y++;}
+					else if (i==7) {div_y_offset-=61; div_x_offset+=588;}
+					else if (i==9) {div_y_offset-=124; div_x_offset-=396; rel_x=-2; rel_y++;}
+					else if (i==14) {div_y_offset-=184; div_x_offset+=192; rel_x=-3; rel_y++;}
+					else if (i==19) {div_y_offset-=93; div_x_offset-=330; rel_x=-3; rel_y++;}
+					else if (i==21) {div_y_offset-=61; div_x_offset+=378;}
+
+					// actually create divs with initial 'empty' tile image
 					var div=jQuery('<img>', {
 						"id": 'map_tile'+ i + 'div',
 						"class": 'map_tile_div',
-						"src": 'media/images/banana.png',
-						"title": '(' + (center_tile_x+i-rel_x) + ',' + (center_tile_y+rel_y) + ')',
-						"x": (center_tile_x+i-rel_x),
+						"src": 'media/themes/default/images/tile_empty.png',
+						"title": '(' + (center_tile_x+rel_x) + ',' + (center_tile_y+rel_y) + ')',
+						"x": (center_tile_x+rel_x),
 						"y": (center_tile_y+rel_y)
 					});
-					if (i<3) div.offset({top:div_y_offset,left:div_x_offset});
-					else if (i<7) div.offset({top:div_y_offset+60,left:div_x_offset-245});
-					else if (i<8) div.offset({top:div_y_offset+121,left:div_x_offset-560});
-					else if (i<12) div.offset({top:div_y_offset+40,left:div_x_offset});
-					else if (i<16) div.offset({top:div_y_offset+101,left:div_x_offset-316});
-					else div.offset({top:div_y_offset+81,left:div_x_offset-177});
-					div.appendTo('#'+ name +'_screen');
+
+					// set position of tile
+					div.offset({top:div_y_offset,left:div_x_offset});
+
+					// sets positioning type for browser compatibility and adds to map div
+					div.css("position", "relative").appendTo('#'+ name +'_screen');
+
+					// move tile offsets down and to the right
+					div_x_offset-=18;
+					div_y_offset+=31;
+					rel_x++;
+
 					/*$(document).ready(function() {
 						div.bind('mouseover mouseout click', function(event) {
     					var $tgt = $(event.target);
@@ -385,7 +448,6 @@ $colony->update_resources();
     					//alert($tgt);
   						});
 					});*/
-					
 					/*$('#map_tile'+ i).hover(function() {
 						$(this).toggleClass('highLight')
 						//$("p").css("background-color","yellow");
