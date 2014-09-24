@@ -17,6 +17,8 @@ abstract class Database_Row
 		
 		$table_qry = $Mysql->query("SELECT * FROM `". $this->db_table_name ."` 
 			WHERE `id` = '". $this->id ."'");
+		echon("SELECT * FROM `". $this->db_table_name ."` 
+			WHERE `id` = '". $this->id ."'");
 		$table_qry->data_seek(0);
 		$table_row =  $table_qry->fetch_assoc();
 		
@@ -52,6 +54,9 @@ abstract class Database_Row
 		{
 			// Skip over any of the non-database fields.
 			if ( in_array($field, $this->extra_fields) )
+				continue;
+			// Never change the row ID!
+			if ( $field == 'id' )
 				continue;
 			
 			$qry_str_part2 .= " `". $field ."` = '". $value ."', ";

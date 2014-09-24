@@ -19,14 +19,14 @@ function request_data(script_name, input, callback_function)
 	
 	// Send the AJAX request.
 	var request_url = 'ajax/index.php?script='+ script_name;
+	var json_data = '';
 	$.getJSON(request_url, input)
 	.done( function(json) {
 		// Call successful.
-		
 		if ( json.ERROR != '' )
 			request_error_handler(json.ERROR);
 		else
-			return callback_function(json);
+			callback_function(json);
 	})
 	.fail(function() {
 		request_error_handler('AJAX_failed');
@@ -44,11 +44,9 @@ function request_error_handler(error)
 	else if ( error == 'script_not_found' )
 		alert('ERROR: The script specified to handle this request does not exist.');
 	else if ( error == 'login_required' )
-		alert('ERROR: Your session has timed out. Please log in again.');
+		alert('ERROR: The script specified to handle this request does not exist.');
 	else if ( error == 'dirty_script_name' )
 		alert('ERROR: Invalid characters in script name.');
 	else if ( error == 'AJAX_failed' )
 		alert('ERROR: The AJAX request could not be completed.');
-	else
-		alert('ERROR: '+ error);
 }

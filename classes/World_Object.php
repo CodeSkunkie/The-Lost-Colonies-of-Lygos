@@ -3,7 +3,7 @@
 class World_Object extends Database_Row
 {
 	// Fields taken directly from the database:
-	public $id, $type, $tile_id, $owner;
+	public $id, $type, $x_coord, $y_coord, $owner;
 	
 	// Extra fields:
 	protected $db_table_name = 'world_objects';
