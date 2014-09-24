@@ -21,6 +21,7 @@ $colony->update_resources();
 			<div id="sector_info_div"></div>
 			<div id="navigation_panel_div"></div>
 			<div id="map_container_div"></div>
+			<div id="map_tile_selector_div"></div>
 		</div>
 		<div class="game_screen" id="colony_management_screen">
 			<div id="buildings_container"></div>
@@ -393,13 +394,14 @@ $colony->update_resources();
 				// Brian edits around here, mostly.
 				
 				// Erase any old contents on this screen.
-				$('#'+ name +'_screen').html('');
+				$('#map_container_div').html('');
+				$('#map_tile_selector_div').html('');
 				
 				// Populate the content of this screen.
 				//for (var dat in json_data) {console.log('::'+dat);}
-				console.log('::'+typeof(json_data.tiles_data));
-				var nearest_tiles = get_nearest_tiles(json_data.tiles_data);
-				draw_map(nearest_tiles, name);
+				//console.log(json_data.tiles[1][1]);
+				//var nearest_tiles = get_nearest_tiles(json_data.tiles);
+				draw_map(json_data.tiles, name);
 				// var tiles_data = json_data.tiles_data;
 				// TODO: figure out how to _actually_ iterate over the axial coordinate system.
 				//		 go here and search 'axial coordinates':
@@ -411,7 +413,7 @@ $colony->update_resources();
 		});
 	});
 
-	function draw_map(nearest_tiles, name) {
+	function draw_map(tiles, name) {
 		// center_tile_x, center_tile_y are x,y of player home base tile (in database?)
 		// screen x,y offsets for top left of map area
 		var div_y_offset=100;
@@ -433,11 +435,26 @@ $colony->update_resources();
 			else if (i==19) {div_y_offset-=93; div_x_offset-=330; rel_x=-3; rel_y++;}
 			else if (i==21) {div_y_offset-=61; div_x_offset+=378;}
 
+			var image = 'tile_empty.png';
+			var tile = tiles[center_tile_x+rel_x];
+			tile = ((typeof(tile) == "undefined") ? "undefined" : tile[center_tile_y+rel_y]);
+			if (typeof(tile) != "undefined") {
+				if (tile.player_has_vision == "1") image = 'tile_current.png';
+				else if (tile.player_has_vision == "0" && tile.cache != "") image = 'tile_outdated.png';
+			}
+
 			// actually create divs with initial 'empty' tile image
 			var div=jQuery('<img>', {
 				"id": 'map_tile'+ i + 'div',
 				"class": 'map_tile_div',
-				"src": 'media/themes/default/images/tile_empty.png',
+				"src": 'media/themes/default/images/'+image,
+			});
+			
+
+			var selector=jQuery('<img>', {
+				"id": 'map_tile_selector'+ i + 'div',
+				"class": 'map_tile_div_select_off',
+				"src": 'media/themes/default/images/tile_selected.png',
 				"title": '(' + (center_tile_x+rel_x) + ',' + (center_tile_y+rel_y) + ')',
 				"x": (center_tile_x+rel_x),
 				"y": (center_tile_y+rel_y)
@@ -445,9 +462,11 @@ $colony->update_resources();
 
 			// set position of tile
 			div.offset({top:div_y_offset,left:div_x_offset});
+			selector.offset({top:div_y_offset,left:div_x_offset});
 
 			// adds tile to map div
-			div.appendTo('#'+ name +'_screen');
+			div.appendTo('#map_container_div');
+			selector.appendTo('#map_tile_selector_div');
 
 			// move tile offsets down and to the right
 			div_x_offset-=18;
@@ -455,14 +474,16 @@ $colony->update_resources();
 			rel_x++;
 
 			// highlight map tile on hover
-			div.on('mouseover', function() {$(this).css("background-color", "yellow");});
-			div.on('mouseout', function() {$(this).css("background-color", "");});
+			selector.on('mouseover mouseout', function() {
+				$(this).toggleClass('map_tile_div_select_on');
+				$(this).toggleClass('map_tile_div_select_off');
+			});
 		}
 		// Display this screen.
 		change_screen(name);
 	}
 
-	function get_nearest_tiles(tiles_data) {
+	function get_nearest_tiles(tiles) {
 		var nearest_tiles = [];
 		/*$tile_data = array();
 		$tile_data['id'] = $tile_cache['tile_id'];
@@ -476,7 +497,9 @@ $colony->update_resources();
 		var x_max=center_tile_x+3;
 		for (var y=center_tile_y-2; y<center_tile_y+3; y++) {
 			for (var x=x_min; x<x_max+1; x++) {
-				//.log(tiles_data[19]);
+				if (typeof(tiles[x][y]) == "undefined") {
+
+				}
 			}
 			x_min--;
 			x_max--;
