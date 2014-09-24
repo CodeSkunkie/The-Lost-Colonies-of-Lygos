@@ -210,7 +210,7 @@ $colony_tile = new Map_Tile($colony->tile_id);
 						$('<div>', {
 							"class":message_class,
 							"id":'message'+message.id,
-							"onclick":'javascript:go_to_message('+message.id+');'
+							"onclick":'javascript:message_click('+message.id+');'
 						}).appendTo('#message_display_container')
 							.text("Player "+ message.from_player+" sent you a message about \""
 							+message.subject+"\" saying \""
@@ -223,7 +223,7 @@ $colony_tile = new Map_Tile($colony->tile_id);
 						$('<div>', {
 							"class":'message_viewed',
 							"id":'message'+message.id,
-							"onclick":'javascript:go_to_message('+message.id+');'
+							"onclick":'javascript:message_click('+message.id+');'
 						}).appendTo('#message_display_container')
 							.text("You sent Player "+ message.to_player+" a message about \""
 							+message.subject+"\" saying \""
@@ -267,7 +267,7 @@ $colony_tile = new Map_Tile($colony->tile_id);
 			// If data was successfully fetched...
 			if ( json_data.ERROR == "" )
 			{
-				console.log(json_data);
+				//console.log(json_data);
 		
 				for( var i in json_data.messages){
 					var message = json_data.messages[i];
@@ -365,13 +365,19 @@ $colony_tile = new Map_Tile($colony->tile_id);
 		}
 	});
 	
+	//What happens when a message is clicked
+	//function message_click(message_id){
+		
+	//}
+	
 	//Set messages as read when you click on them
-	$('#message_unviewed').click(function(){
-		var message_id = $(this).attr('id').substring(7);
-		request_data('message_read', {"viewed":1,"id":message_id},function(json_data){	
+	function message_click(message_id){
+		var viewed = 1;
+		request_data('message_read', {"viewed1":viewed,"id1":message_id},function(json_data){	
+			go_to_message(message_id);
 			get_messages();
-		})
-	});
+		});
+	};
 	
 	// This function is called when someone clicks the map hologram. brian
 	$('#link_div_map').click(function() {
@@ -394,49 +400,36 @@ $colony_tile = new Map_Tile($colony->tile_id);
 				//		 http://www.redblobgames.com/grids/hexagons/
 				// center_tile_x, center_tile_y are x,y of player home base tile (in database?)
 				
-				// screen x,y offsets for top left of map area
+				// x,y offsets for start of map area
 				var div_y_offset=100;
-				var div_x_offset=260;
-
-				// used to number tiles with coordinates
+				var div_x_offset=177;
 				var rel_x=0;
 				var rel_y=-2;
 
-				// 22 map tiles are shown at once, center tile is 12th tile (i=11)
+				// 19 map tiles are shown at once, center tile is #10
 				// 1st tile is (center-0,center-2)
-
-				// adds map tile divs to map
-				for (var i=0; i<23; i++)
+				for (var i=0; i<19; i++) 
 				{
-					// sets up tile offsets and coordinates
-					if (i==4) {div_y_offset-=93; div_x_offset-=330; rel_x=-1; rel_y++;}
-					else if (i==7) {div_y_offset-=61; div_x_offset+=588;}
-					else if (i==9) {div_y_offset-=124; div_x_offset-=396; rel_x=-2; rel_y++;}
-					else if (i==14) {div_y_offset-=184; div_x_offset+=192; rel_x=-3; rel_y++;}
-					else if (i==19) {div_y_offset-=93; div_x_offset-=330; rel_x=-3; rel_y++;}
-					else if (i==21) {div_y_offset-=61; div_x_offset+=378;}
+					if (i==3) {rel_x+=4; rel_y++;}
+					else if (i==7) {rel_x+=5; rel_y++;}
+					else if (i==12) {rel_x+=5; rel_y++;}
+					else if (i==16) {rel_x+=4; rel_y++;}
 
-					// actually create divs with initial 'empty' tile image
 					var div=jQuery('<img>', {
 						"id": 'map_tile'+ i + 'div',
 						"class": 'map_tile_div',
-						"src": 'media/themes/default/images/tile_empty.png',
-						"title": '(' + (center_tile_x+rel_x) + ',' + (center_tile_y+rel_y) + ')',
-						"x": (center_tile_x+rel_x),
+						"src": 'media/images/banana.png',
+						"title": '(' + (center_tile_x+i-rel_x) + ',' + (center_tile_y+rel_y) + ')',
+						"x": (center_tile_x+i-rel_x),
 						"y": (center_tile_y+rel_y)
 					});
-
-					// set position of tile
-					div.offset({top:div_y_offset,left:div_x_offset});
-
-					// sets positioning type for browser compatibility and adds to map div
-					div.css("position", "relative").appendTo('#'+ name +'_screen');
-
-					// move tile offsets down and to the right
-					div_x_offset-=18;
-					div_y_offset+=31;
-					rel_x++;
-
+					if (i<3) div.offset({top:div_y_offset,left:div_x_offset});
+					else if (i<7) div.offset({top:div_y_offset+60,left:div_x_offset-245});
+					else if (i<8) div.offset({top:div_y_offset+121,left:div_x_offset-560});
+					else if (i<12) div.offset({top:div_y_offset+40,left:div_x_offset});
+					else if (i<16) div.offset({top:div_y_offset+101,left:div_x_offset-316});
+					else div.offset({top:div_y_offset+81,left:div_x_offset-177});
+					div.appendTo('#'+ name +'_screen');
 					/*$(document).ready(function() {
 						div.bind('mouseover mouseout click', function(event) {
     					var $tgt = $(event.target);
@@ -447,6 +440,7 @@ $colony_tile = new Map_Tile($colony->tile_id);
     					//alert($tgt);
   						});
 					});*/
+					
 					/*$('#map_tile'+ i).hover(function() {
 						$(this).toggleClass('highLight')
 						//$("p").css("background-color","yellow");
