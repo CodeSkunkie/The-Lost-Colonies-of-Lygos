@@ -113,6 +113,7 @@ $colony->update_resources();
 				// No warnings occurred.
 				// Erase any old contents on this screen.
 				$('#buildings_container').html('');
+				unselect_building();
 				
 				// Populate the content of this screen.
 				for ( var i in json_data.buildings )
