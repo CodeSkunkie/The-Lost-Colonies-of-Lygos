@@ -421,3 +421,7 @@ h3 {
 	height:50px;
 	width:112px;
 }
+
+.map_tile_div{
+	position:relative;
+}
