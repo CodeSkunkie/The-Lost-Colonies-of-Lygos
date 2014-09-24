@@ -108,7 +108,88 @@ else
 				`group` = 'player',
 				`date_registered` = '". time() . "',
 				`password` = password('".  $password ."')");
+	
+		$maxX = 50;
+		$maxY = 50;
+		//min distance from any colony
+		$min_col_distance = 5;
+		//can have max_nearby of colonies within min_rad
+		$min_rad = 10;
+		$max_nearby = 5;
+		$valid_coor = false;
+		while(!$valid_coor) {
+			$coord_x = rand(-$maxX, $maxX);
+			$coord_y = rand(-$maxY, $maxY);
+			//find numbers of colonies within min_col
+			$coor_qry = $Mysql->query("SELECT id FROM `colonies` WHERE SQRT((POW('".$coord_x."'-'coord_x',2))+(POW('".$coord_y."'-'coord_y',2))) < '".$min_col_distance."'");
+			/*while($res = $coor_qry->fetch_assoc()){
+				echo "id" . $res['id']; 
+			}*/
+			//echo "x: " . $coord_x . "y: " . $coord_y;
+			if($coor_qry->num_rows == 0)
+				$valid_coor = true;
+			//find number of colonies within min_rad
+			$nearby_qry = $Mysql->query("SELECT id FROM `colonies` WHERE SQRT((POW('".$coord_x."'-'coord_x',2))+(POW('".$coord_y."'-'coord_y',2))) < '".$min_rad."'");
+			if($cnearby_qry->num_rows > $max_nearby)
+				$valid_coor = false;
+			/*while($res = $tile_qry->fetch_assoc()){
+				$col_qry = $Mysql->query("SELECT * FROM `tile_id` WHERE 'id'=='".$res['tile_id']."' AND SQRT((POW('".$coor_x."'-'coord_x',2))+(POW('".$coor_y."'-'coord_y',2))) < '".$min_col_distance."'");
+				if($col_qry->num_rows == 0){
+					$valid_coor = true;
+					 ;
+				}
+				//echo $col['tile_id'];
+			}	*/		
+			/*$nearby_qry = $Mysql->query("SELECT 'id' FROM `colonies` WHERE SQRT((POW('".$coor_x."'-'coord_x',2))+(POW('".$coor_y."'-'coord_y',2))) < '".$min_rad."'");
+			$count = 0;
+			while($res = $nearby_qry->fetch_assoc()){
+				$nearby_col_qry = $Mysql->query("SELECT tile_id FROM `colonies` WHERE '".$res['id']."'='tile_id'");
+				if ($nearby_col_qry->num_rows != 0)
+					$count = $count + 1;
+			}
+			if($count > $num_nearby)
+				$valid_coor = false;*/
+			//echo "X: ".$coor_x;
+			//echo "Y ".$coor_y;
+			//$coor_qry = $Mysql->query("SELECT 'id' FROM `map_tiles` WHERE SQRT((POW('".$coor_x."'-'coord_x',2))+(POW('".$coor_y."'-'coord_y',2))) < '".$min_col_distance."'");
+			//echo "sqrt1: ".(pow($coor_x-0,2));
+			//echo "sqrt2: ".(pow($coor_y-0,2));
+			//echo "distancetotal: ".sqrt((pow($coor_x-0,2))+(pow($coor_y-0,2)));
+			//echo "ROWS".$coor_qry->num_rows;
+			//if($coor_qry->num_rows == 0)
+			//	$valid_coor = true;
+		}
+		$pID_qry = $Mysql->query("SELECT id FROM `players` 
+			WHERE lower(`username`)='". strtolower($username) ."'");
+		$pID_qry->data_seek(0);
+		$pID_row = $pID_qry->fetch_assoc();
+		$player_id = $pID_row['id'];
+		$Mysql->query("INSERT INTO `colonies` 
+			SET `player_id`='". $player_id ."',
+				`x_coord`='". $coord_x ."',
+				`y_coord`='". $coord_y ."',
+				`resource1_capacity` = 100,
+				`resource1_stock` = 100,
+				`resource1_production_rate` = 20,
+				`resource1_consumption_rate` = 0,
+				`resource2_capacity` = 1000,
+				`resource2_stock` = 1000,
+				`resource2_production_rate` = 50,
+				`resource2_consumption_rate` = 0,
+				`resource3_capacity` = 1000,
+				`resource3_stock` = 1000,
+				`resource3_production_rate` = 25,
+				`resource3_consumption_rate` = 0,
+				`resource4_capacity` = 100,
+				`resource4_stock` = 100,
+				`resource4_production_rate` = 5,
+				`resource4_consumption_rate` = 2");
+
 	}
+
+
+
+
 	// Check auth credentials against the database.
 	$login_qry = $Mysql->query("SELECT `id` FROM `users` 
 			WHERE lower(`username`)='". strtolower($username) ."' AND 
@@ -155,8 +236,6 @@ else
 		header('Location: /?p=command_center');
 	}
 	
-	$register_email_qry->close(); 
-	$register_user_qry->close(); 
 }
 
 
