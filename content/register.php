@@ -66,10 +66,6 @@ else
 		$email_failed = true;
 		print_register_form($username, $email, $user_failed, $email_failed, $password_failed, $register_error_message);
 	} else if ($register_email_qry->num_rows != 0) {
-		/*while ($row = $register_email_qry->fetch_assoc()){
-	        print_r($row);
-	    }*/
-
 	    // Email register failed.
 		$register_error_message = "Your email has already been registered.";
 		$email_failed = true;
@@ -122,42 +118,12 @@ else
 			$coord_y = rand(-$maxY, $maxY);
 			//find numbers of colonies within min_col
 			$coor_qry = $Mysql->query("SELECT id FROM `colonies` WHERE SQRT((POW('".$coord_x."'-'coord_x',2))+(POW('".$coord_y."'-'coord_y',2))) < '".$min_col_distance."'");
-			/*while($res = $coor_qry->fetch_assoc()){
-				echo "id" . $res['id']; 
-			}*/
-			//echo "x: " . $coord_x . "y: " . $coord_y;
 			if($coor_qry->num_rows == 0)
 				$valid_coor = true;
 			//find number of colonies within min_rad
 			$nearby_qry = $Mysql->query("SELECT id FROM `colonies` WHERE SQRT((POW('".$coord_x."'-'coord_x',2))+(POW('".$coord_y."'-'coord_y',2))) < '".$min_rad."'");
 			if($cnearby_qry->num_rows > $max_nearby)
 				$valid_coor = false;
-			/*while($res = $tile_qry->fetch_assoc()){
-				$col_qry = $Mysql->query("SELECT * FROM `tile_id` WHERE 'id'=='".$res['tile_id']."' AND SQRT((POW('".$coor_x."'-'coord_x',2))+(POW('".$coor_y."'-'coord_y',2))) < '".$min_col_distance."'");
-				if($col_qry->num_rows == 0){
-					$valid_coor = true;
-					 ;
-				}
-				//echo $col['tile_id'];
-			}	*/		
-			/*$nearby_qry = $Mysql->query("SELECT 'id' FROM `colonies` WHERE SQRT((POW('".$coor_x."'-'coord_x',2))+(POW('".$coor_y."'-'coord_y',2))) < '".$min_rad."'");
-			$count = 0;
-			while($res = $nearby_qry->fetch_assoc()){
-				$nearby_col_qry = $Mysql->query("SELECT tile_id FROM `colonies` WHERE '".$res['id']."'='tile_id'");
-				if ($nearby_col_qry->num_rows != 0)
-					$count = $count + 1;
-			}
-			if($count > $num_nearby)
-				$valid_coor = false;*/
-			//echo "X: ".$coor_x;
-			//echo "Y ".$coor_y;
-			//$coor_qry = $Mysql->query("SELECT 'id' FROM `map_tiles` WHERE SQRT((POW('".$coor_x."'-'coord_x',2))+(POW('".$coor_y."'-'coord_y',2))) < '".$min_col_distance."'");
-			//echo "sqrt1: ".(pow($coor_x-0,2));
-			//echo "sqrt2: ".(pow($coor_y-0,2));
-			//echo "distancetotal: ".sqrt((pow($coor_x-0,2))+(pow($coor_y-0,2)));
-			//echo "ROWS".$coor_qry->num_rows;
-			//if($coor_qry->num_rows == 0)
-			//	$valid_coor = true;
 		}
 		$pID_qry = $Mysql->query("SELECT id FROM `players` 
 			WHERE lower(`username`)='". strtolower($username) ."'");
