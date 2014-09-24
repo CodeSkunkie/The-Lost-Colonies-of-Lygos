@@ -395,7 +395,9 @@ $colony->update_resources();
 				$('#'+ name +'_screen').html('');
 				
 				// Populate the content of this screen.
-				var nearest_tiles = get_nearest_tiles(json_data.tiles_data)
+				//for (var dat in json_data) {console.log('::'+dat);}
+				console.log('::'+typeof(json_data.tiles_data));
+				var nearest_tiles = get_nearest_tiles(json_data.tiles_data);
 				draw_map(nearest_tiles, name);
 				// var tiles_data = json_data.tiles_data;
 				// TODO: figure out how to _actually_ iterate over the axial coordinate system.
@@ -460,18 +462,25 @@ $colony->update_resources();
 	}
 
 	function get_nearest_tiles(tiles_data) {
-		var nearest_tiles;
-		/*colony @ center_tile_x,center_tile_y
-		$tile_data = array();
+		var nearest_tiles = [];
+		/*$tile_data = array();
 		$tile_data['id'] = $tile_cache['tile_id'];
 		$tile_data['player_has_vision'] = $tile_cache['player_has_vision'];
 		$tile_data['cache_time'] = $tile_cache['cache_time'];
-		$tile_data['coord_x'] = $tiles[$tile_cache['tile_id']]['coord_x'];
-		$tile_data['coord_y'] = $tiles[$tile_cache['tile_id']]['coord_y'];
-		$tiles_data[$tile_data['id']] = $tile_data;*/
-		var x_min = center_tile_x;
-		for (var tile in tiles_data) {
-			
+		$tile_data['x_coord'] = $tile_cache['x_coord'];
+		$tile_data['y_coord'] = $tile_cache['y_coord'];
+		$tiles_data[$tile_cache['x_coord']][$tile_cache['y_coord']] = $tile_data;*/
+		//var x_min = center_tile_x;
+		var x_min=center_tile_x;
+		var x_max=center_tile_x+3;
+		for (var y=center_tile_y-2; y<center_tile_y+3; y++) {
+			for (var x=x_min; x<x_max+1; x++) {
+				//.log(tiles_data[19]);
+			}
+			x_min--;
+			x_max--;
+			if (y==center_tile_y-2) {x_max++;}
+			if (y==center_tile_y+1) {x_min++;}
 		}
 
 		return nearest_tiles;
