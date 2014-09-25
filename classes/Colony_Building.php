@@ -24,6 +24,11 @@ abstract class Colony_Building extends Database_Row
 		return new Resource_Bundle(10,20,30,40);
 	}
 	
+	public function upgrade_duration()
+	{
+		return $this->level * 300;
+	}
+	
 	// This function gets called whenever this building gets upgraded.
 	public function begin_upgrade()
 	{

@@ -33,29 +33,47 @@
 		else
 		{
 			// Verified: the specified colony has the specified building.
-
+			
 			// Create a colony object.
 			$bldg_class_name = Colony_Building::type2classname($building_type);
 			require(WEBROOT .'classes/'. $bldg_class_name .'.php');
 			$building = new $bldg_class_name($building_id);
 			
+			
+			
 			// Does the colony have enough resources to pay the upgrade price?
-			if ( $colony->can_afford($building->upgrade_cost()) )
-			{
-				// Pay the upgrade price.
-				$colony->subtract_resources($building->upgrade_cost());
-				//print_arr($colony);
-			}
-			else
+			if ( !$colony->can_afford($building->upgrade_cost()) )
 			{
 				return_warning('insufficient_resources');
 			}
-			// Run the specified building's begin_upgrade function.
-			$building->begin_upgrade();
-			
-			// Insert this upgrade into the job queue.
-			
-			$colony->save_data();
+			else
+			{
+				// Colony can afford this upgrade.
+				
+				// Make sure this building is not already being upgraded.
+				$upgraded_check_qry = $Mysql->query("SELECT * FROM `job_queue`
+					WHERE `target_building` = '". $building_id ."' ");
+				if ( $upgraded_check_qry->num_rows > 0 )
+				{
+					return_error('The selected building is already being upgraded.');
+				}
+				else
+				{
+					// Pay the upgrade cost.
+					$colony->subtract_resources($building->upgrade_cost());
+					
+					// Run the specified building's begin_upgrade function.
+					$building->begin_upgrade();
+					
+					// Insert this upgrade into the job queue.
+					$Mysql->query("INSERT INTO `job_queue` SET
+						`colony_id` = '". $colony_id ."',
+						`target_building` = '". $building_id ."',
+						`completion_time` = '". (time() + $building->upgrade_duration()) ."'");
+					
+					$colony->save_data();
+				}
+			}
 		}
 	}
 	
