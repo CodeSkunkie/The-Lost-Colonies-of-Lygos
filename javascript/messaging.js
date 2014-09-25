@@ -7,6 +7,8 @@ get_messages();
 generate_message_composer();
 //Check for new messages every 60 seconds
 setInterval(function(){get_messages()}, 60000);
+// This array will get populated with user id's and usernames. id's are the indexes.
+var usernames = [];
 
 
 // This function is called when someone clicks the maximize button
@@ -27,94 +29,86 @@ function get_messages () {
 	var name = 'messaging';
 	// Call the data-fetching script for this screen.
 	request_data('game_screen_' + name, function(json_data) {
-		// If data was successfully fetched...
-		if ( json_data.ERROR == "" )
+		// Data was successfully fetched.
+		
+		// Clear the content from the mini div
+		$('#message_display_table_mini tr').remove();
+		// Clear the content from the inbox div
+		$('#message_display_container div').remove();
+		
+		usernames = json_data.usernames;
+		
+		// Iterate through the messages to
+		// populate the content of the mini div
+		for ( var i in json_data.messages )
 		{
-			//console.log(json_data);
-			
-			
-			//Iterate through the messages
-			// Clear the content from the mini div
-			$('#message_display_table_mini tr').remove();
-			// Clear the content from the inbox div
-			$('#message_display_container div').remove();
-			
-			// Populate the content of the mini div
-			for ( var i in json_data.messages )
-			{
-				var message = json_data.messages[i];
-				var message_class = "";
-				if(message.viewed==1){
-					message_class="message_viewed";
-				}else if(message.viewed==0){
-					message_class="message_unviewed";
-				}
-				
-				$('<tr>', {
-					"class":'message_display_row',
-				}).appendTo('#message_display_table_mini')
-				.append(
-					$('<td>', {
-						"class":'message_display_col',
-						"id":'title_mini'
-					}).text("FROM"),
-					$('<td>', {
-						"class":'message_display_col',
-						"id":'content_mini'
-					}).text(message.from_player) //TODO: Convert this id into the actual player name
-				);
-				
-				$('<tr>', {
-					"class":'message_display_row',
-				}).appendTo('#message_display_table_mini')
-				.append(
-					$('<td>', {
-						"class":'message_display_col',
-						"id":'title_mini'
-					}).text("SUBJECT"),
-					$('<td>', {
-						"class":'message_display_col',
-						"id":'content_mini'
-					}).text(message.subject)
-				);
-				
-					$('<tr>', {
-						"class":'message_display_row_spacer',
-					}).appendTo('#message_display_table_mini')
-				
-				if(inbox){	
-					$('<div>', {
-						"class":message_class,
-						"id":'message'+message.id,
-						"onclick":'javascript:message_click('+message.id+');'
-					}).appendTo('#message_display_container')
-						.text("Player "+ message.from_player+" sent you a message about \""
-						+message.subject+"\" saying \""
-						+message.message.substring(0,22)+"...\"");
-				}
-			}
-			for( var i in json_data.messages_sent){
-				var message = json_data.messages_sent[i];
-				if(!inbox){
-					$('<div>', {
-						"class":'message_viewed',
-						"id":'message'+message.id,
-						"onclick":'javascript:message_click('+message.id+');'
-					}).appendTo('#message_display_container')
-						.text("You sent Player "+ message.to_player+" a message about \""
-						+message.subject+"\" saying \""
-						+message.message.substring(0,22)+"...\"");
-				}
-				
-				
+			var message = json_data.messages[i];
+			console.log(message);
+			var message_class = "";
+			if(message.viewed==1){
+				message_class="message_viewed";
+			}else if(message.viewed==0){
+				message_class="message_unviewed";
 			}
 			
+			$('<tr>', {
+				"class":'message_display_row',
+			}).appendTo('#message_display_table_mini')
+			.append(
+				$('<td>', {
+					"class":'message_display_col',
+					"id":'title_mini'
+				}).text("FROM"),
+				$('<td>', {
+					"class":'message_display_col',
+					"id":'content_mini'
+				}).text(usernames[message.from_player]) 
+			);
 			
+			$('<tr>', {
+				"class":'message_display_row',
+			}).appendTo('#message_display_table_mini')
+			.append(
+				$('<td>', {
+					"class":'message_display_col',
+					"id":'title_mini'
+				}).text("SUBJECT"),
+				$('<td>', {
+					"class":'message_display_col',
+					"id":'content_mini'
+				}).text(message.subject)
+			);
+			
+				$('<tr>', {
+					"class":'message_display_row_spacer',
+				}).appendTo('#message_display_table_mini')
+			
+			if(inbox){	
+				$('<div>', {
+					"class":message_class,
+					"id":'message'+message.id,
+					"onclick":'javascript:message_click('+message.id+');'
+				}).appendTo('#message_display_container')
+					.text(usernames[message.from_player]+ " sent you a message about \""
+					+message.subject+"\" saying \""
+					+message.message.substring(0,22)+"...\"");
+			}
+		}
+		for( var i in json_data.messages_sent){
+			var message = json_data.messages_sent[i];
+			if(!inbox){
+				$('<div>', {
+					"class":'message_viewed',
+					"id":'message'+message.id,
+					"onclick":'javascript:message_click('+message.id+');'
+				}).appendTo('#message_display_container')
+					.text("You sent "+ usernames[message.to_player]+" a message about \""
+					+message.subject+"\" saying \""
+					+message.message.substring(0,22)+"...\"");
+			}
 			
 			
 		}
-		else
-			alert(json_data.ERROR);
 	});
 }
 
@@ -158,7 +152,7 @@ function go_to_message(message_id){
 					$('<div>',{
 						"id":'message_viewer_from'
 					}).appendTo('#message_viewer')
-						.text("FROM: Player "+message.from_player);
+						.text("FROM: "+ usernames[message.from_player]);
 					$('<div>',{
 						"id":'message_viewer_message'
 					}).appendTo('#message_viewer')
@@ -175,7 +169,7 @@ function go_to_message(message_id){
 					$('<div>',{
 						"id":'message_viewer_from'
 					}).appendTo('#message_viewer')
-						.text("FROM: Player "+message.from_player);
+						.text("FROM: "+ player_username);
 					$('<div>',{
 						"id":'message_viewer_message'
 					}).appendTo('#message_viewer')
@@ -199,11 +193,10 @@ function generate_message_composer(){
 	$('<p>', {
 		"id":'to_title',
 	}).appendTo('#message_composer')
-		.text("Send to Player ID:");
+		.text("Send to Player:");
 	$('<input>', {
 		"id":'to_field',
-		"type":'number',
-		"maxlength":'5'
+		"type":'text'
 	}).appendTo('#message_composer');
 	$('<p>', {
 		"id":'subject_title',
@@ -228,18 +221,24 @@ function generate_message_composer(){
 //This function submits the form
 $('#message_submit').click(function() {
 	
-	var from = player_id;
 	var to = $("#to_field").val();
 	var message = $("#message_field").val();
 	var subject = $("#subject_field").val();
 	var viewed = 0;
 	// Returns successful data submission message when the entered information is stored in database.
-	var form_object = {"from1": from, "to1": to , "message1": message , "subject1": subject, "viewed1":viewed};
-	if(to==''||message==''||subject==''){
-		alert("Do you even message, bro?");
-	} else {
+	var form_object = {"to1": to , "message1": message , "subject1": subject};
+	if(to=='' )
+		alert("You must enter a recipient.");
+	else if (message=='')
+		alert("You must enter a message.");
+	else if (subject=='')
+		alert("You must enter a subject.");
+	else {
 		request_data('message_submit', form_object , function(json_data){
-			generate_message_composer();
+			if ( json_data.WARNING == 'unknown_username' )
+				alert("The username you entered does belong to any player on this server.");
+			else
+				generate_message_composer();
 		});
 	}
 });

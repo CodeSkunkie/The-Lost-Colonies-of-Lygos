@@ -78,6 +78,7 @@ $colony->update_resources();
 	// Keep track of which game screen is currently being displayed.
 	var current_screen;
 	var player_id = <?php echo $User->id; ?>;
+	var player_username = '<?php echo $User->username; ?>';
 	
 	// Keep track of which tile is at the center of the map screen.
 	// Center the map on this player's colony to start with.
