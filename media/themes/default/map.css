@@ -1,0 +1,27 @@
+.map_tile_div{
+	position:relative;
+}
+
+.map_tile_div_select_off{
+	position:relative;
+	opacity: 0.0;
+	filter: alpha(opacity=0);
+}
+
+.map_tile_div_select_on{
+	position:relative;
+	opacity: 100.0;
+	filter: alpha(opacity=100);
+}
+
+#map_container_div{
+	position:absolute;
+	top: 0px;
+	left: 0px;
+}
+
+#map_tile_selector_div{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}

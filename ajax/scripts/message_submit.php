@@ -6,7 +6,7 @@
 	$message2=clean_text($_GET['message1']);
 	$subject2=clean_text($_GET['subject1']);
 	$viewed2=clean_text($_GET['viewed1']);
-	$time2=clean_text($_GET['time1']);
+	$time2=time();
 	//Insert query
 	$form_query = $Mysql->query("INSERT INTO messages 
 		SET `from_player`='$from2', 
