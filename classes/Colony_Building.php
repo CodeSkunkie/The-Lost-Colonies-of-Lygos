@@ -1,6 +1,12 @@
 <?php
 
-abstract class Colony_Building extends Database_Row
+// This class is different from others in significant ways under the hood,
+// but should behave as expected when treated the same as other classes.
+// Basically, each instance of this class mimics an instance of one of
+// its children by calling the child's functions. 
+// The chiled is stored in $building_object.
+
+class Colony_Building extends Database_Row
 {
 	// Static class stuff:
 	public static $types = array('HQ', 'Water', 'Food', 'Metal', 'Energy', 'Research', 'Storage', 'Shipyard');
@@ -15,46 +21,45 @@ abstract class Colony_Building extends Database_Row
 	
 	// Extra fields:
 	public $name;
+	public $building_object;
 	protected $db_table_name = 'buildings';
-	protected $extra_fields = array('db_table_name', 'objects');
+	protected $extra_fields = array('db_table_name', 'name', 'building_object');
 	
+	
+	public function __construct($building_id, $building_type)
+	{
+		$bldg_class_name = Colony_Building::$types[$building_type] .'_building';
+		require(WEBROOT .'classes/'. $bldg_class_name .'.php');
+		$building_object = new $bldg_class_name($building_id);
+		foreach ( $building_object as $field => $value )
+			$this->$field = $value;
+	}
 	
 	public function upgrade_cost()
 	{
-		return new Resource_Bundle(10,20,30,40);
+		return $building_object->upgrade_cost();
 	}
 	
 	public function upgrade_duration()
 	{
-		return $this->level * 300;
+		return $building_object->upgrade_duration();
 	}
 	
 	// This function gets called whenever this building gets upgraded.
 	public function begin_upgrade()
 	{
-		
+		if ( !empty($building_object) )
+			return $building_object->begin_upgrade();
 	}
 	
 	// This function gets called whenever this building gets upgraded.
 	public function finish_upgrade()
 	{
-		$this->level++;
+		if ( !empty($building_object) )
+			return $building_object->finish_upgrade();
+		else
+			$this->level++;
 	}
-	
-//	public function fetch_data()
-//	{
-//		global $Mysql;
-//		
-//		$colony_qry = $Mysql->query("SELECT * FROM `buildings` 
-//			WHERE `colony_id` = '". $this->colony_id ."' AND
-//				`type` = '". $this->type ."'" );
-//		$colony_qry->data_seek(0);
-//		$colony_row = $colony_qry->fetch_assoc();
-//
-//		
-//		foreach ( $colony_row as $field => $value )
-//			$this->$field = $value;
-//	}
 }
 
 ?>

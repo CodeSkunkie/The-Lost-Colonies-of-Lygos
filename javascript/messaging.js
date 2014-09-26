@@ -43,7 +43,7 @@ function get_messages () {
 		for ( var i in json_data.messages )
 		{
 			var message = json_data.messages[i];
-			console.log(message);
+			//console.log(message);
 			var message_class = "";
 			if(message.viewed==1){
 				message_class="message_viewed";

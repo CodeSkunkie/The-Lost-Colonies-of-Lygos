@@ -115,6 +115,18 @@ class User
 		
 		return $s;
 	}
+	
+	public function owns_colony($colony_id)
+	{
+		$authorized = false;
+		foreach ( $this->colony_ids as $an_owned_colony_id )
+		{
+			if ( $colony_id == $an_owned_colony_id )
+				$authorized = true;
+		}
+		
+		return $authorized;
+	}
 }
 
 ?>

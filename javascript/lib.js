@@ -24,19 +24,19 @@ function request_data(script_name, input, callback_function)
 		// Call successful.
 		
 		if ( json.ERROR != '' )
-			request_error_handler(json.ERROR);
+			request_error_handler(json.ERROR, script_name);
 		else
 			return callback_function(json);
 	})
 	.fail(function() {
-		request_error_handler('AJAX_failed');
+		request_error_handler('AJAX_failed', script_name);
 	})
 	
 }
 
 // This function attempts to gracefully handle any errors that may have 
 // occured during an AJAX request.
-function request_error_handler(error)
+function request_error_handler(error, script_name)
 {
 	// Handle individual errors here.
 	if ( error == 'db_connect' )
@@ -46,9 +46,14 @@ function request_error_handler(error)
 	else if ( error == 'login_required' )
 		alert('ERROR: Your session has timed out. Please log in again.');
 	else if ( error == 'dirty_script_name' )
-		alert('ERROR: Invalid characters in script name.');
+		alert('ERROR: Invalid characters in script name: '+ script_name);
 	else if ( error == 'AJAX_failed' )
-		alert('ERROR: The AJAX request could not be completed.');
+		alert('ERROR: The AJAX request could not be completed: '+ script_name);
 	else
 		alert('ERROR: '+ error);
+}
+
+function time() 
+{
+	return Math.round(new Date().getTime() / 1000);
 }

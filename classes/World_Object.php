@@ -12,6 +12,7 @@ class World_Object extends Database_Row
 	// This constructor queries the database to create the tile.
 	function __construct($tile_id)
 	{
+		$this->id = $tile_id;
 		$this->fetch_data();
 	}
 }

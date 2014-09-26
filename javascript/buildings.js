@@ -86,7 +86,7 @@ function select_building(type)
 	}).appendTo('#building_info_text_div');
 	$('<button/>', {
 		"text": "upgrade ",
-		"onclick": "javascript: upgrade_building('"+ colony_id +"', '"+ building.id +"', '"+ building.type +"' )"
+		"onclick": "javascript: upgrade_building('"+ colony_id +"', '"+ building.id +"', '"+ building.type +"' ); $(this).attr('disabled', 'disabled');"
 	}).appendTo('#building_info_text_div');
 	
 	
@@ -151,7 +151,7 @@ function upgrade_building(colony_id, building_id, building_type)
 			else
 			{
 				// No warnings were returned by the script.
-				refresh_jobs_queue();
+				fetch_jobs_queue();
 				refresh_resources_display();
 			}
 		}

@@ -50,14 +50,15 @@ $colony->update_resources();
 	</div>
 	
 	<div id="resource_info_div" style="position:absolute; top:25px; left:10px; height:260px; width:150px; text-align:left; color:#ffffff;" >
-		<div>RESOURCES</div>
+		<div class="menu_title_mini">RESOURCES</div>
 		<div id="col_res_out_div">
 			<?php $colony->resources->print_summary(); ?>
 		</div>
 	</div>
 	
-	<div id="job_queue_div" style="position:absolute; top:310px; left:10px; height:260px; width:150px; text-align:left; color:#ffffff;" >
-		[construction / upgrade jobs progress]
+	<div id="job_queue_div_mini" style="position:absolute; top:310px; left:10px; height:260px; width:150px; text-align:left; color:#ffffff;" >
+		<div class="menu_title_mini">JOB STATUS</div>
+		<div id="jobs_list_mini">loading...</div>
 	</div>
 	
 	<div id="messaging_div_mini" style="position:absolute; top:148px; left:836px; height:295px; width:150px; text-align:left; color:#ffffff;" >

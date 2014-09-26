@@ -17,16 +17,21 @@ abstract class Database_Row
 		
 		$table_qry = $Mysql->query("SELECT * FROM `". $this->db_table_name ."` 
 			WHERE `id` = '". $this->id ."'");
-		$table_qry->data_seek(0);
-		$table_row =  $table_qry->fetch_assoc();
-		
-		foreach ( $table_row as $field => $value )
+		if ( $table_qry->num_rows == 0 )
+			$this->id = false;
+		else
 		{
-			// Skip over any of the non-database fields.
-			if ( in_array($field, $this->extra_fields) )
-				continue;
+			$table_qry->data_seek(0);
+			$table_row =  $table_qry->fetch_assoc();
 			
-			$this->$field = $value;
+			foreach ( $table_row as $field => $value )
+			{
+				// Skip over any of the non-database fields.
+				if ( in_array($field, $this->extra_fields) )
+					continue;
+				
+				$this->$field = $value;
+			}
 		}
 	}
 	
@@ -69,6 +74,16 @@ abstract class Database_Row
 		// If we just created a new row, retrieve its newfound id from the DB.
 		if ( empty($this->id) )
 			$this->id = $Mysql->insert_id;
+	}
+	
+	// Returns boolean true/false to indicate if 
+	// the fetch_data operation was successful.
+	public function exists()
+	{
+		if ( $this->id === false )
+			return false;
+		else
+			return true;
 	}
 }
 

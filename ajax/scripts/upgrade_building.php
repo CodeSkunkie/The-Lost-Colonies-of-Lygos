@@ -12,13 +12,7 @@
 	$building_type = clean_text($_GET['building_type']);
 	
 	// Auth check: Make sure this user owns the selected colony.
-	$authorized = false;
-	foreach ( $User->colony_ids as $an_owned_colony_id )
-	{
-		if ( $colony_id == $an_owned_colony_id )
-			$authorized = true;
-	}
-	if ( !$authorized )
+	if ( !$User->owns_colony($colony_id) )
 		$this->data['WARNING'] = 'This colony does not contain the spcecefied building.';
 	else
 	{
@@ -52,7 +46,7 @@
 				
 				// Make sure this building is not already being upgraded.
 				$upgraded_check_qry = $Mysql->query("SELECT * FROM `job_queue`
-					WHERE `target_building` = '". $building_id ."' ");
+					WHERE `building_id` = '". $building_id ."' ");
 				if ( $upgraded_check_qry->num_rows > 0 )
 				{
 					return_error('The selected building is already being upgraded.');
@@ -68,9 +62,10 @@
 					// Insert this upgrade into the job queue.
 					$Mysql->query("INSERT INTO `job_queue` SET
 						`colony_id` = '". $colony_id ."',
-						`target_building` = '". $building_id ."',
-						`completion_time` = '". (time() + $building->upgrade_duration()) ."'");
-					
+						`building_id` = '". $building_id ."',
+						`building_type` = '". $building_type ."',
+						`start_time` = ". time() .",
+						`completion_time` = '". (time() + $building->upgrade_duration()) ."'");	
 					$colony->save_data();
 				}
 			}

@@ -112,3 +112,7 @@ h3 {
 #register .inputFields input[type="password"] {
   size: 15;
 }
+
+.menu_title_mini {
+	margin-bottom: 15px;
+}
