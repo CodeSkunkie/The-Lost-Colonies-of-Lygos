@@ -7,8 +7,9 @@ class Energy_Building extends Colony_Building
 	
 	// Extra fields:
 	public $name = 'Solar Array';
+	public $long_descript = 'Harnessing the power of nearby stars, this module generates energy for your colony.';
 	protected $db_table_name = 'buildings';
-	protected $extra_fields = array('db_table_name');
+	protected $extra_fields = array('db_table_name', 'name', 'long_descript', 'extra_fields', 'building_object');
 	
 	function __construct($id_or_db_row)
 	{
@@ -22,6 +23,8 @@ class Energy_Building extends Colony_Building
 		{
 			$this->id = $id_or_db_row;
 			$this->fetch_data();
+			if ( !$this->exists() )
+				$this->type = 4;
 		}
 	}
 	

@@ -8,7 +8,7 @@ class Map_Tile extends Database_Row
 	// Extra fields:
 	public $objects;
 	protected $db_table_name = 'map_tiles';
-	protected $extra_fields = array('db_table_name', 'objects');
+	protected $extra_fields = array('db_table_name', 'extra_fields', 'objects');
 	
 	function __construct($tileID_or_coords)
 	{

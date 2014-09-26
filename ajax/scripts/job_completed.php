@@ -23,12 +23,11 @@
 		else
 		{
 			// Create a building object for this upgraded building.
-			$building = new Colony_Building($job->building_id, $job->building_type);
+			$building = new Colony_Building($job->building_type, $job->building_id);
 			// Tell this building object to do whatever it is supposed
 			// to do whenever it gets upgraded.
 			$building->finish_upgrade();
 			$building->save_data();
-			//print_arr($building);
 			
 			// Remove job from job queue.
 			$job->delete();

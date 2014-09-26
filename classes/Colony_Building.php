@@ -9,6 +9,7 @@
 class Colony_Building extends Database_Row
 {
 	// Static class stuff:
+	// DO NOT RE-ORDER THIS ARRAY. DO NOT DELETE ELEMENTS. APPEND TO END ONLY.
 	public static $types = array('HQ', 'Water', 'Food', 'Metal', 'Energy', 'Research', 'Storage', 'Shipyard');
 	// Given a building type number, return its class name.
 	public static function type2classname($type)
@@ -23,10 +24,11 @@ class Colony_Building extends Database_Row
 	public $name;
 	public $building_object;
 	protected $db_table_name = 'buildings';
-	protected $extra_fields = array('db_table_name', 'name', 'building_object');
+	protected $extra_fields = array('db_table_name', 'extra_fields', 'name', 'building_object');
 	
-	
-	public function __construct($building_id, $building_type)
+	// If no building_id is specified, the constructed object will
+	// not reflect a specific instance of that building type. 
+	public function __construct($building_type, $building_id = false)
 	{
 		$bldg_class_name = Colony_Building::$types[$building_type] .'_building';
 		require(WEBROOT .'classes/'. $bldg_class_name .'.php');
@@ -37,26 +39,36 @@ class Colony_Building extends Database_Row
 	
 	public function upgrade_cost()
 	{
-		return $building_object->upgrade_cost();
+		// Deferr execution of this function to the specific building's object.
+		if ( function_exists($this->building_object->upgrade_duration) )
+			return $this->building_object->upgrade_duration();
+		else
+			return new Resource_Bundle(20,20,20,20);
 	}
 	
 	public function upgrade_duration()
 	{
-		return $building_object->upgrade_duration();
+		// Deferr execution of this function to the specific building's object.
+		if ( function_exists($this->building_object->upgrade_duration) )
+			return $this->building_object->upgrade_duration();
+		else
+			return $this->level * 70;
 	}
 	
 	// This function gets called whenever this building gets upgraded.
 	public function begin_upgrade()
 	{
-		if ( !empty($building_object) )
-			return $building_object->begin_upgrade();
+		// Deferr execution of this function to the specific building's object.
+		if ( function_exists($this->building_object->begin_upgrade) )
+			return $this->building_object->begin_upgrade();
 	}
 	
 	// This function gets called whenever this building gets upgraded.
 	public function finish_upgrade()
 	{
-		if ( !empty($building_object) )
-			return $building_object->finish_upgrade();
+		// Deferr execution of this function to the specific building's object.
+		if ( function_exists($this->building_object->finish_upgrade) )
+			return $this->building_object->finish_upgrade();
 		else
 			$this->level++;
 	}

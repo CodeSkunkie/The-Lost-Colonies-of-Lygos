@@ -23,6 +23,8 @@ class HQ_Building extends Colony_Building
 		{
 			$this->id = $id_or_db_row;
 			$this->fetch_data();
+			if ( !$this->exists() )
+				$this->type = 0;
 		}
 	}
 	

@@ -40,13 +40,13 @@ $Page->execute();
 $Page->render();
 
 
-echo '<br /><br />---------------------------------------------------<br />
-	debugging output:<br />';
-print_arr($User);
-necho('Session Data:');
-print_arr($_SESSION);
-necho('Cookies:');
-print_arr($_COOKIE);
+//echo '<br /><br />---------------------------------------------------<br />
+//	debugging output:<br />';
+//print_arr($User);
+//necho('Session Data:');
+//print_arr($_SESSION);
+//necho('Cookies:');
+//print_arr($_COOKIE);
 
 // Print the entire output buffer.
 ob_flush();

@@ -1,76 +1,76 @@
 body {
-  font-family: "courier, Arial", "Helvetica", "Times New Roman";
-  color: #3d8fe3;
-  text-align: center;
-  margin: 10px 0px 10px 0px;
-  background-color: black;
+	font-family: "courier, Arial", "Helvetica", "Times New Roman";
+	color: #3d8fe3;
+	text-align: center;
+	margin: 10px 0px 10px 0px;
+	background-color: black;
 }
 table {
-  border: 1px solid #3d8fe3;
-  border-spacing: 0px;
+	border: 1px solid #3d8fe3;
+	border-spacing: 0px;
 }
 table#map_2d td {
-  padding: 0px;
-  width: 60px;
-  height: 60px;
+	padding: 0px;
+	width: 60px;
+	height: 60px;
 }
 td {
-  text-align: center;
-  border: 1px solid #3d8fe3;
-  padding-top: 7px;
-  padding-bottom: 7px;
-  padding-right: 7px;
-  padding-left: 7px;
+	text-align: center;
+	border: 1px solid #3d8fe3;
+	padding-top: 7px;
+	padding-bottom: 7px;
+	padding-right: 7px;
+	padding-left: 7px;
 }
 a {
-  color: #3d8fe3;
+	color: #3d8fe3;
 }
 a active {
-  color: white;
+	color: white;
 }
 h3 {
-  margin: 5px;
+	margin: 5px;
 }
 .error_border {
-  border: 1px solid #dd4b39;
+	border: 1px solid #dd4b39;
 }
 .error_text {
-  color: #dd4b39;
+	color: #dd4b39;
 }
 #main_game_UI_div {
-  width: 1000px;
-  height: 650px;
-  background-color: #151515;
-  background-image: url('images/main-game-ui-bg.png');
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
+	width: 1000px;
+	height: 650px;
+	background-color: #151515;
+	background-image: url('images/main-game-ui-bg.png');
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
 }
-
+	
 #game_secondary_screen {
-  position: absolute;
-  left: 190px;
-  top: 45px;
-  width: 620px;
-  height: 430px;
-  display: none;
-  border-radius: 10px;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
+	position: absolute;
+	left: 190px;
+	top: 45px;
+	width: 620px;
+	height: 430px;
+	display: none;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
 }
 #game_secondary_screen_backdrop {
-  position: absolute;
-  left: 190px;
-  top: 45px;
-  width: 620px;
-  height: 430px;
-  display: none;
-  opacity: 0.7;
-  filter: alpha(opacity=70);
-  background-color: black;
-  border-radius: 10px;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
+	position: absolute;
+	left: 190px;
+	top: 45px;
+	width: 620px;
+	height: 430px;
+	display: none;
+	opacity: 0.7;
+	filter: alpha(opacity=70);
+	background-color: black;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
 }
 .game_screen {
 	display: none;
@@ -98,19 +98,19 @@ h3 {
 }
 
 #register {
-  margin-left: auto;
-  margin-right: auto;
-  width: 8%;
+	margin-left: auto;
+	margin-right: auto;
+	width: 8%;
 }
 #register .inputFields {
-  text-align: left;
-  padding: 5px;
+	text-align: left;
+	padding: 5px;
 }
 #register .inputFields input[type="text"] {
-  size: 15;
+	size: 15;
 }
 #register .inputFields input[type="password"] {
-  size: 15;
+	size: 15;
 }
 
 .menu_title_mini {

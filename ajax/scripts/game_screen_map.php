@@ -24,7 +24,7 @@
 		`y_coord` <= '". $max_y ."' AND
 		`y_coord` >= '". $min_y ."'");
 	
-	$tiles = array();
+	$tiles_data = array();
 	while ( $tile_cache_row = $cache_qry->fetch_assoc() )
 	{
 		$tile_data = array();

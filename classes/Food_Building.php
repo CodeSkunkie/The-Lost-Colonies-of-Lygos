@@ -6,9 +6,10 @@ class Food_Building extends Colony_Building
 	public $id, $colony_id, $type, $level;
 	
 	// Extra fields:
-	public $name = 'Hydroponic Garden';
+	public $name = 'Meat Lands (AKA: Space-Pasture)';
+	public $long_descript = 'Food is grown here to feed everyone in this colony.';
 	protected $db_table_name = 'buildings';
-	protected $extra_fields = array('db_table_name');
+	protected $extra_fields = array('db_table_name', 'name', 'long_descript', 'extra_fields', 'building_object');
 	
 	function __construct($id_or_db_row)
 	{
@@ -22,6 +23,8 @@ class Food_Building extends Colony_Building
 		{
 			$this->id = $id_or_db_row;
 			$this->fetch_data();
+			if ( !$this->exists() )
+				$this->type = 2;
 		}
 	}
 	
@@ -34,6 +37,11 @@ class Food_Building extends Colony_Building
 	public function finish_upgrade()
 	{
 		$this->level++;
+	}
+	
+	public function upgrade_duration()
+	{
+		return 20;
 	}
 }
 

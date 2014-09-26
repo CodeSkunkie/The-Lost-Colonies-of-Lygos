@@ -7,8 +7,9 @@ class Storage_Building extends Colony_Building
 	
 	// Extra fields:
 	public $name = 'Resource Reserves';
+	public $long_descript = 'This module increases your colony\'s storage capacity for the various resources.';
 	protected $db_table_name = 'buildings';
-	protected $extra_fields = array('db_table_name');
+	protected $extra_fields = array('db_table_name', 'name', 'long_descript', 'extra_fields', 'building_object');
 	
 	function __construct($id_or_db_row)
 	{
@@ -22,6 +23,8 @@ class Storage_Building extends Colony_Building
 		{
 			$this->id = $id_or_db_row;
 			$this->fetch_data();
+			if ( !$this->exists() )
+				$this->type = 6;
 		}
 	}
 	

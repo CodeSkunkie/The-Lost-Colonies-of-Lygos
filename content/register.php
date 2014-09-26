@@ -137,20 +137,25 @@ else
 				`y_coord`='". $coord_y ."',
 				`resource1_capacity` = 100,
 				`resource1_stock` = 100,
-				`resource1_production_rate` = 20,
-				`resource1_consumption_rate` = 0,
-				`resource2_capacity` = 1000,
-				`resource2_stock` = 1000,
-				`resource2_production_rate` = 50,
+				`resource1_production_rate` = 10,
+				`resource1_consumption_rate` = 2,
+				`resource2_capacity` = 100,
+				`resource2_stock` = 100,
+				`resource2_production_rate` = 10,
 				`resource2_consumption_rate` = 0,
-				`resource3_capacity` = 1000,
-				`resource3_stock` = 1000,
-				`resource3_production_rate` = 25,
+				`resource3_capacity` = 100,
+				`resource3_stock` = 100,
+				`resource3_production_rate` = 10,
 				`resource3_consumption_rate` = 0,
 				`resource4_capacity` = 100,
 				`resource4_stock` = 100,
-				`resource4_production_rate` = 5,
+				`resource4_production_rate` = 10,
 				`resource4_consumption_rate` = 2");
+		$colony_id = $Mysql->insert_id;
+		$Mysql->query("INSERT INTO `buildings` 
+			SET `type` = 0,
+				`level` = 1,
+				`colony_id` = '". $colony_id ."'");
 
 		// Check auth credentials against the database.
 		$login_qry = $Mysql->query("SELECT `id` FROM `users` 

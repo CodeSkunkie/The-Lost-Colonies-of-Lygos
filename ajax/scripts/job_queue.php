@@ -20,7 +20,7 @@
 		{
 			$job = $job_row;
 			// Retrieve some additional info about this job.
-			$building = new Colony_Building($job['building_id'], $job['building_type']);
+			$building = new Colony_Building($job['building_type'], $job['building_id']);
 			
 			$job['old_level'] = $building->level;
 			$job['new_level'] = $building->level +1;

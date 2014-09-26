@@ -7,7 +7,7 @@ class World_Object extends Database_Row
 	
 	// Extra fields:
 	protected $db_table_name = 'world_objects';
-	protected $extra_fields = array('db_table_name');
+	protected $extra_fields = array('db_table_name', 'extra_fields');
 	
 	// This constructor queries the database to create the tile.
 	function __construct($tile_id)

@@ -15,6 +15,7 @@ $('#link_div_colony_management').click(function() {
 			// Erase any old contents on this screen.
 			$('#buildings_container').html('');
 			unselect_building();
+			hide_unbuilt_buildings_menu();
 			
 			// Populate the content of this screen.
 			for ( var i in json_data.buildings )
@@ -29,6 +30,15 @@ $('#link_div_colony_management').click(function() {
 					"onclick": 'javascript:select_building('+ building.type +')'
 				}).appendTo('#buildings_container');
 			}
+			var building = json_data.buildings[i];
+			building.update_cost = json_data.update_cost;
+			buildings[building.type] = building;
+			$('<div/>', {
+				"text": "[build new modules]",
+				"id": "build_new_buildings_link",
+				"onclick": "show_unbuilt_buildings_menu();"
+			}).appendTo('#buildings_container');
+			
 			
 			// Display this screen.
 			change_screen(name);
@@ -156,4 +166,55 @@ function upgrade_building(colony_id, building_id, building_type)
 			}
 		}
 	);
+}
+
+function show_unbuilt_buildings_menu()
+{
+	request_data('unbuilt_buildings', {"colony_id": colony_id}, function(json_data) {
+		
+		$('#unbuilt_building_list').html('');
+		for ( var i in json_data.buildings )
+		{
+			var building = json_data.buildings[i];
+			//console.log(building);
+			$('<div/>', {
+				"id": "unbuilt_building"+ i +"_div",
+				"class": "unbuilt_building_div"
+			}).appendTo('#unbuilt_building_list');
+			$('<div/>', {
+				"id": "unbuilt_building"+ i +"_img_div",
+				"class": "unbuilt_building_img_div"
+			}).appendTo('#unbuilt_building'+ i +'_div');
+			$('<img/>', {
+				"class": "unbuilt_building_img",
+				"src": "media/themes/"+ theme +"/images/building"+ building.type +".png", 
+				"width": "110"
+			}).appendTo('#unbuilt_building'+ i +'_img_div');
+			$('<div/>', {
+				"id": "unbuilt_building"+ i +"_info_div",
+				"class": "unbuilt_building_info_div"
+			}).appendTo('#unbuilt_building'+ i +'_div');
+			$('<div/>', {"style": "clear:left;"}).appendTo('#unbuilt_building'+ i +'_div');
+			$('<div/>', {
+				"class": "unbuilt_building_title",
+				"text": building.name
+			}).appendTo('#unbuilt_building'+ i +'_info_div');
+			$('<div/>', {
+				"class": "unbuilt_building_descript",
+				"text": building.long_descript
+			}).appendTo('#unbuilt_building'+ i +'_info_div');
+			$('<div/>', {"style": "clear:left;"}).appendTo('#unbuilt_building_list');
+		}
+		
+		// Display the whole menu at once with an animation.
+		var unbuilt_building_menu_height= $('#unbuilt_building_menu').height();
+		$('#unbuilt_building_menu').css('height', '1px');
+		$('#unbuilt_building_menu').show();
+		$('#unbuilt_building_menu').animate({
+			"height": unbuilt_building_menu_height +"px"});
+	});
+}
+
+function hide_unbuilt_buildings_menu() {
+	$('#unbuilt_building_menu').hide();
 }

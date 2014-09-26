@@ -27,6 +27,11 @@ $colony->update_resources();
 			<div id="building_info_div1"></div>
 			<div id="building_info_div2"></div>
 			<div id="unselect_bldg_btn" onclick="javascript:unselect_building();">[X]</div>
+			<div id="unbuilt_building_menu">
+				<div id="unbuilt_building_menu_title">Select a module to construct</div>
+				<div id="hide_unbuilt_buildings_menu_btn" onclick="javascript:hide_unbuilt_buildings_menu();">[X]</div>
+				<div id="unbuilt_building_list"></div>
+			</div>
 		</div>
 		<div class="game_screen" id="messaging_screen">
 			<div id="messaging_menu">

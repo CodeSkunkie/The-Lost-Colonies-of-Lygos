@@ -7,8 +7,9 @@ class Water_Building extends Colony_Building
 	
 	// Extra fields:
 	public $name = 'H20 Synthesizer';
+	public $long_descript = 'This module creates water for the colony using advanced molecular synthesis.';
 	protected $db_table_name = 'buildings';
-	protected $extra_fields = array('db_table_name');
+	protected $extra_fields = array('db_table_name', 'name', 'long_descript', 'extra_fields', 'building_object');
 	
 	function __construct($id_or_db_row)
 	{
@@ -22,6 +23,8 @@ class Water_Building extends Colony_Building
 		{
 			$this->id = $id_or_db_row;
 			$this->fetch_data();
+			if ( !$this->exists() )
+				$this->type = 1;
 		}
 	}
 	
