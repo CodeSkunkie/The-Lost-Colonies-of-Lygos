@@ -68,8 +68,8 @@
 #unselect_bldg_btn {
 	display: none;
 	position: absolute;
-	top: 25px;
-	right: 425px;
+	top: 20px;
+	right: 420px;
 }
 #building_info_text_div {
 	padding: 10px 20px;
@@ -97,6 +97,7 @@
 	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
+	padding:7px;
 }
 #unbuilt_building_menu_title {
 	font-size: 20px;
@@ -109,10 +110,11 @@
 	-webkit-border-radius: 10px;
 }
 .unbuilt_building_div {
-	border: 2px solid #3d8fe3;
+	border: 2px solid #5a5a5a;
 	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
+	margin-bottom: 7px;
 }
 .unbuilt_building_img_div {
 	float: left;
@@ -128,6 +130,6 @@
 }
 #hide_unbuilt_buildings_menu_btn {
 	position: absolute;
-	top: 5px;
-	right: 5px;
+	top: 10px;
+	right: 12px;
 }

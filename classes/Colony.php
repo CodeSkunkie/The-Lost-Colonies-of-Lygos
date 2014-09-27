@@ -7,7 +7,7 @@ class Colony
 	// $resources is an object with the form:
 	//		$resources->resource1->stock where 'stock' can be
 	//		'stock', 'capacity', 'production_rate', or 'consumption_rate', and
-	//		'resource1' can be replaced by an alias such as 
+	//		'resource1' must be replaced by an alias such as 
 	//		'food', 'water', 'metal', or 'energy'.
 	
 	function __construct($id)

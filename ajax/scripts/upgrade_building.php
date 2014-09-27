@@ -28,7 +28,7 @@
 		{
 			// Verified: the specified colony has the specified building.
 			
-			// Create a colony object.
+			// Create a building object.
 			$bldg_class_name = Colony_Building::type2classname($building_type);
 			require(WEBROOT .'classes/'. $bldg_class_name .'.php');
 			$building = new $bldg_class_name($building_id);

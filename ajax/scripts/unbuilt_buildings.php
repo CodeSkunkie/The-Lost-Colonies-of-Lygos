@@ -27,10 +27,20 @@
 		
 		// Only return info for buildings that are not built.
 		$this->data['buildings'] = array();
+		$this->data['cost'] = array();
+		$this->data['upkeep'] = array();
+		$this->data['duration'] = array();
 		foreach ( $basic_buildings as $building_type )
 		{
 			if ( !in_array($building_type, $already_built) )
-				$this->data['buildings'][] = new Colony_Building($building_type);
+			{
+				$building = new Colony_Building($building_type);
+				$building->level = 0;
+				$this->data['buildings'][] = $building;
+				$this->data['cost'][] = $building->upgrade_cost();
+				$this->data['upkeep'][] = $building->next_upkeep_cost();
+				$this->data['duration'][] = $building->upgrade_duration();
+			}
 		}
 	}
 	

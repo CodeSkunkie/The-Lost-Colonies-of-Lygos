@@ -2,4 +2,6 @@
 	$this->layout = 'promo';
 ?>
 
-[content for home (default) page]
+<div style="margin-top:100px">
+	<img src="media/images/lygos-logo.png" />
+</div>

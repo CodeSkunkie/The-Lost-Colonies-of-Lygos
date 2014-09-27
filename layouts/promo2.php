@@ -1,1 +1,0 @@
-<div>[second part of layout file]</div>

@@ -34,7 +34,7 @@ class Research_Building extends Colony_Building
 	}
 	
 	// This function gets called whenever this building gets upgraded.
-	public function finish_upgrade()
+	public function finish_upgrade($colony)
 	{
 		$this->level++;
 	}

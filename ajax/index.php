@@ -11,6 +11,7 @@ require(WEBROOT .'classes/User.php');
 require(WEBROOT .'classes/Database_Row.php');
 
 require(WEBROOT .'global_lib.php');
+require(WEBROOT .'lib.php');
 
 function return_error($error)
 {

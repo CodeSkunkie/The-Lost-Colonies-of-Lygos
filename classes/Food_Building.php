@@ -6,8 +6,8 @@ class Food_Building extends Colony_Building
 	public $id, $colony_id, $type, $level;
 	
 	// Extra fields:
-	public $name = 'Meat Lands (AKA: Space-Pasture)';
-	public $long_descript = 'Food is grown here to feed everyone in this colony.';
+	public $name = 'Meat Lands';
+	public $long_descript = 'AKA: "Space-Pasture". Food is grown here to feed everyone in this colony.';
 	protected $db_table_name = 'buildings';
 	protected $extra_fields = array('db_table_name', 'name', 'long_descript', 'extra_fields', 'building_object');
 	
@@ -30,11 +30,15 @@ class Food_Building extends Colony_Building
 	
 	public function upgrade_cost()
 	{
-		return new Resource_Bundle(10,20,30,40);
+		return new Resource_Bundle(
+			10 * $this->level + 15,
+			10 * $this->level + 35,
+			10 * $this->level + 20,
+			10 * $this->level + 20);
 	}
 	
 	// This function gets called whenever this building gets upgraded.
-	public function finish_upgrade()
+	public function finish_upgrade($colony)
 	{
 		$this->level++;
 	}

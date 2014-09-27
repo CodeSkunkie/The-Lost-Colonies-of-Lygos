@@ -31,10 +31,10 @@ class HQ_Building extends Colony_Building
 	public function upgrade_cost()
 	{
 		return new Resource_Bundle(
-			1 * $this->level,
-			2 * $this->level,
-			6 * $this->level,
-			4 * $this->level);
+			10 * $this->level + 5,
+			20 * $this->level + 5,
+			50 * $this->level + 25,
+			35 * $this->level + 15);
 	}
 	
 	public function upgrade_duration()
@@ -43,7 +43,7 @@ class HQ_Building extends Colony_Building
 	}
 	
 	// This function gets called whenever this building gets upgraded.
-	public function finish_upgrade()
+	public function finish_upgrade($colony)
 	{
 		$this->level++;
 	}

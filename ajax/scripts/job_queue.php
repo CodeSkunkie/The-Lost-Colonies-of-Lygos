@@ -20,7 +20,12 @@
 		{
 			$job = $job_row;
 			// Retrieve some additional info about this job.
-			$building = new Colony_Building($job['building_type'], $job['building_id']);
+			
+			// If this job is creating a _new_ building, make a generic building object.
+			if ( $job['building_id'] == -1 )
+				$building = new Colony_Building($job['building_type']);
+			else
+				$building = new Colony_Building($job['building_type'], $job['building_id']);
 			
 			$job['old_level'] = $building->level;
 			$job['new_level'] = $building->level +1;

@@ -21,8 +21,8 @@ $('#link_div_colony_management').click(function() {
 			for ( var i in json_data.buildings )
 			{
 				var building = json_data.buildings[i];
-				building.update_cost = json_data.update_cost;
 				buildings[building.type] = building;
+				buildings_method_data[building.type] = json_data.buildings_method_data[i];
 				$('<img>', {
 					"id": 'building_'+ building.type +'img',
 					"class": 'building_img',
@@ -30,9 +30,6 @@ $('#link_div_colony_management').click(function() {
 					"onclick": 'javascript:select_building('+ building.type +')'
 				}).appendTo('#buildings_container');
 			}
-			var building = json_data.buildings[i];
-			building.update_cost = json_data.update_cost;
-			buildings[building.type] = building;
 			$('<div/>', {
 				"text": "[build new modules]",
 				"id": "build_new_buildings_link",
@@ -60,6 +57,7 @@ function select_building(type)
 	// undo the actions on it we're about to perform.
 	selected_building_type = type;
 	var building = buildings[type];
+	var building_method_data = buildings_method_data[type];
 	
 	// Move the building's image temporarily.
 	bldg_original_x = $('#building_'+ type +'img').css('left');
@@ -86,13 +84,22 @@ function select_building(type)
 	}).appendTo('#building_info_div2');
 	
 	$('<div/>', {
-		"text": "level: "+ building.level
+		"text": building.long_descript
+	}).appendTo('#building_info_text_div')
+	$('<div/>', {
+		"text": "level "+ building.level
+	}).appendTo('#building_info_text_div');;
+	$('<div/>', {
+		"html": "current hourly resource consumption: "+ resource_upkeep_html(building_method_data['upkeep1'])
 	}).appendTo('#building_info_text_div');
 	$('<div/>', {
-		"text": "maintenance: "
+		"html": "upgrade cost: "+ resource_bundle_html(building_method_data['cost'])
 	}).appendTo('#building_info_text_div');
 	$('<div/>', {
-		"text": "upgrade cost: "+ building.update_cost.food
+		"html": "additional hourly resource consumption: "+ resource_upkeep_html(building_method_data['upkeep2'])
+	}).appendTo('#building_info_text_div');
+	$('<div/>', {
+		"html": "construction duration: "+ format_time_duration(building_method_data['duration'])
 	}).appendTo('#building_info_text_div');
 	$('<button/>', {
 		"text": "upgrade ",
@@ -168,6 +175,34 @@ function upgrade_building(colony_id, building_id, building_type)
 	);
 }
 
+
+function construct_building(colony_id, building_type)
+{
+	request_data('construct_building', 
+		{
+			"colony_id": colony_id,
+			"building_type": building_type
+		}, 
+		function(json_data) {
+			// Script successfully called.
+			// Check for warnings.
+			if ( typeof json_data.WARNING != 'undefined' )
+			{
+				if ( json_data.WARNING == 'insufficient_resources' )
+					alert('You do not have enough resources to perform the requested upgrade.');
+				else
+					alert(json_data.WARNING);
+			}
+			else
+			{
+				// No warnings were returned by the script.
+				fetch_jobs_queue();
+				refresh_resources_display();
+			}
+		}
+	);
+}
+
 function show_unbuilt_buildings_menu()
 {
 	request_data('unbuilt_buildings', {"colony_id": colony_id}, function(json_data) {
@@ -176,6 +211,9 @@ function show_unbuilt_buildings_menu()
 		for ( var i in json_data.buildings )
 		{
 			var building = json_data.buildings[i];
+			var cost = json_data.cost[i];
+			var upkeep = json_data.upkeep[i];
+			var duration = json_data.duration[i];
 			//console.log(building);
 			$('<div/>', {
 				"id": "unbuilt_building"+ i +"_div",
@@ -202,6 +240,22 @@ function show_unbuilt_buildings_menu()
 			$('<div/>', {
 				"class": "unbuilt_building_descript",
 				"text": building.long_descript
+			}).appendTo('#unbuilt_building'+ i +'_info_div');
+			$('<div/>', {
+				"class": "unbuilt_building_cost",
+				"html": 'construction cost: '+ resource_bundle_html(cost)
+			}).appendTo('#unbuilt_building'+ i +'_info_div');
+			$('<div/>', {
+				"class": "unbuilt_building_upkeep",
+				"html": "additional upkeep: "+ resource_upkeep_html(upkeep)
+			}).appendTo('#unbuilt_building'+ i +'_info_div');
+			$('<div/>', {
+				"class": "unbuilt_building_duration",
+				"html": "construction time: "+ format_time_duration(duration)
+			}).appendTo('#unbuilt_building'+ i +'_info_div');
+			$('<button/>', {
+				"text": "construct module ",
+				"onclick": "javascript: construct_building('"+ colony_id +"', '"+ building.type +"' ); $(this).attr('disabled', 'disabled');"
 			}).appendTo('#unbuilt_building'+ i +'_info_div');
 			$('<div/>', {"style": "clear:left;"}).appendTo('#unbuilt_building_list');
 		}

@@ -15,6 +15,10 @@ abstract class Database_Row
 	{
 		global $Mysql;
 		
+		// Don't bother if we know there is no row for this object.
+		if ( !$this->exists() )
+			return 0;
+		
 		$table_qry = $Mysql->query("SELECT * FROM `". $this->db_table_name ."` 
 			WHERE `id` = '". $this->id ."'");
 		if ( $table_qry->num_rows == 0 )
@@ -40,7 +44,7 @@ abstract class Database_Row
 	{
 		global $Mysql;
 		
-		if ( !empty($this->id) )
+		if ( $this->exists() )
 		{
 			// Update this pre-existing tile.
 			$qry_str_part1 = "UPDATE `". $this->db_table_name ."` SET ";
@@ -48,7 +52,7 @@ abstract class Database_Row
 		}
 		else
 		{
-			// This tile does not exist in the database yet. Create it.
+			// This object does not exist in the database yet. Create it.
 			$qry_str_part1 = "INSERT INTO `". $this->db_table_name ."` SET ";
 			$qry_str_part3 = "";
 		}
@@ -70,17 +74,20 @@ abstract class Database_Row
 		// Run the constructed query to update a colony's resources.
 		$qry_str = $qry_str_part1 . $qry_str_part2 . $qry_str_part3;
 		$Mysql->query($qry_str);
+		//echon($qry_str);
 		
 		// If we just created a new row, retrieve its newfound id from the DB.
-		if ( empty($this->id) )
+		if ( !$this->exists() )
+		{
 			$this->id = $Mysql->insert_id;
+		}
 	}
 	
 	// Returns boolean true/false to indicate if 
 	// the fetch_data operation was successful.
 	public function exists()
 	{
-		if ( $this->id === false )
+		if ( empty($this->id) || $this->id === false )
 			return false;
 		else
 			return true;

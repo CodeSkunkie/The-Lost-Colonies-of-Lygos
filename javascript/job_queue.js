@@ -9,6 +9,14 @@ function fetch_jobs_queue()
 		// Save this job's data for later client-side calculations.
 		jobs = json_data.jobs;
 		
+		// If there are no jobs, display a special message.
+		if ( json_data.jobs.length == 0 )
+		{
+			$('<div/>', {
+				"text": "There are currently no active construction jobs."
+			}).appendTo('#jobs_list_mini');
+		}
+		
 		// Iterate through the jobs.
 		for ( var i in json_data.jobs )
 		{

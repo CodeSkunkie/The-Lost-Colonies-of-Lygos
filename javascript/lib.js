@@ -57,3 +57,16 @@ function time()
 {
 	return Math.round(new Date().getTime() / 1000);
 }
+
+// Return a formatted string representing some amount of time.
+// Input is in the form of seconds.
+// Result format: HH:MM:SS
+function format_time_duration(total_seconds) {
+	var seconds = total_seconds % 60;
+	var total_minutes = Math.floor(total_seconds / 60);
+	var minutes = total_minutes % 60;
+	var hours = Math.floor(total_minutes / 60);
+	
+	return ("00" + hours).substr(-2,2) +":"+ ("00" + minutes).substr(-2,2) +":"+ 
+		("00" + seconds).substr(-2,2);
+}

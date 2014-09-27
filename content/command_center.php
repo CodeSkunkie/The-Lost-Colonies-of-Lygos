@@ -26,10 +26,10 @@ $colony->update_resources();
 			<div id="buildings_container"></div>
 			<div id="building_info_div1"></div>
 			<div id="building_info_div2"></div>
-			<div id="unselect_bldg_btn" onclick="javascript:unselect_building();">[X]</div>
+			<img id="unselect_bldg_btn" onclick="javascript:unselect_building();" src="media/themes/default/images/x.png" />
 			<div id="unbuilt_building_menu">
 				<div id="unbuilt_building_menu_title">Select a module to construct</div>
-				<div id="hide_unbuilt_buildings_menu_btn" onclick="javascript:hide_unbuilt_buildings_menu();">[X]</div>
+				<img id="hide_unbuilt_buildings_menu_btn" onclick="javascript:hide_unbuilt_buildings_menu();" src="media/themes/default/images/x.png" />
 				<div id="unbuilt_building_list"></div>
 			</div>
 		</div>
@@ -93,7 +93,10 @@ $colony->update_resources();
 	
 	var colony_id = <?php echo $colony->id; ?>;
 	var theme = 'default';
+	// An array of buildings' data for this colony.
 	var buildings = new Array();
+	// An array for buildings' data that is derived.
+	var buildings_method_data = new Array();
 	
 	// This function manages the visual hiding and showing of the screens.
 	// DO NOT EDIT THIS FUNCTION
