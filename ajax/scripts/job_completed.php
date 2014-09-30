@@ -25,7 +25,7 @@
 		else
 		{
 			// Does this building exist already, or does this job create it?
-			if ( $job->building_id == -1 )
+			if ( $job->building_id == 0 )
 			{
 				// Create a building object for a brand-new building.
 				$building = new Colony_Building($job->building_type);

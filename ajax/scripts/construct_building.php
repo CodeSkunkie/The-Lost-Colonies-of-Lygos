@@ -47,7 +47,7 @@
 				// Insert this upgrade into the job queue.
 				$Mysql->query("INSERT INTO `job_queue` SET
 					`colony_id` = '". $colony_id ."',
-					`building_id` = -1,
+					`building_id` = 0,
 					`building_type` = '". $building_type ."',
 					`start_time` = ". time() .",
 					`completion_time` = '". (time() + $building->upgrade_duration()) ."'");	

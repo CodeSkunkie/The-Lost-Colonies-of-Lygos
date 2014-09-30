@@ -26,18 +26,20 @@
 	}
 	
 	// Lookup usernames for each of the relevant player ID.
-	$qry_str_part1 = "SELECT `id`, `username` FROM `players` WHERE ";
-	$qry_str_part2 = "";
-	foreach ( $player_ids as $a_player_id )
-		$qry_str_part2 .= "`id` = '". $a_player_id ."' OR ";
-	$qry_str_part2 = substr($qry_str_part2, 0, -3);
-	$usernames_qry = $Mysql->query($qry_str_part1 . $qry_str_part2);
-	//echon($qry_str_part1 . $qry_str_part2);
 	$this->data['usernames'] = array();
-	while ( $user_row = $usernames_qry->fetch_assoc() )
+	if ( !empty($player_ids) )
 	{
-		$this->data['usernames'][$user_row['id']] = $user_row['username'];
+		$qry_str_part1 = "SELECT `id`, `username` FROM `players` WHERE ";
+		$qry_str_part2 = "";
+		foreach ( $player_ids as $a_player_id )
+			$qry_str_part2 .= "`id` = '". $a_player_id ."' OR ";
+		$qry_str_part2 = substr($qry_str_part2, 0, -3);
+		$usernames_qry = $Mysql->query($qry_str_part1 . $qry_str_part2);
+		//echon($qry_str_part1 . $qry_str_part2);
+		while ( $user_row = $usernames_qry->fetch_assoc() )
+		{
+			$this->data['usernames'][$user_row['id']] = $user_row['username'];
+		}
 	}
-	
 	
 ?>
