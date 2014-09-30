@@ -12,17 +12,12 @@ $('#link_div_map').click(function() {
 			// Erase any old contents on this screen.
 			$('#map_container_div').html('');
 			$('#map_tile_selector_div').html('');
-			
+
 			// Populate the content of this screen.
-			//for (var dat in json_data) {console.log('::'+dat);}
-			//console.log(json_data.tiles[1][1]);
-			//var nearest_tiles = get_nearest_tiles(json_data.tiles);
 			draw_map(json_data.tiles, name);
-			// var tiles_data = json_data.tiles_data;
-			// TODO: figure out how to _actually_ iterate over the axial coordinate system.
-			//		 go here and search 'axial coordinates':
-			//		 http://www.redblobgames.com/grids/hexagons/
-			
+			// REFERENCE: figure out how to _actually_ iterate over the axial coordinate system.
+			//		      go here and search 'axial coordinates':
+			//		      http://www.redblobgames.com/grids/hexagons/
 		}
 		else
 			alert(json_data.ERROR);
@@ -52,22 +47,23 @@ function draw_map(tiles, name) {
 		else if (i==19) {div_y_offset-=93; div_x_offset-=330; rel_x=-3; rel_y++;}
 		else if (i==21) {div_y_offset-=61; div_x_offset+=378;}
 
+		// choose tile image file based on database info
 		var image = 'tile_empty.png';
 		var tile = tiles[center_tile_x+rel_x];
-		tile = ((typeof(tile) == "undefined") ? "undefined" : tile[center_tile_y+rel_y]);
+		tile = ((typeof(tile) == "undefined") ? tile : tile[center_tile_y+rel_y]);
 		if (typeof(tile) != "undefined") {
 			if (tile.player_has_vision == "1") image = 'tile_current.png';
 			else if (tile.player_has_vision == "0" && tile.cache != "") image = 'tile_outdated.png';
 		}
 
-		// actually create divs with initial 'empty' tile image
+		// actually create divs with proper tile image
 		var div=jQuery('<img>', {
 			"id": 'map_tile'+ i + 'div',
 			"class": 'map_tile_div',
 			"src": 'media/themes/default/images/'+image,
 		});
-		
 
+		// create hilighting divs
 		var selector=jQuery('<img>', {
 			"id": 'map_tile_selector'+ i + 'div',
 			"class": 'map_tile_div_select_off',
@@ -77,11 +73,11 @@ function draw_map(tiles, name) {
 			"y": (center_tile_y+rel_y)
 		});
 
-		// set position of tile
+		// set position of divs
 		div.offset({top:div_y_offset,left:div_x_offset});
 		selector.offset({top:div_y_offset,left:div_x_offset});
 
-		// adds tile to map div
+		// adds tile divs to map div
 		div.appendTo('#map_container_div');
 		selector.appendTo('#map_tile_selector_div');
 
@@ -100,30 +96,3 @@ function draw_map(tiles, name) {
 	change_screen(name);
 }
 
-
-function get_nearest_tiles(tiles) {
-	var nearest_tiles = [];
-	/*$tile_data = array();
-	$tile_data['id'] = $tile_cache['tile_id'];
-	$tile_data['player_has_vision'] = $tile_cache['player_has_vision'];
-	$tile_data['cache_time'] = $tile_cache['cache_time'];
-	$tile_data['x_coord'] = $tile_cache['x_coord'];
-	$tile_data['y_coord'] = $tile_cache['y_coord'];
-	$tiles_data[$tile_cache['x_coord']][$tile_cache['y_coord']] = $tile_data;*/
-	//var x_min = center_tile_x;
-	var x_min=center_tile_x;
-	var x_max=center_tile_x+3;
-	for (var y=center_tile_y-2; y<center_tile_y+3; y++) {
-		for (var x=x_min; x<x_max+1; x++) {
-			if (typeof(tiles[x][y]) == "undefined") {
-
-			}
-		}
-		x_min--;
-		x_max--;
-		if (y==center_tile_y-2) {x_max++;}
-		if (y==center_tile_y+1) {x_min++;}
-	}
-
-	return nearest_tiles;
-}
