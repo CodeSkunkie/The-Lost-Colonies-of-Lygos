@@ -28,6 +28,16 @@
 
 #navigation_panel_div{
 	position:absolute;
-	top:40px;
+	/*top 40, left 460*/
+	top:20px;
 	left:460px;
+	color:#afafaf;
+	font-size:14px;
+	width:114px;
+}
+
+#navigation_key{
+	position:absolute;
+	top:354px;
+	left:440px;
 }
