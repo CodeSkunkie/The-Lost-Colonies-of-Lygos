@@ -25,3 +25,9 @@
 	top: 0px;
 	left: 0px;
 }
+
+#navigation_panel_div{
+	position:absolute;
+	top:40px;
+	left:460px;
+}

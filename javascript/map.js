@@ -4,6 +4,18 @@
 $('#link_div_map').click(function() {
 	// Grab the name of this screen
 	var name = $(this).attr('id').substr(9);
+
+	// clear nav panel
+	$('#navigation_panel_div').html('');
+	// Setup navigation panel for map (#navigation_panel_div)
+	var nav_panel = jQuery('<img>', {
+			"id": 'nav_panel_img_div',
+			"class": 'nav_panel_base',
+			"src": 'media/themes/default/images/nav_base.png'
+		});
+
+	nav_panel.appendTo('#navigation_panel_div');
+
 	// Call the data-fetching script for this screen.
 	request_data('game_screen_' + name, {"coord_x": center_tile_x, "coord_y": center_tile_y}, function(json_data) {
 		// If data was successfully fetched...
@@ -23,6 +35,11 @@ $('#link_div_map').click(function() {
 			alert(json_data.ERROR);
 	});
 });
+
+// This function is called when someone clicks on the navigation panel
+/*function () {
+
+}*/
 
 
 function draw_map(tiles, name) {
