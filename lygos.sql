@@ -50,7 +50,7 @@ CREATE TABLE `colonies` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `colonies` (`id`, `player_id`, `x_coord`, `y_coord`, `last_resource_update`, `resource1_capacity`, `resource1_stock`, `resource1_production_rate`, `resource1_consumption_rate`, `resource2_capacity`, `resource2_stock`, `resource2_production_rate`, `resource2_consumption_rate`, `resource3_capacity`, `resource3_stock`, `resource3_production_rate`, `resource3_consumption_rate`, `resource4_capacity`, `resource4_stock`, `resource4_production_rate`, `resource4_consumption_rate`) VALUES
-(1,	1,	0,	0,	1412012540,	100,	90,	20,	0,	1000,	980,	50,	0,	1000,	970,	25,	0,	100,	47.0803,	5,	5),
+(1,	1,	0,	0,	1412012540,	999,	999,	3000,	0,	999,	999,	3000,	0,	999,	970,	3000,	0,	999,	999,	3000,	5),
 (2,	2,	-39,	-28,	0,	100,	100,	20,	0,	1000,	1000,	50,	0,	1000,	1000,	25,	0,	100,	100,	5,	2),
 (3,	3,	-39,	-27,	0,	100,	100,	20,	0,	1000,	1000,	50,	0,	1000,	1000,	25,	0,	100,	100,	5,	2);
 
@@ -91,10 +91,13 @@ DROP TABLE IF EXISTS `job_queue`;
 CREATE TABLE `job_queue` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `colony_id` int(10) unsigned NOT NULL,
-  `building_id` int(10) unsigned NOT NULL,
-  `building_type` mediumint(9) NOT NULL,
+  `type` int(10) unsigned NOT NULL COMMENT 'Indicates if this job is for research, ship building, or building building. See classes/Job.php for exact usage.',
+  `product_id` int(10) unsigned NOT NULL COMMENT 'The database row id of a building/ship/research-item',
+  `product_type` mediumint(9) NOT NULL COMMENT 'The type of the ship/building/research-item',
   `start_time` int(10) unsigned NOT NULL,
+  `duration` mediumint(9) NOT NULL,
   `completion_time` int(10) unsigned NOT NULL,
+  `repeat_count` mediumint(9) NOT NULL COMMENT 'This job represents [repeat_count] more jobs identical to this one if repeat_count is > 0.',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -204,4 +207,4 @@ CREATE TABLE `world_objects` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2014-10-02 23:45:23
+-- 2014-10-03 23:25:21

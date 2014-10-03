@@ -21,7 +21,7 @@ function fetch_jobs_queue()
 		for ( var i in json_data.jobs )
 		{
 			var job = json_data.jobs[i];
-			var percent_completed = 10 * (time() - job.start_time) / (job.completion_time - job.start_time);
+			var percent_completed = 10 * (time() - job.start_time) / (job.duration);
 			if ( percent_completed > 100 )
 			{
 				percent_completed = 100;
@@ -32,7 +32,7 @@ function fetch_jobs_queue()
 			}).appendTo('#jobs_list_mini');
 			$('<div/>', {
 				"class": "job_list_mini_job_title",
-				"text": job.building_name
+				"text": job.product_name
 			}).appendTo('#job_list_mini_job'+ i);
 			$('<div/>', {
 				"id" : "job_progress_bar"+ i,
@@ -63,7 +63,6 @@ function refresh_jobs_queue_offline()
 		if ( percent_completed > 100 )
 		{
 			percent_completed = 100;
-			// TODO: complete this job and update the UI.
 			request_data('job_completed', {"job_id": job.id}, function() {
 				$("#job_list_mini_job"+ i).hide();
 			});

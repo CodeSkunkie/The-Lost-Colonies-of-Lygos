@@ -34,7 +34,7 @@
 		{
 			if ( !in_array($building_type, $already_built) )
 			{
-				$building = new Colony_Building($building_type);
+				$building = Colony_Building::construct_child(['type' => $building_type]);
 				$building->level = 0;
 				$this->data['buildings'][] = $building;
 				$this->data['cost'][] = $building->upgrade_cost();

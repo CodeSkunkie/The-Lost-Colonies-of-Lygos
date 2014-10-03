@@ -19,7 +19,7 @@
 		$colony = new Colony($colony_id);
 		
 		// Create a generic building object of the specified type.
-		$building = new Colony_Building($building_type);
+		$building = Colony_Building::construct_child(['type' => $building_type]);
 		$building->level = 0;
 		
 		// Does the colony have enough resources to pay the construction price?
@@ -33,7 +33,7 @@
 			
 			// Make sure this building is not already being upgraded.
 			$upgraded_check_qry = $Mysql->query("SELECT * FROM `job_queue`
-				WHERE `building_type` = '". $building_type ."' AND 
+				WHERE `product_type` = '". $building_type ."' AND 
 					`colony_id` = '". $colony_id ."'");
 			if ( $upgraded_check_qry->num_rows > 0 )
 			{
@@ -47,9 +47,11 @@
 				// Insert this upgrade into the job queue.
 				$Mysql->query("INSERT INTO `job_queue` SET
 					`colony_id` = '". $colony_id ."',
-					`building_id` = 0,
-					`building_type` = '". $building_type ."',
+					`type` = 0,
+					`product_id` = 0,
+					`product_type` = '". $building_type ."',
 					`start_time` = ". time() .",
+					`duration` = '". $building->upgrade_duration() ."',
 					`completion_time` = '". (time() + $building->upgrade_duration()) ."'");	
 				$colony->save_data();
 			}

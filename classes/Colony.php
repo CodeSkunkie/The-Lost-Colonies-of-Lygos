@@ -12,8 +12,8 @@ class Colony
 	
 	function __construct($id)
 	{
-		require(WEBROOT .'classes/Colony_Resources.php');
-		require(WEBROOT .'classes/Colony_Resource.php');
+		load_class('Colony_Resource');
+		load_class('Colony_Resources');
 		
 		$this->id = $id;
 		$this->fetch_data();
@@ -141,7 +141,7 @@ class Colony
 	// This function gets called when a user click the button to upgrade a building.
 	public function upgrade_building_begin($building_type)
 	{
-		$building = new Colony_Building($building_type);
+		$building = Colony_Building::construct_child(['type' => $building_type]);
 		$this->subtract_resources($building->upgrade_cost());
 		
 		// Clean up
@@ -151,7 +151,7 @@ class Colony
 	// This function gets called when the upgrade job completes.
 	public function upgrade_building_finish($building_type)
 	{
-		$building = new Colony_Building($building_type);
+		$building = Colony_Building::construct_child(['type' => $building_type]);
 		
 		// Clean up
 		unset($building);

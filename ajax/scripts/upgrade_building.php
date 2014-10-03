@@ -29,9 +29,8 @@
 			// Verified: the specified colony has the specified building.
 			
 			// Create a building object.
-			$bldg_class_name = Colony_Building::type2classname($building_type);
-			require(WEBROOT .'classes/'. $bldg_class_name .'.php');
-			$building = new $bldg_class_name($building_id);
+			$building_row = $bldg_qry->fetch_assoc();
+			$building = Colony_Building::construct_child($building_row);
 			
 			
 			
@@ -46,7 +45,7 @@
 				
 				// Make sure this building is not already being upgraded.
 				$upgraded_check_qry = $Mysql->query("SELECT * FROM `job_queue`
-					WHERE `building_id` = '". $building_id ."' ");
+					WHERE `product_id` = '". $building_id ."' ");
 				if ( $upgraded_check_qry->num_rows > 0 )
 				{
 					return_error('The selected building is already being upgraded.');
@@ -62,9 +61,11 @@
 					// Insert this upgrade into the job queue.
 					$Mysql->query("INSERT INTO `job_queue` SET
 						`colony_id` = '". $colony_id ."',
-						`building_id` = '". $building_id ."',
-						`building_type` = '". $building_type ."',
+						`type` = 0,
+						`product_id` = '". $building_id ."',
+						`product_type` = '". $building_type ."',
 						`start_time` = ". time() .",
+						`duration` = '". $building->upgrade_duration() ."',
 						`completion_time` = '". (time() + $building->upgrade_duration()) ."'");	
 					$colony->save_data();
 				}

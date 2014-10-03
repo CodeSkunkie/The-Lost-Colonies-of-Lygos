@@ -12,6 +12,7 @@
 	
 	// Retrieve the job.
 	$job = new Job($job_id);
+	
 	// Make sure this job exists.
 	if ( !$job->exists() )
 		return_warning("Specified job not found (already completed?)");
@@ -24,29 +25,17 @@
 			return_warning("Specified job has not yet reached completion.");
 		else
 		{
-			// Does this building exist already, or does this job create it?
-			if ( $job->building_id == 0 )
-			{
-				// Create a building object for a brand-new building.
-				$building = new Colony_Building($job->building_type);
-				// Building's level will be incremented when finish_upgrade() is called.
-				$building->level = 0;
-				$building->colony_id = $job->colony_id;
-				// Insert this new building into the DB.
-				// This will also give the building object an id.
-				$building->save_data();
-			}
-			else
-			{
-				// Create a building object for an existing building.
-				$building = new Colony_Building($job->building_type, $job->building_id);
-			}
+			// Create an object of the product that this job was working on.
+			$product = Job::make_product_object($job->type, $job->product_id, $job->product_type, $job->colony_id);
+			
 			// Create a colony object to manipulate.
 			$colony = new Colony($job->colony_id);
-			// Tell this building object to do whatever it is supposed
-			// to do whenever it gets upgraded.
-			$building->finish_upgrade($colony);
-			$building->save_data();
+			
+			// Tell this product object to do whatever it is supposed
+			// to do upon upgrade.
+			if ( method_exists($product, 'finish_upgrade') )
+				$product->finish_upgrade($colony);
+			$product->save_data();
 			$colony->save_data();
 			
 			// Remove job from job queue.
@@ -54,5 +43,4 @@
 		}
 	}
 	
-	//print_arr($this->data['jobs']);
 ?>

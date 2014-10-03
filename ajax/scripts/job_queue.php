@@ -2,7 +2,9 @@
 
 	$this->require_login();
 	
-	require(WEBROOT .'classes/Colony_Building.php');
+	load_class('Job');
+	load_class('Colony_Building');
+	// TODO: load the classes for ships and research items.
 	
 	// Retrieve and sanatize input variables for this script.
 	$colony_id = clean_text($_GET['colony_id']);
@@ -19,17 +21,17 @@
 		while ( $job_row = $jobs_qry->fetch_assoc() )
 		{
 			$job = $job_row;
-			// Retrieve some additional info about this job.
 			
-			// If this job is creating a _new_ building, make a generic building object.
-			if ( $job['building_id'] == -1 )
-				$building = new Colony_Building($job['building_type']);
-			else
-				$building = new Colony_Building($job['building_type'], $job['building_id']);
-			
-			$job['old_level'] = $building->level;
-			$job['new_level'] = $building->level +1;
-			$job['building_name'] = $building->name;
+			// Retrieve some peripheral data for this job.
+			$product = Job::make_product_object($job['type'], $job['product_id'], 
+					$job['product_type'], $job['colony_id']);
+				
+			if ( property_exists( get_class($product), 'level') )
+			{
+				$job['old_level'] = $product->level;
+				$job['new_level'] = $product->level +1;
+			}
+			$job['product_name'] = $product->name;
 			
 			$this->data['jobs'][] = $job;
 		}
