@@ -74,21 +74,33 @@ function draw_map(tiles, name) {
 			else if (tile.player_has_vision == "0" && tile.cache != "") image = 'tile_outdated.png';
 		}
 
-		// actually create divs with proper tile image
-		var div=jQuery('<img>', {
-			"id": 'map_tile'+ i + 'div',
-			"class": 'map_tile_div',
-			"src": 'media/themes/default/images/'+image,
+		// container div for base image and coordinate span
+		var div=jQuery('<div>', {
+			"class": 'map_tile_div'
 		});
+
+		// actually create image divs with proper tile image
+		var base=jQuery('<img>', {
+			"id": 'map_tile'+ i + 'div',
+			"src": 'media/themes/default/images/'+image
+		});
+
+		// add coordinate display to tiles
+		var span=jQuery('<span/>', {
+			"id": 'map_tile'+i+'coords',
+			"class": 'sector_coords'
+		});
+		span.text('('+(center_tile_x+rel_x)+','+(center_tile_y+rel_y)+')');
+
+		// fill out tile container
+		base.appendTo(div);
+		span.appendTo(div);
 
 		// create hilighting divs
 		var selector=jQuery('<img>', {
 			"id": 'map_tile_selector'+ i + 'div',
 			"class": 'map_tile_div_select_off',
-			"src": 'media/themes/default/images/tile_selected.png',
-			"title": '(' + (center_tile_x+rel_x) + ',' + (center_tile_y+rel_y) + ')',
-			"x": (center_tile_x+rel_x),
-			"y": (center_tile_y+rel_y)
+			"src": 'media/themes/default/images/tile_selected.png'
 		});
 
 		// set position of divs
@@ -192,9 +204,7 @@ function refresh_map(name) {
 				$('#map_tile'+ i + 'div').attr('src', 'media/themes/default/images/'+image);
 
 				// update coordinates for all tiles
-				$('#map_tile_selector'+ i + 'div').attr('title', '(' + (center_tile_x+rel_x) + ',' + (center_tile_y+rel_y) + ')');
-				$('#map_tile_selector'+ i + 'div').attr('x', (center_tile_x+rel_x));
-				$('#map_tile_selector'+ i + 'div').attr('y', (center_tile_y+rel_y));
+				$('#map_tile'+i+'coords').text('('+(center_tile_x+rel_x)+','+(center_tile_y+rel_y)+')');
 
 				// helps with tile coordinates
 				rel_x++;
