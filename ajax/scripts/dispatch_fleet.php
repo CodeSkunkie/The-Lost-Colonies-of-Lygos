@@ -7,7 +7,7 @@
 	load_class('Fleet');
 	load_class('Traveling_Fleet');
 	load_class('Fleet_Ship');
-	//load_class('Ship');
+	load_class('Ship');
 	
 	// Sanitize inputs to this script.
 	$script_inputs = array('fleet_id', 'to_x_coord', 'to_y_coord', 'primary_objective', 'secondary_objective');

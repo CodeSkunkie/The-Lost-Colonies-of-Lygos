@@ -1,11 +1,5 @@
 <?php
 
-// This class is different from others in significant ways under the hood,
-// but should behave as expected when treated the same as other classes.
-// Basically, each instance of this class mimics an instance of one of
-// its children by calling the child's functions. 
-// The chiled is stored in $building_object.
-
 abstract class Colony_Building extends Database_Row
 {
 	// Static class stuff:
