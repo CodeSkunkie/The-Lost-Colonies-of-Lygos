@@ -69,7 +69,7 @@ abstract class Colony_Building extends Database_Row
 	protected function upkeep_cost($level)
 	{
 		if ($level == 0)
-			return Resource_Bundle(0,0,0,0);
+			return new Resource_Bundle(0,0,0,0);
 		
 		return new Resource_Bundle(
 			0,

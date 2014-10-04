@@ -2,10 +2,10 @@
 
 	$this->require_login();
 	
-	require(WEBROOT .'classes/Job.php');
-	require(WEBROOT .'classes/Colony_Building.php');
-	require(WEBROOT .'classes/Colony.php');
-	require(WEBROOT .'classes/Resource_Bundle.php');
+	load_class('Job');
+	load_class('Colony_Building');
+	load_class('Colony');
+	load_class('Resource_Bundle');
 	
 	// Retrieve and sanatize input variables for this script.
 	$job_id = clean_text($_GET['job_id']);

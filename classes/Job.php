@@ -31,20 +31,15 @@ class Job extends Database_Row
 	{
 		if ( $product_id == 0 )
 		{
-			// Make an ojbect for a product that doesn't yet exist
-			// and then save it into existence.
+			// Make a generic ojbect for a product that doesn't yet exist.
 			if ( $job_type == 0 )
 			{
-				// Create a building object for a brand-new building.
-				// Note: Building's level will be incremented when finish_upgrade() is called.
 				$building = Colony_Building::construct_child([
 					'type' => $product_type,
 					'level' => 0,
 					'colony_id' => $colony_id
 				]);
-				// Insert this new building into the DB.
-				// Note: This will also give the building object an id.
-				$building->save_data();
+
 				return $building;
 			}
 		}
