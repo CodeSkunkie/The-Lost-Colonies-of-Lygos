@@ -38,6 +38,13 @@ function print_login_freeze_message()
 }
 
 
+// If user is already logged in, redirect to the command center.
+if ( $User->logged_in() )
+{
+	header('Location: /?p=command_center');
+	exit();
+}
+
 	
 if ( empty($_POST) || (empty($_POST['password']) && empty($_POST['username'])) )
 	print_login_form($login_failed, $login_error_message);

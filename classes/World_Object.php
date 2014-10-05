@@ -11,7 +11,7 @@ abstract class World_Object extends Database_Row
 	// Given a research item type number, return its class name.
 	public static function type2classname($type)
 	{
-		return ( self::$types[$type] .'_Research_Item');
+		return ( self::$types[$type] .'_World_Object');
 	}
 	// Static constructor for constructing children based on type:
 	// The input parameter $fields is an associative array of $field-$value pairs

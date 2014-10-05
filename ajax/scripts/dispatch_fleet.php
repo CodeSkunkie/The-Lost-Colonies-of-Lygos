@@ -1,7 +1,5 @@
 <?php
 	
-	// What if the user wants to send a subset of a current fleet as a new fleet?
-	
 	$this->require_login();
 	
 	load_class('Fleet');
@@ -11,9 +9,8 @@
 	
 	// Sanitize inputs to this script.
 	$script_inputs = array('fleet_id', 'to_x_coord', 'to_y_coord', 'primary_objective', 'secondary_objective');
-	// TODO: uncomment this code when TJ makes the Ship class:
-	//for ( $i = 0; $i < count(Ship::types); $i++ )
-	//	$script_inputs[] = 'ship'. $i .'_count';
+	for ( $i = 0; $i < count(Ship::types); $i++ )
+		$script_inputs[] = 'ship'. $i .'_count';
 	foreach ( $script_inputs as $key => $val )
 		$$key = clean_text($_GET[$key]);
 	
@@ -50,6 +47,10 @@
 			}
 		}
 		
+		// If no ships are selected, reprimand the user.
+		if ( empty($ships_to_send) )
+			return_warning('You cannot dispatch a fleet of zero ships');
+		
 		// If every ship in the pool fleet is selected, send the pool
 		// fleet instead of creating a new fleet.
 		if ( $ship_pool == $ships_to_send )
@@ -66,19 +67,23 @@
 					'current_y_coord' => $pool_fleet->current_y_coord,
 					'home_x_coord' => $pool_fleet->home_x_coord,
 					'home_y_coord' => $pool_fleet->home_y_coord,
-					'speed' => $pool_fleet->speed
+					'speed' => $pool_fleet->speed,
+					'primary_objective' => $primary_objective,
+					'secondary_objective' => $secondary_objective
 				)
 			);
 			$departing_fleet->save_data();
 		}
 		
-		// 
-		$departing_fleet->primary_objective = $primary_objective;
-		$departing_fleet->secondary_objective = $secondary_objective;
+		// Calculate travel distance.
+		$travel_distance = hex_distance(
+				$departing_fleet->current_x_coord, 
+				$departing_fleet->current_y_coord,
+				$to_x_coord, $to_y_coord);
 		
-		// TODO: Calculate the travel_duration.
-		$travel_duration = 300;
-		
+		// Calculate travel duration and arrival time.
+		$travel_duration = $departing_fleet->speed * $travel_distance * 60 * 45;
+		// (^ Here, a move speed of 1 can traverse a tile in 45 minutes.)
 		$arrival_time = time() + $travel_duration;
 		
 		$travel_data = new Traveling_Fleet(

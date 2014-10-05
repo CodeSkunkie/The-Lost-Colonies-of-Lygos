@@ -70,3 +70,15 @@ function format_time_duration(total_seconds) {
 	return ("00" + hours).substr(-2,2) +":"+ ("00" + minutes).substr(-2,2) +":"+ 
 		("00" + seconds).substr(-2,2);
 }
+
+// Return the distance between to hexagonal tiles.
+// Note: at this time, the database and map call the z coordinate y.
+//		This function should be given the "x and y" coordinates from
+//		the database.
+function hex_distance(x1, z1, x2, z2) {
+	// Convert to cube-coordinates first.
+	// Derive the missing coordinate.
+    y1 = -x1 - z1;
+    y2 = -x2 - z2;
+    return (Math.abs(x1 - x2) + Math.abs(y1 - y2) + Math.abs(z1 - z2)) / 2;
+}

@@ -20,7 +20,7 @@ abstract class Colony_Building extends Database_Row
 		if ( !isset($fields['type']) || !isset(Colony_Building::$types[$fields['type']]) )
 			return NULL;
 		
-		$bldg_class_name = Colony_Building::$types[$fields['type']] .'_building';
+		$bldg_class_name = Colony_Building::$types[$fields['type']] .'_Building';
 		load_class($bldg_class_name);
 		return new $bldg_class_name($fields, $fetch_data);
 	}

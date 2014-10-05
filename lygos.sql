@@ -20,8 +20,7 @@ INSERT INTO `buildings` (`id`, `colony_id`, `level`, `type`) VALUES
 (3,	1,	1,	2),
 (4,	1,	2,	3),
 (5,	1,	1,	4),
-(6,	2,	1,	0),
-(7,	0,	1,	5);
+(6,	2,	1,	0);
 
 DROP TABLE IF EXISTS `colonies`;
 CREATE TABLE `colonies` (
@@ -161,6 +160,15 @@ INSERT INTO `players` (`id`, `username`, `email`, `password`, `group`) VALUES
 (2,	'notblair',	'beep@boop.bop',	'*8FD4846DBD1E87F6C35F664712865403A231FEBD',	'playe'),
 (3,	'Allen',	'allencct@gmail.com',	'*B8C3EC973FAD3072659EEE62E506DA91DE31A830',	'playe');
 
+DROP TABLE IF EXISTS `research`;
+CREATE TABLE `research` (
+  `id` int(10) unsigned NOT NULL,
+  `player_id` int(10) unsigned NOT NULL,
+  `type` smallint(6) NOT NULL,
+  `level` smallint(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 DROP TABLE IF EXISTS `traveling_fleets`;
 CREATE TABLE `traveling_fleets` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -207,4 +215,4 @@ CREATE TABLE `world_objects` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- 2014-10-03 23:25:21
+-- 2014-10-04 17:03:43
