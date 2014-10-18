@@ -3,7 +3,7 @@
 class Fleet_Ship extends Database_Row
 {
 	// Data taken directly from the "Colonies" database table:
-	public $id, $fleet_id, $type, $count;
+	public $id, $fleet_id, $type, $count, $special_orders;
 	
 	protected $db_table_name = 'fleet_ships';
 	protected $extra_fields = array('extra_fields','db_table_name');
@@ -26,6 +26,7 @@ class Fleet_Ship extends Database_Row
 		}
 	}
 	
+	// Returns an array of Fleet_Ship objects for the specified $fleet_id.
 	public static function get_ships_in_fleet($fleet_id)
 	{
 		global $Mysql;
@@ -38,6 +39,32 @@ class Fleet_Ship extends Database_Row
 			$results[] = new Fleet_Ship($db);
 		
 		return $results;
+	}
+	
+	// 
+	public static function set_ships_in_fleet($fleet_id, $fships)
+	{
+		global $Mysql;
+		
+		$qry = "";
+		foreach ( $fships as $fship )
+		{
+			if ( $fship->fleet_id != $fleet_id )
+				return false;
+			
+			if ( $fship->count == 0 )
+			{
+				$qry .= " DELETE FROM `fleet_ships` 
+					WHERE `id` = '". $fship->id ."';\n";
+			}
+			else
+			{
+				$qry .= " UPDATE `fleet_ships` 
+					SET `count` = '". $fship->count ."'
+					WHERE `id` = '". $fship->id ."' ;\n";
+			}
+		}
+		$qry = $Mysql->query($qry);
 	}
 }
 

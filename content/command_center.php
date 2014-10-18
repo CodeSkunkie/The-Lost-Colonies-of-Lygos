@@ -19,24 +19,44 @@ $colony->update_resources();
 		<div class="game_screen" id="map_screen">
 			<div id="map_container_div"></div>
 			<div id="map_tile_selector_div"></div>
-			<div id="sector_info_div"></div>
+			<div id="sector_info_bg_div">
+				<div id="sector_info_bg_title_div"></div>
+				<div id="sector_info_bg_content_div"></div>
+			</div>
+			<div id="sector_info_div">
+				<div id="sector_info_title_div">Sector Info</div>
+				<div id="sector_info_content_div">Hover over a sector for more info<br /><br />Click a sector to see possible actions.</div>
+			</div>
 			<div id="navigation_panel_div"></div>
 			<map name="nav_panel_map" id="nav_panel_map">
-				<area id="nav_negY" shape="polygon" coords="49,35,49,18,41,18,57,5,72,18,64,18,64,35"
-					  onmouseover="make_visible('nav_negY')" onmouseout="make_invisible()" onmousedown="nav_click('nav_negY')">
-				<area id="nav_negX" shape="polygon" coords="34,50,17,41,12,47,7,29,28,23,25,30,42,39"
-					  onmouseover="make_visible('nav_negX')" onmouseout="make_invisible()" onmousedown="nav_click('nav_negX')">
-				<area id="nav_negZ" shape="polygon" coords="35,56,18,64,13,59,8,77,29,83,25,76,44,67"
-					  onmouseover="make_visible('nav_negZ')" onmouseout="make_invisible()" onmousedown="nav_click('nav_negZ')">
-				<area id="nav_posY" shape="polygon" coords="49,70,49,88,40,87,57,101,73,87,64,87,64,70"
-					  onmouseover="make_visible('nav_posY')" onmouseout="make_invisible()" onmousedown="nav_click('nav_posY')">
-				<area id="nav_posX" shape="polygon" coords="79,56,71,67,89,76,84,82,106,77,101,59,96,65"
-					  onmouseover="make_visible('nav_posX')" onmouseout="make_invisible()" onmousedown="nav_click('nav_posX')">
-				<area id="nav_posZ" shape="polygon" coords="79,51,70,40,88,31,84,24,106,29,101,48,96,42"
-					  onmouseover="make_visible('nav_posZ')" onmouseout="make_invisible()" onmousedown="nav_click('nav_posZ')">
-				<area id="nav_home" shape="polygon" coords="48,41,40,53,48,64,64,64,73,53,64,41"
-					  onmouseover="make_visible('nav_home')" onmouseout="make_invisible()" onmousedown="nav_click('nav_home')">
+				<area id="nav_negY" class="map_nav_element" shape="polygon" 
+						coords="49,35,49,18,41,18,57,5,72,18,64,18,64,35">
+				<area id="nav_negX" class="map_nav_element" shape="polygon" 
+						coords="34,50,17,41,12,47,7,29,28,23,25,30,42,39">
+				<area id="nav_negZ" class="map_nav_element" shape="polygon" 
+						coords="35,56,18,64,13,59,8,77,29,83,25,76,44,67">
+				<area id="nav_posY" class="map_nav_element" shape="polygon" 
+						coords="49,70,49,88,40,87,57,101,73,87,64,87,64,70">
+				<area id="nav_posX" class="map_nav_element" shape="polygon" 
+						coords="79,56,71,67,89,76,84,82,106,77,101,59,96,65">
+				<area id="nav_posZ" class="map_nav_element" shape="polygon" 
+						coords="79,51,70,40,88,31,84,24,106,29,101,48,96,42">
+				<area id="nav_home" class="map_nav_element" shape="polygon" 
+						coords="48,41,40,53,48,64,64,64,73,53,64,41">
 			</map>
+			<div id="sector_menu">
+				<ul>
+					<li>
+						Scout
+					</li>
+					<li>
+						Attack
+					</li>
+					<li>
+						Occupy
+					</li>
+				</ul>
+			</div>
 		</div>
 		<div class="game_screen" id="colony_management_screen">
 			<div id="buildings_container"></div>

@@ -1,4 +1,4 @@
-
+var sectors_click_listener_enabled = false;
 
 // This function is called when someone clicks the map hologram link. brian
 $('#link_div_map').click(function() {
@@ -7,21 +7,17 @@ $('#link_div_map').click(function() {
 
 	// Call the data-fetching script for this screen.
 	request_data('game_screen_' + name, {"coord_x": center_tile_x, "coord_y": center_tile_y}, function(json_data) {
-		// If data was successfully fetched...
-		if ( json_data.ERROR == "" )
-		{
-			// Erase any old contents on this screen.
-			$('#map_container_div').html('');
-			$('#map_tile_selector_div').html('');
+		// Data was successfully fetched
 
-			// Populate the content of this screen.
-			draw_map(json_data.tiles, name);
-			// REFERENCE: figure out how to _actually_ iterate over the axial coordinate system.
-			//		      go here and search 'axial coordinates':
-			//		      http://www.redblobgames.com/grids/hexagons/
-		}
-		else
-			alert(json_data.ERROR);
+		// Erase any old contents on this screen.
+		$('#map_container_div').html('');
+		$('#map_tile_selector_div').html('');
+
+		// Populate the content of this screen.
+		draw_map(json_data.tiles, name);
+		// REFERENCE: figure out how to _actually_ iterate over the axial coordinate system.
+		//		      go here and search 'axial coordinates':
+		//		      http://www.redblobgames.com/grids/hexagons/
 	});
 
 	// clear nav panel
@@ -29,18 +25,18 @@ $('#link_div_map').click(function() {
 	// Setup navigation panel for map (#navigation_panel_div)
 	$('<span>map navigator</span>').appendTo('#navigation_panel_div');
 	var nav_panel = jQuery('<img>', {
-			"id": 'nav_panel_img_div',
-			"class": 'nav_panel_base',
-			"src": 'media/themes/default/images/nav_base.png',
-			"usemap": '#nav_panel_map'
-		});
+		"id": 'nav_panel_img_div',
+		"class": 'nav_panel_base',
+		"src": 'media/themes/default/images/nav_base.png',
+		"usemap": '#nav_panel_map'
+	});
 	nav_panel.appendTo('#navigation_panel_div');
 
 	// add map key
 	jQuery('<img>', {
-			"id": 'navigation_key',
-			"src": 'media/themes/default/images/nav_key.png'
-		}).appendTo('#map_screen');
+		"id": 'navigation_key',
+		"src": 'media/themes/default/images/nav_key.png'
+	}).appendTo('#map_screen');
 });
 
 function draw_map(tiles, name) {
@@ -97,9 +93,9 @@ function draw_map(tiles, name) {
 		span.appendTo(div);
 
 		// create hilighting divs
-		var selector=jQuery('<img>', {
+		var selector = $('<img>', {
 			"id": 'map_tile_selector'+ i + 'div',
-			"class": 'map_tile_div_select_off',
+			"class": 'map_tile_div_select',
 			"src": 'media/themes/default/images/tile_selected.png'
 		});
 
@@ -115,29 +111,43 @@ function draw_map(tiles, name) {
 		div_x_offset-=18;
 		div_y_offset+=31;
 		rel_x++;
-
-		// highlight map tile on hover
-		selector.on('mouseover mouseout', function() {
-			$(this).toggleClass('map_tile_div_select_on');
-			$(this).toggleClass('map_tile_div_select_off');
-		});
 	}
+	
+	if ( !sectors_click_listener_enabled )
+	{
+		$('.map_tile_div_select').click(function(event) {;
+			var offset = $('#game_secondary_screen').position();
+			var x = event.clientX - offset.left - 35;
+			var y = event.clientY - offset.top - 40;
+			$('#sector_menu').css('left', x +'px');
+			$('#sector_menu').css('top', y +'px');
+			$('#sector_menu').show(100);
+		});
+		sectors_click_listener_enabled = true;
+	}
+	
 	// Display this screen.
 	change_screen(name);
 }
 
 // This function is called when someone hovers over the navigation panel
-function make_visible(button) {
+$('.map_nav_element').mouseover(function() {
+	var button = $(this).attr('id');
 	$('#nav_panel_img_div').attr('src', 'media/themes/default/images/'+button+'.png');
-}
+});
 
 // This function is called when someone stops hovering over the navigation panel
-function make_invisible(){
+$('.map_nav_element').mouseout(function() {
 	$('#nav_panel_img_div').attr('src', 'media/themes/default/images/nav_base.png');
-}
+});
+
+$('#sector_menu').mouseleave(function() {
+	$(this).hide();
+});
 
 // This function is called when someone clicks on the navigation panel
-function nav_click(button) {
+$('.map_nav_element').click(function() {
+	var button = $(this).attr('id');
 	switch(button) {
 		case 'nav_negY':
 			center_tile_y--;
@@ -168,7 +178,7 @@ function nav_click(button) {
 	}
 
 	refresh_map('map');
-}
+});
 
 // pulls fresh map data from the database and populates to map screen
 function refresh_map(name) {

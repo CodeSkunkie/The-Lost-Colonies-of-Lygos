@@ -31,6 +31,12 @@ a active {
 h3 {
 	margin: 5px;
 }
+ul {
+	margin-top: 0px;
+}
+ol {
+	margin-top: 0px;
+}
 .error_border {
 	border: 1px solid #dd4b39;
 }
@@ -115,4 +121,29 @@ h3 {
 
 .menu_title_mini {
 	margin-bottom: 15px;
+}
+
+.button1 {
+	border: 1px solid #3d8fe3;
+	padding: 4px 10px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	font-size: 17px;
+	vertical-align: middle;
+	text-decoration: none;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(80,80,80,1)), color-stop(100%,rgba(30,30,30,1)));
+	background: -moz-linear-gradient(top, rgba(80,80,80,1) 0%, rgba(30,30,30,1) 100%);
+	background: -webkit-linear-gradient(top, rgba(80,80,80,1) 0%,rgba(30,30,30,1) 100%);
+	background: -o-linear-gradient(top, rgba(80,80,80,1) 0%,rgba(30,30,30,1) 100%);
+	background: -ms-linear-gradient(top, rgba(80,80,80,1) 0%,rgba(30,30,30,1) 100%);
+	background: linear-gradient(to bottom, rgba(0,0,0,1) 0%,rgba(70,70,70,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5b5b5b', endColorstr='#1e1e1e',GradientType=0 );
+}
+.button1:hover {
+	background: #236db8;
+	color: #ffffff;
+}
+.button1_div {
+	margin-bottom: 14px;
 }
