@@ -12,9 +12,11 @@ $colony->update_resources();
 
 // If there are ships currently at this colony, retrieve their fleet_id.
 $fleets_result = Fleet::fleets_at($colony->x_coord, $colony->y_coord, $User->id);
-$home_fleet = $fleets_result[0];
-$home_fleet->get_ships();
-
+if ( !empty($fleets_result) )
+{
+	$home_fleet = $fleets_result[0];
+	$home_fleet->get_ships();
+}
 
 //print_r($colony);
 
@@ -92,17 +94,6 @@ $home_fleet->get_ships();
 				<div class="popup_content">
 					Select ships to send:
 					<div id="attack_ship_selector" class="ship_selector">
-						<?php
-							foreach ( Ship::$types as $key => $name )
-							{
-								echo '<div style="float:left; margin-right:7px;">';
-								echon($name);
-								echon('<img src="media/themes/default/images/ship'. $key .'.png" height="100px;"/>');
-								echo	'<input type="number" min="0" style="width:40px" value="0" id="attack_ship'. $key .'_count" /> / '. ( isset($home_fleet->ships[$key]) ? $home_fleet->ships[$key]->count : '0');
-								echo '</div>';
-								
-							}
-						?>
 						<div style="clear:left"></div>
 					</div>
 					<div class="button1_div">
@@ -191,7 +182,7 @@ $home_fleet->get_ships();
 	// An array for buildings' data that is derived.
 	var buildings_method_data = new Array();
 	
-	var home_fleet_id = <?php echo $home_fleet->id; ?>;
+	var home_fleet_id = '<?php echo $home_fleet->id; ?>';
 	
 	// This function manages the visual hiding and showing of the screens.
 	// DO NOT EDIT THIS FUNCTION

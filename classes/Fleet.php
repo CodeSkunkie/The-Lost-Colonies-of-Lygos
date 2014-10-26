@@ -117,7 +117,7 @@ class Fleet extends Database_Row
 	public function calculate_speed()
 	{
 		$this->get_ships();
-		// TODO: get_ref_ships();
+		$ref_ships = Ship::get_reference_ships();
 		$fleet_speed = 99999999;
 		foreach ( $this->ships as $type => $fship )
 		{
@@ -161,22 +161,8 @@ class Fleet extends Database_Row
 				Mega_Fleet::fleet_battle($mf1, $mf2);
 			}
 			
-			// Create some ship objects to reference for stats.
-			$ref_ships = array();
-			for ( $i = 0; $i < count(Ship::$types); $i++ )
-				$ref_ships[$i] = Ship::construct_child(['type' => $i]);
-
-			// Calculate the new fleet speed.
-			$this->get_ships();
-			$fleet_speed = 99999999;
-			foreach ( $this->ships as $type => $fship )
-			{
-				if ( $ref_ships[$type]->speed < $fleet_speed )
-					$fleet_speed = $ref_ships[$type]->speed;
-			}
-			$this->speed = $fleet_speed;
-			
 			// Send the fleet back home.
+			$this->speed = $this->calculate_speed();
 			$this->from_x_coord = $this->to_x_coord;
 			$this->from_y_coord = $this->to_y_coord;
 			$this->to_x_coord = $this->home_x_coord;

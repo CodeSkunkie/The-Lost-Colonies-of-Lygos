@@ -59,14 +59,6 @@
 		if ( empty($ships_to_send) )
 			return_warning('You cannot dispatch a fleet of zero ships');
 		
-		// Calculate the speed of the soon-to-be fleet.
-		$fleet_speed = 99999999;
-		foreach ( $ships_to_send as $type => $fship )
-		{
-			if ( $ref_ships[$type]->speed < $fleet_speed )
-				$fleet_speed = $ref_ships[$type]->speed;
-		}
-		
 		// If every ship in the pool fleet is selected, send the pool
 		// fleet instead of creating a new fleet.
 		if ( $pool_fleet->ships == $ships_to_send )
@@ -101,6 +93,9 @@
 				$departing_fleet->current_x_coord, 
 				$departing_fleet->current_y_coord,
 				$to_x_coord, $to_y_coord);
+		
+		// Calculate fleet speed.
+		$departing_fleet->calculate_speed();
 		
 		// Calculate travel duration and arrival time.
 		$travel_duration = $departing_fleet->speed * $travel_distance * 60 * 45;
