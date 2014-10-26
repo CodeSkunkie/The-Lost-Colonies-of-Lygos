@@ -28,9 +28,7 @@
 	{
 		// Verified: this user owns the pool fleet.
 		// Create some ship objects to reference for stats.
-		$ref_ships = array();
-		for ( $i = 0; $i < count(Ship::$types); $i++ )
-			$ref_ships[$i] = Ship::construct_child(['type' => $i]);
+		$ref_ships = Ship::get_reference_ships();
 		
 		// Add ships to the array of ships to send.
 		$ships_to_send = array();

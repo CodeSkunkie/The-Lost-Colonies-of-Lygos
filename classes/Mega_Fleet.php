@@ -45,9 +45,7 @@ class Mega_Fleet
 		$stat_names = array('atk', 'def', 'shield', 'hp');
 		
 		// Make some ship objects for stat references.
-		$ref_ships = array();
-		foreach ( $i = 0; $i < count(Ship::$types); $i++ )
-			$ref_ships[$i] = Ship::construct_child(['type' => $i]);
+		$ref_ships = Ship::get_reference_ships();
 		
 		foreach ( $this->ships as $fship )
 		{

@@ -96,9 +96,7 @@ class Fleet extends Database_Row
 		$this->get_ships();
 		
 		// Make some ship objects for stat references.
-		$ref_ships = array();
-		for ( $i = 0; $i < count(Ship::$types); $i++ )
-			$ref_ships[$i] = Ship::construct_child(['type' => $i]);
+		$ref_ships = Ship::get_reference_ships();
 
 		// List of stat names to tally.
 		$stat_names = array('atk', 'def', 'shield', 'hp');

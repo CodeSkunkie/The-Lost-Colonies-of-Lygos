@@ -14,6 +14,8 @@ class Cargo_Ship extends Ship
 	public $cargo;
 	public $speed = 5;
 	public $level;
+	public $accuracy = 0.2;
+	public $evasion = 0.05;
 	
 	public function build_duration()
 	{

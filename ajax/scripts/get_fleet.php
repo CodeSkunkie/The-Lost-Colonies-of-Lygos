@@ -30,9 +30,6 @@
 	$this->data['fleet'] = $fleet;
 	
 	// Return some ship objects to reference as well.
-	$ref_ships = array();
-	for ( $i = 0; $i < count(Ship::$types); $i++ )
-		$ref_ships[$i] = Ship::construct_child(['type' => $i]);
-	$this->data['ref_ships'] = $ref_ships;
+	$this->data['ref_ships'] = Ship::get_reference_ships();
 	
 ?>

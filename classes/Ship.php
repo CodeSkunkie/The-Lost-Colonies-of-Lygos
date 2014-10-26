@@ -28,6 +28,16 @@ abstract class Ship
 		return new $ship_class_name($fields);
 	}
 	
+	// Returns an array of ship objects (one for each type of ship)
+	// in which the indexes are the ship type.
+	public static function get_reference_ships()
+	{
+		$ref_ships = array();
+		for ( $type = 0; $type < count(Ship::$types); $type++ )
+			$ref_ships[$type] = Ship::construct_child(['type' => $type]);
+		return $ref_ships;
+	}
+	
 	// TODO: define the various ship attribute fields.
 	public $type, $attack, $defense, $hp, $shield, $capacity, $cargo, $speed, 
 		$level, $evasion, $accuracy;
