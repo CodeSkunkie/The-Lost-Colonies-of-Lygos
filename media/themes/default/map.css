@@ -122,3 +122,10 @@
 #sector_menu ul li:hover {
 	background-color:#303030
 }
+
+#recon_popup {
+	top: 5px;
+	left: 5px;
+	width: 610px;
+	height: 420px;
+}

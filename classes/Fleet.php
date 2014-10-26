@@ -11,7 +11,9 @@ class Fleet extends Database_Row
 	
 	// Data taken directly from the "fleets" database table:
 	public $id, $owner, $current_x_coord, $current_y_coord, $home_x_coord, 
-		$home_y_coord, $primary_objective, $secondary_objective, $speed;
+		$home_y_coord, $primary_objective, $secondary_objective, $speed, 
+		$traveling, $from_x_coord, $from_y_coord, 
+		$to_x_coord, $to_y_coord, $departure_time, $arrival_time;
 	
 	// Additional data.
 	public $stats, $ships;
@@ -41,23 +43,47 @@ class Fleet extends Database_Row
 	// Returns an array of Fleet_Ship objects for the specified $fleet_id
 	public function get_ships()
 	{
-		return Fleet_Ship::get_ships_in_fleet($this->id);
+		// Within the same php script, ships will only change if
+		// the script itself changes them, so only let this object
+		// retrieve its ships once.
+		
+		if ( $this->ships == [] || !empty($this->ships) )
+		{
+			// The ships have already been retrieved or set manually.
+		}
+		else
+		{
+			load_class('Fleet_Ship');
+			$this->ships = Fleet_Ship::get_ships_in_fleet($this->id);
+			return $this->ships;
+		}
 	}
 	
 	public function save_ships()
 	{
-		return Fleet_Ship::set_ships_in_fleet($this->id, $this->ships);
+		if ( $this->ships == [] || !empty($this->ships) )
+		{
+			return Fleet_Ship::set_ships_in_fleet($this->id, $this->ships);
+		}
+		else
+		{
+			// Ships were never set. Do not save.
+		}
 	}
 	
 	// Returns an array of fleet objects
-	public static function fleets_at($x, $y)
+	public static function fleets_at($x, $y, $user_id = false)
 	{
 		global $Mysql;
 		
 		$fleets = array();
-		$qry = $Mysql->query("SELCT * FROM `fleets` 
-			WHERE `x_coord` = '". $x ."' AND `y_coord` = '". $y ."'");
-		while ( $fleet_row = $qry->fetch_assoc )
+		$qry = $Mysql->query("SELECT * FROM `fleets` 
+			WHERE `current_x_coord` = '". $x ."' AND 
+				`current_y_coord` = '". $y ."' AND
+				`traveling` = 0
+				". ($user_id ? " AND `owner` = '$user_id'" : "" ) ."
+				");
+		while ( $fleet_row = $qry->fetch_assoc() )
 			$fleets[] = new Fleet($fleet_row);
 		
 		return $fleets;
@@ -67,13 +93,12 @@ class Fleet extends Database_Row
 	// that this fleet will need for battle calculations.
 	public function battle_prep()
 	{
-		if ( empty($this->ships) )
-			$this->ships = $this->get_ships();
+		$this->get_ships();
 		
 		// Make some ship objects for stat references.
 		$ref_ships = array();
-		foreach ( $i = 0; $i < count(Ship::$types); $i++ )
-			$ref_ships[$i] = Ship::construct_child(['type' => $1]);
+		for ( $i = 0; $i < count(Ship::$types); $i++ )
+			$ref_ships[$i] = Ship::construct_child(['type' => $i]);
 
 		// List of stat names to tally.
 		$stat_names = array('atk', 'def', 'shield', 'hp');
@@ -88,6 +113,87 @@ class Fleet extends Database_Row
 			foreach ( $stat_names as $stat_name )
 				$this->stats[$stat_name] += ($ship->$stat_name * $fship->count);
 		}
+	}
+	
+	// Calculate the new fleet speed and set it.
+	public function calculate_speed()
+	{
+		$this->get_ships();
+		// TODO: get_ref_ships();
+		$fleet_speed = 99999999;
+		foreach ( $this->ships as $type => $fship )
+		{
+			if ( $ref_ships[$type]->speed < $fleet_speed )
+				$fleet_speed = $ref_ships[$type]->speed;
+		}
+		$this->speed = $fleet_speed;
+	}
+	
+	// This function gets called when this fleet has reached its destination.
+	public function destination_reached()
+	{
+		// Is this fleet reaching its target or its home?
+		if ( $this->home_x_coord == $this->to_x_coord &&
+				 $this->home_y_coord == $this->to_y_coord  )
+		{
+			// This fleet just arrived back home.
+			$this->current_x_coord = $this->home_x_coord;
+			$this->current_y_coord = $this->home_y_coord;
+			$this->traveling = 0;
+		}
+		else
+		{
+			// Perform the action for this fleet's mission(s).
+			if ( Fleet::$objectives1[$this->primary_objective] == 'attack' )
+			{
+				$mf1 = new Mega_Fleet([$this]);
+				// TODO: retrieve the defending fleets.
+				$away_fleets = Fleet::fleets_at($this->to_x_coord, $this->to_y_coord);
+				$participating_away_fleets = array();
+				foreach ( $away_fleets as $away_fleet )
+				{
+					$missn = Fleet::$objectives2[$away_fleet->primary_objective];
+					if ( $missn == 'defend_object' || $missn == 'attack_visitors'
+							|| $missn == 'attack_if_attacked' )
+					{
+						$participating_away_fleets[] = $away_fleet;
+					}
+				}
+				$mf2 = new Mega_Fleet($participating_away_fleets);
+				Mega_Fleet::fleet_battle($mf1, $mf2);
+			}
+			
+			// Create some ship objects to reference for stats.
+			$ref_ships = array();
+			for ( $i = 0; $i < count(Ship::$types); $i++ )
+				$ref_ships[$i] = Ship::construct_child(['type' => $i]);
+
+			// Calculate the new fleet speed.
+			$this->get_ships();
+			$fleet_speed = 99999999;
+			foreach ( $this->ships as $type => $fship )
+			{
+				if ( $ref_ships[$type]->speed < $fleet_speed )
+					$fleet_speed = $ref_ships[$type]->speed;
+			}
+			$this->speed = $fleet_speed;
+			
+			// Send the fleet back home.
+			$this->from_x_coord = $this->to_x_coord;
+			$this->from_y_coord = $this->to_y_coord;
+			$this->to_x_coord = $this->home_x_coord;
+			$this->to_y_coord = $this->home_y_coord;
+			$this->departure_time = $this->arrival_time;
+			
+			
+			// TODO: possible complication: a fleet is out attacking but is scheduled to return
+			// before an attack hits that fleet's home but the job queue doesn't contain the
+			// fleet's return job until after its attack job is processed.
+			// Cron?
+			// alternative: enter both the going and returning jobs at the same time.
+		}
+		
+		$this->save_data();
 	}
 }
 

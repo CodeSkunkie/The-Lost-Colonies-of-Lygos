@@ -139,11 +139,49 @@ ol {
 	background: -ms-linear-gradient(top, rgba(80,80,80,1) 0%,rgba(30,30,30,1) 100%);
 	background: linear-gradient(to bottom, rgba(0,0,0,1) 0%,rgba(70,70,70,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5b5b5b', endColorstr='#1e1e1e',GradientType=0 );
+	cursor: pointer;
 }
 .button1:hover {
 	background: #236db8;
 	color: #ffffff;
 }
 .button1_div {
-	margin-bottom: 14px;
+	padding: 5px 0px;
+	margin: 3px 0px;
+}
+
+.popup_dialogue {
+	display: none;
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	width: 610px;
+	height: 420px;
+	z-index: 200;
+	background-color: #202020;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+}
+.popup_title {
+	background-color: #3670ab;
+	color: white;
+	padding: 7px 5px;
+	font-size: 16px;
+	border-top-left-radius: 6px;
+	border-top-right-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-top-left-radius: 6px;
+	-webkit-border-top-right-radius: 6px;
+	position: relative:
+}
+.popup_x {
+	position: absolute;
+	top: 1px;
+	right: 9px;
+}
+.popup_content {
+	padding: 10px 20px;
+	text-align: left;
+	overflow: auto;
 }

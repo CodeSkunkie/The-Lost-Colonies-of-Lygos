@@ -3,7 +3,7 @@
 class Job extends Database_Row
 {
 	// The types here should match the class names for creating objects.
-	public static $types = array('Colony_Building','Ship','Research_Item','Traveling_Fleet');
+	public static $types = array('Colony_Building','Ship','Research_Item','Fleet');
 
 	// Fields taken directly from the database:
 	public $id, $colony_id, $type, $product_id, $product_type, $start_time, $completion_time, $duration, $repeat_count;

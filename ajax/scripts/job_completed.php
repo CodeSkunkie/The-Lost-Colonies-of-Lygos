@@ -35,6 +35,12 @@
 			// to do upon upgrade.
 			if ( method_exists($product, 'finish_upgrade') )
 				$product->finish_upgrade($colony);
+			else if ( method_exists($product, 'finish_construction') )
+				$product->finish_construction($colony);
+			else if ( method_exists($product, 'destination_reached') )
+				$product->destination_reached();
+			
+			// Save changes.
 			$product->save_data();
 			$colony->save_data();
 			

@@ -3,10 +3,18 @@
 $this->require_login();
 $this->layout = 'game';
 
-require(WEBROOT .'classes/Map_Tile.php');
+load_class('Map_Tile');
+load_class('Ship');
+load_class('Fleet');
 
 $colony = new Colony($User->colony_ids[0]);
 $colony->update_resources();
+
+// If there are ships currently at this colony, retrieve their fleet_id.
+$fleets_result = Fleet::fleets_at($colony->x_coord, $colony->y_coord, $User->id);
+$home_fleet = $fleets_result[0];
+$home_fleet->get_ships();
+
 
 //print_r($colony);
 
@@ -44,18 +52,63 @@ $colony->update_resources();
 				<area id="nav_home" class="map_nav_element" shape="polygon" 
 						coords="48,41,40,53,48,64,64,64,73,53,64,41">
 			</map>
+			<img id="navigation_key" src="media/themes/default/images/nav_key.png" />
 			<div id="sector_menu">
 				<ul>
-					<li>
+					<li onclick="$('#recon_popup').show(200);">
 						Scout
 					</li>
-					<li>
+					<li onclick="$('#attack_popup').show(200);">
 						Attack
 					</li>
 					<li>
 						Occupy
 					</li>
 				</ul>
+			</div>
+			<div id="recon_popup" class="popup_dialogue">
+				<div class="popup_title">
+					Scouting Mission
+					<img class="popup_x" src="media/themes/default/images/x.png" 
+							onclick="$('#recon_popup').hide();" />
+				</div>
+				<div class="popup_content">
+					Select ships to send:
+					<div id="scouting_ship_selector" class="ship_selector"></div>
+					<div>
+						<!-- Secondary Mission selector -->
+					</div>
+					<div class="button1_div">
+						<a id="dispatch_scouts_button" class="button1" >Dispatch </a>
+					</div>
+				</div>
+			</div>
+			<div id="attack_popup" class="popup_dialogue">
+				<div class="popup_title">
+					Assemble an Attack Fleet
+					<img class="popup_x" src="media/themes/default/images/x.png" 
+							onclick="$('#attack_popup').hide();" />
+				</div>
+				<div class="popup_content">
+					Select ships to send:
+					<div id="attack_ship_selector" class="ship_selector">
+						<?php
+							foreach ( Ship::$types as $key => $name )
+							{
+								echo '<div style="float:left; margin-right:7px;">';
+								echon($name);
+								echon('<img src="media/themes/default/images/ship'. $key .'.png" height="100px;"/>');
+								echo	'<input type="number" min="0" style="width:40px" value="0" id="attack_ship'. $key .'_count" /> / '. ( isset($home_fleet->ships[$key]) ? $home_fleet->ships[$key]->count : '0');
+								echo '</div>';
+								
+							}
+						?>
+						<div style="clear:left"></div>
+					</div>
+					<div class="button1_div">
+						<a id="dispatch_attack_button" class="button1" >Dispatch </a>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="game_screen" id="colony_management_screen">
@@ -122,14 +175,14 @@ $colony->update_resources();
 	var player_id = <?php echo $User->id; ?>;
 	var player_username = '<?php echo $User->username; ?>';
 	
+	// Keep track of player's home colony tile
+	var home_tile_x = <?php echo $colony->x_coord; ?>;
+	var home_tile_y = <?php echo $colony->y_coord; ?>;
+
 	// Keep track of which tile is at the center of the map screen.
 	// Center the map on this player's colony to start with.
-	var center_tile_x = <?php echo $colony->x_coord; ?>;
-	var center_tile_y = <?php echo $colony->y_coord; ?>;
-
-	// Keep track of player's home colony tile
-	var home_tile_x = center_tile_x;
-	var home_tile_y = center_tile_y;
+	var center_tile_x = home_tile_x;
+	var center_tile_y = home_tile_y;
 	
 	var colony_id = <?php echo $colony->id; ?>;
 	var theme = 'default';
@@ -137,6 +190,8 @@ $colony->update_resources();
 	var buildings = new Array();
 	// An array for buildings' data that is derived.
 	var buildings_method_data = new Array();
+	
+	var home_fleet_id = <?php echo $home_fleet->id; ?>;
 	
 	// This function manages the visual hiding and showing of the screens.
 	// DO NOT EDIT THIS FUNCTION

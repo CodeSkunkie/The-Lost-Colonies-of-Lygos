@@ -29,7 +29,8 @@ abstract class Ship
 	}
 	
 	// TODO: define the various ship attribute fields.
-	public $type, $attack, $defense, $hp, $shield, $capacity, $cargo, $speed, $level;
+	public $type, $attack, $defense, $hp, $shield, $capacity, $cargo, $speed, 
+		$level, $evasion, $accuracy;
 	
 	public $name;
 	public $long_descript;

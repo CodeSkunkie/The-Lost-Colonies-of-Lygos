@@ -31,12 +31,6 @@ $('#link_div_map').click(function() {
 		"usemap": '#nav_panel_map'
 	});
 	nav_panel.appendTo('#navigation_panel_div');
-
-	// add map key
-	jQuery('<img>', {
-		"id": 'navigation_key',
-		"src": 'media/themes/default/images/nav_key.png'
-	}).appendTo('#map_screen');
 });
 
 function draw_map(tiles, name) {
@@ -96,7 +90,9 @@ function draw_map(tiles, name) {
 		var selector = $('<img>', {
 			"id": 'map_tile_selector'+ i + 'div',
 			"class": 'map_tile_div_select',
-			"src": 'media/themes/default/images/tile_selected.png'
+			"src": 'media/themes/default/images/tile_selected.png',
+			"x": center_tile_x+rel_x,
+			"y": center_tile_y+rel_y
 		});
 
 		// set position of divs
@@ -113,18 +109,116 @@ function draw_map(tiles, name) {
 		rel_x++;
 	}
 	
-	if ( !sectors_click_listener_enabled )
-	{
-		$('.map_tile_div_select').click(function(event) {;
-			var offset = $('#game_secondary_screen').position();
-			var x = event.clientX - offset.left - 35;
-			var y = event.clientY - offset.top - 40;
-			$('#sector_menu').css('left', x +'px');
-			$('#sector_menu').css('top', y +'px');
-			$('#sector_menu').show(100);
+	// This event listener must be made anew each time the
+	// elemnts it's listening to get re-created.
+	$('.map_tile_div_select').click(function(event) {
+		var offset = $('#game_secondary_screen').position();
+		var mouse_x = event.clientX - offset.left - 25;
+		var mouse_y = event.clientY - offset.top - 40;
+		// TODO: fix the positioning to be independent of window size.
+		$('#sector_menu').css('left', mouse_x +'px');
+		$('#sector_menu').css('top', mouse_y +'px');
+		$('#sector_menu').show(100);
+		
+		// Get the x and y coordinates for the sector the user clicked.
+		var sector_x = $(this).attr('x');
+		var sector_y = $(this).attr('y');
+		var home_fleet = null;
+		var ref_ships = [];
+		
+		// Retrieve the most up-to-date home-fleet info.
+		request_data('get_fleet', 
+			{"x": home_tile_x, "y": home_tile_y},
+			function(json_data) {
+				home_fleet = json_data['fleet'];
+				ref_ships = json_data['ref_ships'];
+				
+				// Populate the ship-selector menus.
+				// Clear the ship selector
+				$('#scouting_ship_selector').html('');
+				// See if there is even a fleet at home.
+				if ( home_fleet !== false )
+				{
+					for ( var ship_type in home_fleet.ships )
+					{
+						$('<div/>', {
+							"id": "recon_ship_selector_ship"+ ship_type,
+							"style": "float:left; margin-right: 7px;"
+						}).appendTo('#scouting_ship_selector');
+						$('<div/>', {
+							"text": ref_ships[ship_type].name
+						}).appendTo('#recon_ship_selector_ship'+ ship_type);
+						$('<img/>', {
+							"src": "media/themes/default/images/ship"+ ship_type +".png",
+							"style": "",
+							"height": "100px"
+						}).appendTo('#recon_ship_selector_ship'+ ship_type);
+						$('<br/>').appendTo('#recon_ship_selector_ship'+ ship_type);
+						$('<input/>', {
+							"type": "number",
+							"value": "0",
+							"min": "0",
+							"max": home_fleet.ships[ship_type].count,
+							"style": "width:40px;",
+							"id": "scouting_ship"+ ship_type +"_count"
+						}).appendTo('#recon_ship_selector_ship'+ ship_type);
+						$('<span/>', {
+							"text": " / "+ home_fleet.ships[ship_type].count
+						}).appendTo('#recon_ship_selector_ship'+ ship_type);
+						$('<div/>', {
+							"style": "clear: left;"
+						}).appendTo('#scouting_ship_selector');
+					}
+				}
+				
+				if ( !home_fleet || home_fleet.ships.length == 0 )
+				{
+					// No ships to select from.
+					$('<div/>', {
+						"text": "You have no ships at home!"
+					}).appendTo('#scouting_ship_selector');
+				}
+			}
+		);
+		
+		$('#dispatch_scouts_button').click(function() {
+			request_parameters = {"fleet_id": home_fleet_id, 
+				"to_x_coord": sector_x,
+				"to_y_coord": sector_y,
+				"primary_objective": 1,
+				"secondary_objective": 0};
+			for ( var i = 0; i < 4; i++  )
+				request_parameters['ship'+ i +'_count'] = $('#scouting_ship'+ i +'_count').val();
+			request_data('dispatch_fleet', 
+				request_parameters,
+				function(json_data) {
+					if ( typeof json_data.WARNING != 'undefined' )
+						alert('Warning: '+ json_data.WARNING);
+					else
+						$('#recon_popup').hide();
+				}
+			);
 		});
-		sectors_click_listener_enabled = true;
-	}
+		$('#dispatch_attack_button').click(function() {
+			request_parameters = {"fleet_id": home_fleet_id, 
+				"to_x_coord": sector_x,
+				"to_y_coord": sector_y,
+				"primary_objective": 2,
+				"secondary_objective": 0};
+			for ( var i = 0; i < 4; i++  )
+				request_parameters['ship'+ i +'_count'] = $('#attack_ship'+ i +'_count').val();
+			request_data('dispatch_fleet', 
+				request_parameters,
+				function(json_data) {
+					if ( typeof json_data.WARNING != 'undefined' )
+						alert('Warning: '+ json_data.WARNING);
+					else
+						$('#recon_popup').hide();
+				}
+			);
+		});
+	});
+	sectors_click_listener_enabled = true;
 	
 	// Display this screen.
 	change_screen(name);
@@ -215,7 +309,9 @@ function refresh_map(name) {
 
 				// update coordinates for all tiles
 				$('#map_tile'+i+'coords').text('('+(center_tile_x+rel_x)+','+(center_tile_y+rel_y)+')');
-
+				$('#map_tile_selector'+ i + 'div').attr('x', center_tile_x+rel_x);
+				$('#map_tile_selector'+ i + 'div').attr('y', center_tile_y+rel_y);
+				
 				// helps with tile coordinates
 				rel_x++;
 			}

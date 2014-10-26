@@ -113,7 +113,7 @@ class Mega_Fleet
 			$dmg_to_distribute--;
 		}
 		
-		// Remove some ships from megafleet1 based on the damage distribution.
+		// Remove some ships from this megafleet based on the damage distribution.
 		foreach ( $mf1_dmg_distr as $ship_type => $damage )
 		{
 			$mf_type_deaths = $damage / $ref_ships[$ship_type]->hp;
@@ -127,6 +127,8 @@ class Mega_Fleet
 				$fleet->ships[$ship_type] -= $f_type_deaths;
 			}
 		}
+		
+		// TODO: Are there even any ships left?
 		
 		// Save new ship counts to the database for each fleet in mf1.
 		foreach ( $this->fleets as $fleet )
