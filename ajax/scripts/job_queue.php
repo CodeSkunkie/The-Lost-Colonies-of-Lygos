@@ -4,6 +4,9 @@
 	
 	load_class('Job');
 	load_class('Colony_Building');
+	load_class('Ship');
+	load_class('Research_Item');
+	load_class('Fleet');
 	// TODO: load the classes for ships and research items.
 	
 	// Retrieve and sanatize input variables for this script.
@@ -31,7 +34,11 @@
 				$job['old_level'] = $product->level;
 				$job['new_level'] = $product->level +1;
 			}
-			$job['product_name'] = $product->name;
+			
+			if ( property_exists( get_class($product), 'name') )
+				$job['product_name'] = $product->name;
+			else if ( get_class($product) == 'Fleet' )
+				$job['product_name'] = 'Fleet Movement';
 			
 			$this->data['jobs'][] = $job;
 		}

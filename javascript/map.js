@@ -128,46 +128,52 @@ function draw_map(tiles, name) {
 		
 		// Retrieve the most up-to-date home-fleet info.
 		request_data('get_fleet', 
-			{"x": home_tile_x, "y": home_tile_y},
+			{"x": home_tile_x, "y": home_tile_y, "colony_id": colony_id},
 			function(json_data) {
 				home_fleet = json_data['fleet'];
 				ref_ships = json_data['ref_ships'];
 				
 				// Populate the ship-selector menus.
-				// Clear the ship selector
-				$('#scouting_ship_selector').html('');
+				// Clear the ship selectors
+				$('.ship_selector').html('');
+				$('.dispatch_fleet_btn').show();
 				// See if there is even a fleet at home.
 				if ( home_fleet !== false )
 				{
-					for ( var ship_type in home_fleet.ships )
+					var sector_actions = ['scouting', 'attack', 'holdpos'];
+					for ( var i in sector_actions )
 					{
-						$('<div/>', {
-							"id": "recon_ship_selector_ship"+ ship_type,
-							"style": "float:left; margin-right: 7px;"
-						}).appendTo('#scouting_ship_selector');
-						$('<div/>', {
-							"text": ref_ships[ship_type].name
-						}).appendTo('#recon_ship_selector_ship'+ ship_type);
-						$('<img/>', {
-							"src": "media/themes/default/images/ship"+ ship_type +".png",
-							"style": "",
-							"height": "100px"
-						}).appendTo('#recon_ship_selector_ship'+ ship_type);
-						$('<br/>').appendTo('#recon_ship_selector_ship'+ ship_type);
-						$('<input/>', {
-							"type": "number",
-							"value": "0",
-							"min": "0",
-							"max": home_fleet.ships[ship_type].count,
-							"style": "width:40px;",
-							"id": "scouting_ship"+ ship_type +"_count"
-						}).appendTo('#recon_ship_selector_ship'+ ship_type);
-						$('<span/>', {
-							"text": " / "+ home_fleet.ships[ship_type].count
-						}).appendTo('#recon_ship_selector_ship'+ ship_type);
+						var saction = sector_actions[i];
+						for ( var ship_type in home_fleet.ships )
+						{
+							$('<div/>', {
+								"id": saction +"_ship_selector_ship"+ ship_type,
+								"style": "float:left; margin-right: 7px;"
+							}).appendTo('#'+ saction +'_ship_selector');
+							$('<div/>', {
+								"text": ref_ships[ship_type].name
+							}).appendTo('#'+ saction +'_ship_selector_ship'+ ship_type);
+							$('<img/>', {
+								"src": "media/themes/default/images/ship"+ ship_type +".png",
+								"style": "",
+								"height": "100px"
+							}).appendTo('#'+ saction +'_ship_selector_ship'+ ship_type);
+							$('<br/>').appendTo('#'+ saction +'_ship_selector_ship'+ ship_type);
+							$('<input/>', {
+								"type": "number",
+								"value": "0",
+								"min": "0",
+								"max": home_fleet.ships[ship_type].count,
+								"style": "width:40px;",
+								"id": saction +"_ship"+ ship_type +"_count"
+							}).appendTo('#'+ saction +'_ship_selector_ship'+ ship_type);
+							$('<span/>', {
+								"text": " / "+ home_fleet.ships[ship_type].count
+							}).appendTo('#'+ saction +'_ship_selector_ship'+ ship_type);
+						}
 						$('<div/>', {
 							"style": "clear: left;"
-						}).appendTo('#scouting_ship_selector');
+						}).appendTo('#'+ saction +'_ship_selector');
 					}
 				}
 				
@@ -176,17 +182,21 @@ function draw_map(tiles, name) {
 					// No ships to select from.
 					$('<div/>', {
 						"text": "You have no ships at home!"
-					}).appendTo('#scouting_ship_selector');
+					}).appendTo('.ship_selector');
+					
+					$('.dispatch_fleet_btn').hide();
 				}
 			}
 		);
 		
+		$('#dispatch_scouts_button').unbind('click');
 		$('#dispatch_scouts_button').click(function() {
-			request_parameters = {"fleet_id": home_fleet_id, 
+			var request_parameters = {"fleet_id": home_fleet_id, 
 				"to_x_coord": sector_x,
 				"to_y_coord": sector_y,
-				"primary_objective": 1,
-				"secondary_objective": 0};
+				"primary_objective": 2,
+				"secondary_objective": 0,
+				"from_colony_id": colony_id};
 			for ( var i = 0; i < 4; i++  )
 				request_parameters['ship'+ i +'_count'] = $('#scouting_ship'+ i +'_count').val();
 			request_data('dispatch_fleet', 
@@ -195,16 +205,23 @@ function draw_map(tiles, name) {
 					if ( typeof json_data.WARNING != 'undefined' )
 						alert('Warning: '+ json_data.WARNING);
 					else
-						$('#recon_popup').hide();
+					{
+						$('.dispatch_fleet_btn').hide();
+						$('#scouting_popup').hide();
+						$('.ship_selector').html('');
+						fetch_jobs_queue();
+					}
 				}
 			);
 		});
+		$('#dispatch_attack_button').unbind('click');
 		$('#dispatch_attack_button').click(function() {
-			request_parameters = {"fleet_id": home_fleet_id, 
+			var request_parameters = {"fleet_id": home_fleet_id, 
 				"to_x_coord": sector_x,
 				"to_y_coord": sector_y,
-				"primary_objective": 2,
-				"secondary_objective": 0};
+				"primary_objective": 0,
+				"secondary_objective": 0,
+				"from_colony_id": colony_id};
 			for ( var i = 0; i < 4; i++  )
 				request_parameters['ship'+ i +'_count'] = $('#attack_ship'+ i +'_count').val();
 			request_data('dispatch_fleet', 
@@ -213,7 +230,37 @@ function draw_map(tiles, name) {
 					if ( typeof json_data.WARNING != 'undefined' )
 						alert('Warning: '+ json_data.WARNING);
 					else
-						$('#recon_popup').hide();
+					{
+						$('.dispatch_fleet_btn').hide();
+						$('#attack_popup').hide();
+						$('.ship_selector').html('');
+						fetch_jobs_queue();
+					}
+				}
+			);
+		});
+		$('#dispatch_holdpos_button').unbind('click');
+		$('#dispatch_holdpos_button').click(function() {
+			var request_parameters = {"fleet_id": home_fleet_id, 
+				"to_x_coord": sector_x,
+				"to_y_coord": sector_y,
+				"primary_objective": 1,
+				"secondary_objective": 0,
+				"from_colony_id": colony_id};
+			for ( var i = 0; i < 4; i++  )
+				request_parameters['ship'+ i +'_count'] = $('#holdpos_ship'+ i +'_count').val();
+			request_data('dispatch_fleet', 
+				request_parameters,
+				function(json_data) {
+					if ( typeof json_data.WARNING != 'undefined' )
+						alert('Warning: '+ json_data.WARNING);
+					else
+					{
+						$('.dispatch_fleet_btn').hide();
+						$('#holdpos_popup').hide();
+						$('.ship_selector').html('');
+						fetch_jobs_queue();
+					}
 				}
 			);
 		});

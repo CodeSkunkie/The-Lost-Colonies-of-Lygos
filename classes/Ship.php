@@ -41,7 +41,9 @@ abstract class Ship
 	// TODO: define the various ship attribute fields.
 	public $type, $attack, $defense, $hp, $shield, $capacity, $cargo, $speed, 
 		$level, $evasion, $accuracy;
-	
+	// $speed is measured in tiles per hour.
+	// $evasion and accuracy are values between 1 and 100 representing the
+	//		percent chance of evading/hitting.
 	public $name;
 	public $long_descript;
 	

@@ -156,6 +156,24 @@ class Colony
 		// Clean up
 		unset($building);
 	}
+	
+	public static function get_colony_at($x, $y)
+	{
+		global $Mysql;
+		
+		$qry = $Mysql->query("SELECT * FROM `colonies` 
+			WHERE `x_coord` = '". $x ."' AND 
+				`y_coord` = '". $y ."'");
+		if ( $qry->num_rows > 0 )
+		{
+			$fleet_row = $qry->fetch_assoc();
+			$fleet = new Fleet($fleet_row);
+		}
+		else
+			$fleet = false;
+		
+		return $fleet;
+	}
 }
 
 ?>

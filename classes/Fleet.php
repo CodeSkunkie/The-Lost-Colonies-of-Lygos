@@ -14,6 +14,7 @@ class Fleet extends Database_Row
 		$home_y_coord, $primary_objective, $secondary_objective, $speed, 
 		$traveling, $from_x_coord, $from_y_coord, 
 		$to_x_coord, $to_y_coord, $departure_time, $arrival_time;
+	// $speed is in tiles per hour.
 	
 	// Additional data.
 	public $stats, $ships;
@@ -47,7 +48,7 @@ class Fleet extends Database_Row
 		// the script itself changes them, so only let this object
 		// retrieve its ships once.
 		
-		if ( $this->ships == [] || !empty($this->ships) )
+		if ( is_array($this->ships) )
 		{
 			// The ships have already been retrieved or set manually.
 		}
@@ -61,7 +62,7 @@ class Fleet extends Database_Row
 	
 	public function save_ships()
 	{
-		if ( $this->ships == [] || !empty($this->ships) )
+		if ( is_array($this->ships) )
 		{
 			return Fleet_Ship::set_ships_in_fleet($this->id, $this->ships);
 		}
@@ -99,7 +100,7 @@ class Fleet extends Database_Row
 		$ref_ships = Ship::get_reference_ships();
 
 		// List of stat names to tally.
-		$stat_names = array('atk', 'def', 'shield', 'hp');
+		$stat_names = array('attack', 'defense', 'shield', 'hp');
 		
 		// Tally ship stats.
 		foreach ( $this->ships as $fship )
@@ -130,54 +131,161 @@ class Fleet extends Database_Row
 	// This function gets called when this fleet has reached its destination.
 	public function destination_reached()
 	{
+		global $Mysql;
+		
 		// Is this fleet reaching its target or its home?
 		if ( $this->home_x_coord == $this->to_x_coord &&
 				 $this->home_y_coord == $this->to_y_coord  )
 		{
 			// This fleet just arrived back home.
-			$this->current_x_coord = $this->home_x_coord;
-			$this->current_y_coord = $this->home_y_coord;
-			$this->traveling = 0;
+			// Merge its ships into the home fleet if one exists.
+			$fleets_here = Fleet::fleets_at($this->home_x_coord, $this->home_y_coord, $this->owner);
+			if ( !empty($fleets_here) )
+			{
+				$home_fleet = $fleets_here[0];
+				$home_fleet->get_ships();
+				$this->get_ships();
+				foreach ( $this->ships as $type => $fship )
+				{
+					if ( isset($home_fleet->ships[$type]) )
+						$home_fleet->ships[$type]->count += $fship->count;
+					else
+					{
+						$home_fleet->ships[$type] = new Fleet_Ship([
+							'type' => $fship->type,
+							'count' => $fship->count]);
+						
+					}
+				}
+				$home_fleet->save_ships();
+				$this->delete();
+			}
+			else
+			{
+				// No fleet at home. Make this the home fleet.
+				$this->current_x_coord = $this->home_x_coord;
+				$this->current_y_coord = $this->home_y_coord;
+				$this->traveling = 0;
+			}
 		}
 		else
 		{
 			// Perform the action for this fleet's mission(s).
-			if ( Fleet::$objectives1[$this->primary_objective] == 'attack' )
+			$mission = Fleet::$objectives1[$this->primary_objective];
+			
+			
+			if ( $mission == 'hold_position' )
 			{
-				$mf1 = new Mega_Fleet([$this]);
-				// TODO: retrieve the defending fleets.
-				$away_fleets = Fleet::fleets_at($this->to_x_coord, $this->to_y_coord);
-				$participating_away_fleets = array();
-				foreach ( $away_fleets as $away_fleet )
+				$this->current_x_coord = $this->to_x_coord;
+				$this->current_y_coord = $this->to_y_coord;
+				$this->traveling = 0;
+			}
+			else
+			{
+				if ( $mission == 'attack' )
 				{
-					$missn = Fleet::$objectives2[$away_fleet->primary_objective];
-					if ( $missn == 'defend_object' || $missn == 'attack_visitors'
-							|| $missn == 'attack_if_attacked' )
+					$mf1 = new Mega_Fleet([$this]);
+					// Retrieve the fleets that are already in the destination sector.
+					$away_fleets = Fleet::fleets_at($this->to_x_coord, $this->to_y_coord);
+					// See which away_fleets will be participating in the fight.
+					$participating_away_fleets = array();
+					foreach ( $away_fleets as $away_fleet )
 					{
-						$participating_away_fleets[] = $away_fleet;
+						$mission = Fleet::$objectives2[$away_fleet->primary_objective];
+						if ( $mission == 'defend_object' || $mission == 'attack_visitors'
+								|| $mission == 'attack_if_attacked' )
+						{
+							$participating_away_fleets[] = $away_fleet;
+						}
+					}
+					$mf2 = new Mega_Fleet($participating_away_fleets);
+					
+					// FIGHT!
+					Mega_Fleet::fleet_battle($mf1, $mf2);
+				}
+				else if ( $mission == 'scout' )
+				{
+					// Retrieve world objects, colonies in this sector.
+					$a_colony = Colony::get_colony_at($this->to_x_coord, $this->to_y_coord);
+					if ( $a_colony )
+					{
+						// TODO: finish writing this bit.
+//						$Mysql->qry("INSERT INTO `player_tiles_cache`
+//							SET ");
 					}
 				}
-				$mf2 = new Mega_Fleet($participating_away_fleets);
-				Mega_Fleet::fleet_battle($mf1, $mf2);
+				
+				// Reverse direction.
+				
+				// Calculate travel distance.
+				$travel_distance = hex_distance(
+						$this->from_x_coord, 
+						$this->from_y_coord,
+						$this->to_x_coord, $this->to_y_coord);
+				// Calculate fleet speed.
+				$this->calculate_speed();
+				// Calculate travel duration.
+				$travel_duration = $this->travel_time($travel_distance);
+				
+				// Send the fleet back home.
+				$this->from_x_coord = $this->to_x_coord;
+				$this->from_y_coord = $this->to_y_coord;
+				$this->to_x_coord = $this->home_x_coord;
+				$this->to_y_coord = $this->home_y_coord;
+				$this->departure_time = $this->arrival_time;
+				$this->arrival_time = $this->departure_time + $travel_duration;
+				$this->primary_objective = 1;
+				
+				// Create a new job for the return trip.
+				// See which colony's job queue to put this in.
+				load_class('Colony');
+				$colony = Colony::get_colony_at($this->home_x_coord, $this->home_y_coord);
+				$Mysql->query("INSERT INTO `job_queue` SET
+					`colony_id` = '". $colony->id ."',
+					`type` = 3,
+					`product_id` = '". $this->id ."',
+					`product_type` = 1,
+					`start_time` = ". $this->departure_time .",
+					`duration` = '". $travel_duration ."',
+					`completion_time` = '". $this->arrival_time ."'");
+				
+				// TODO: possible complication: a fleet is out attacking but is scheduled to return
+				// before an attack hits that fleet's home but the job queue doesn't contain the
+				// fleet's return job until after its attack job is processed.
+				// Cron?
+				// alternative: enter both the going and returning jobs at the same time.
+				// Alternative: complete each job in order and as it gets completed, 
+				//			re-query the job table to find the next job to execute.
 			}
-			
-			// Send the fleet back home.
-			$this->speed = $this->calculate_speed();
-			$this->from_x_coord = $this->to_x_coord;
-			$this->from_y_coord = $this->to_y_coord;
-			$this->to_x_coord = $this->home_x_coord;
-			$this->to_y_coord = $this->home_y_coord;
-			$this->departure_time = $this->arrival_time;
-			
-			
-			// TODO: possible complication: a fleet is out attacking but is scheduled to return
-			// before an attack hits that fleet's home but the job queue doesn't contain the
-			// fleet's return job until after its attack job is processed.
-			// Cron?
-			// alternative: enter both the going and returning jobs at the same time.
 		}
-		
 		$this->save_data();
+	}
+	
+	// Given a distance, returns a travel time in seconds.
+	// $distance is the number of tiles moved between
+	// along the chosen path.
+	public function travel_time($distance)
+	{
+		// d = rt;		t = d/r;		r = d/t
+		// $this->speed is stored in tiles per hour. 
+		$hours = $distance / $this->speed;
+		$seconds = $hours * 3600;
+		return $seconds;
+	}
+	
+	// Removes this fleet from the database.
+	public function delete()
+	{
+		global $Mysql;
+		
+		// First, remove this fleet's ships from the DB.
+		$this->get_ships();
+		foreach ( $this->ships as $fship )
+			$fship->delete();
+		
+		// Now delete the fleet.
+		$Mysql->query("DELETE FROM `fleets` 
+			WHERE `id` = '". $this->id ."' ");
 	}
 }
 

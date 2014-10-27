@@ -31,8 +31,8 @@ class Job extends Database_Row
 	{
 		if ( $product_id == 0 )
 		{
-			// Make a generic ojbect for a product that doesn't yet exist.
-			if ( $job_type == 0 )
+			// Make a generic object for a product that doesn't yet exist.
+			if ( Job::$types[$job_type] == 'Colony_Building' )
 			{
 				$building = Colony_Building::construct_child([
 					'type' => $product_type,
@@ -42,16 +42,56 @@ class Job extends Database_Row
 
 				return $building;
 			}
+			else if ( Job::$types[$job_type] == 'Ship' )
+			{
+// TODO: (TJ)
+//				$building = Ship::construct_child([
+//					'type' => $product_type,
+//					'level' => 0,
+//					'colony_id' => $colony_id
+//				]);
+			}
+			else if ( Job::$types[$job_type] == 'Research_Item' )
+			{
+// TODO: (Allen)
+//				$building = Ship::construct_child([
+//					'type' => $product_type,
+//					'level' => 0,
+//					'colony_id' => $colony_id
+//				]);
+			}
+			else if ( Job::$types[$job_type] == 'Fleet' )
+			{
+				// This shouldn't happen because fleets aren't
+				// constructed by jobs.
+			}
 		}
 		else
 		{
 			// Make an ojbect for a pre-existing product.
-			if ( $job_type == 0 )
+			if ( Job::$types[$job_type] == 'Colony_Building' )
 			{
 				return Colony_Building::construct_child([
 					'type' => $product_type,
 					'id' => $product_id
 				]);
+			}
+			else if ( Job::$types[$job_type] == 'Ship' )
+			{
+				// This would only be used if a ship gets upgraded directly.
+				// It should be upgraded through research items instead though.
+			}
+			else if ( Job::$types[$job_type] == 'Research_Item' )
+			{
+// TODO: (Allen)
+//				return Research_Item::construct_child([
+//					'type' => $product_type,
+//					'id' => $product_id
+//				]);
+			}
+			else if ( Job::$types[$job_type] == 'Fleet' )
+			{
+				return new Fleet($product_id);
 			}
 		}
 	}

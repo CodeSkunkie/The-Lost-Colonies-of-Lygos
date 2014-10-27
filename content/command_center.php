@@ -57,22 +57,22 @@ if ( !empty($fleets_result) )
 			<img id="navigation_key" src="media/themes/default/images/nav_key.png" />
 			<div id="sector_menu">
 				<ul>
-					<li onclick="$('#recon_popup').show(200);">
+					<li onclick="$('#scouting_popup').show(200);">
 						Scout
 					</li>
 					<li onclick="$('#attack_popup').show(200);">
 						Attack
 					</li>
-					<li>
+					<li onclick="$('#holdpos_popup').show(200);">
 						Occupy
 					</li>
 				</ul>
 			</div>
-			<div id="recon_popup" class="popup_dialogue">
+			<div id="scouting_popup" class="popup_dialogue">
 				<div class="popup_title">
 					Scouting Mission
 					<img class="popup_x" src="media/themes/default/images/x.png" 
-							onclick="$('#recon_popup').hide();" />
+							onclick="$('#scouting_popup').hide();" />
 				</div>
 				<div class="popup_content">
 					Select ships to send:
@@ -81,7 +81,7 @@ if ( !empty($fleets_result) )
 						<!-- Secondary Mission selector -->
 					</div>
 					<div class="button1_div">
-						<a id="dispatch_scouts_button" class="button1" >Dispatch </a>
+						<a id="dispatch_scouts_button" class="button1 dispatch_fleet_btn" >Dispatch </a>
 					</div>
 				</div>
 			</div>
@@ -97,7 +97,23 @@ if ( !empty($fleets_result) )
 						<div style="clear:left"></div>
 					</div>
 					<div class="button1_div">
-						<a id="dispatch_attack_button" class="button1" >Dispatch </a>
+						<a id="dispatch_attack_button" class="button1 dispatch_fleet_btn" >Dispatch </a>
+					</div>
+				</div>
+			</div>
+			<div id="holdpos_popup" class="popup_dialogue">
+				<div class="popup_title">
+					Assemble a Fleet
+					<img class="popup_x" src="media/themes/default/images/x.png" 
+							onclick="$('#holdpos_popup').hide();" />
+				</div>
+				<div class="popup_content">
+					Select ships to send:
+					<div id="holdpos_ship_selector" class="ship_selector">
+						<div style="clear:left"></div>
+					</div>
+					<div class="button1_div">
+						<a id="dispatch_holdpos_button" class="button1 dispatch_fleet_btn" >Dispatch </a>
 					</div>
 				</div>
 			</div>
@@ -141,7 +157,7 @@ if ( !empty($fleets_result) )
 		</div>
 	</div>
 	
-	<div id="job_queue_div_mini" style="position:absolute; top:310px; left:10px; height:260px; width:150px; text-align:left; color:#ffffff;" >
+	<div id="job_queue_div_mini">
 		<div class="menu_title_mini">JOB STATUS</div>
 		<div id="jobs_list_mini">loading...</div>
 	</div>

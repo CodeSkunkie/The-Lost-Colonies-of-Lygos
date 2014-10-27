@@ -9,7 +9,6 @@
 	$this->require_login();
 
 	load_class('Fleet');
-	load_class('Traveling_Fleet');
 	load_class('Fleet_Ship');
 	load_class('Ship');
 	

@@ -54,11 +54,6 @@ function refresh_jobs_queue_offline()
 	for ( var i in jobs )
 	{
 		var job = jobs[i];
-//			console.log(new Date().getTime());
-//			console.log(job.completion_time)
-//			console.log((new Date().getTime() - (job.start_time * 1000)));
-//			console.log(((job.completion_time - job.start_time)*1000));
-//			console.log("\n");
 		var percent_completed = 100 * ((new Date().getTime() - (job.start_time * 1000)) / ((job.completion_time - job.start_time)*1000));
 		if ( percent_completed > 100 )
 		{
@@ -68,6 +63,8 @@ function refresh_jobs_queue_offline()
 			});
 			// Remove this job from the javascript array of jobs.
 			jobs.splice(i, 1);
+			// Refresh the jobs queue to look for new jobs.
+			fetch_jobs_queue();
 		}
 		$("#job"+ i +"_progress_bar_inner1").css("width", percent_completed +"%");
 	}

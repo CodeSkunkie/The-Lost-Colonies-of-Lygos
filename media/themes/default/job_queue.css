@@ -1,3 +1,15 @@
+
+#job_queue_div_mini {
+	position:absolute;
+	top:310px;
+	left:10px;
+	height:260px;
+	width:150px;
+	text-align:left;
+	color:#ffffff;
+	overflow: auto;
+}
+
 .job_progress_bar {
 	position: relative;
 	height:9px;

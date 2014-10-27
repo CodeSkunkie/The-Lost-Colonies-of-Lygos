@@ -15,13 +15,13 @@ class Mega_Fleet
 			$fleet->battle_prep();
 			
 			// Add ships from each fleet into the mega fleet.
-			foreach ($fleet->ships as $fship)
+			foreach ($fleet->ships as $type => $fship)
 			{
 				// See if this type of ships is already in the ships array.
-				if ( $megafship = $this->find_ship_type($fship->type) )
-					$megafship->count += $fship->count;
+				if ( isset($this->ships[$type]) )
+					$this->ships[$type]->count += $fship->count;
 				else
-					$this->ships[] = $fship;
+					$this->ships[$type] = $fship;
 			}
 		}
 		
@@ -42,7 +42,7 @@ class Mega_Fleet
 	private function calculate_stats()
 	{
 		// List of stat names to tally.
-		$stat_names = array('atk', 'def', 'shield', 'hp');
+		$stat_names = array('attack', 'defense', 'shield', 'hp');
 		
 		// Make some ship objects for stat references.
 		$ref_ships = Ship::get_reference_ships();
@@ -70,8 +70,8 @@ class Mega_Fleet
 		
 		// Calculate a "normal" battle where both fleets are attacking.
 		// Remove ships from both sides based on attack differentials.
-		$mf1->take_damage($mf2->stats['atk'] - $mf1->stats['def']);
-		$mf2->take_damage($mf1->stats['atk'] - $mf2->stats['def']);
+		$mf1->take_damage($mf2->stats['attack'] - $mf1->stats['defense']);
+		$mf2->take_damage($mf1->stats['attack'] - $mf2->stats['defense']);
 		
 		
 		// TODO: remove the fleet row if all ships were destroyed?
@@ -85,6 +85,12 @@ class Mega_Fleet
 		$dmg_to_distribute = $dmg;
 		// Array to keep track of where the damage lands (distribution).
 		$mf1_dmg_distr = array();
+		foreach ( $this->ships as $fship )
+			$mf1_dmg_distr[$fship->type] = 0;
+			
+		// Make some ship objects for stat references.
+		$ref_ships = Ship::get_reference_ships();
+		
 		// Iterate over each damage point.
 		while ( $dmg_to_distribute > 0 )
 		{
@@ -93,7 +99,7 @@ class Mega_Fleet
 			foreach ( $this->ships as $fship )
 			{
 				// Iterate through each ship of this ship type.
-				for ( $i = 0; $i < $fship->count )
+				for ( $i = 0; $i < $fship->count; $i++ )
 				{
 					
 					// roll a d100 to see if the damage hits this target.
@@ -111,18 +117,24 @@ class Mega_Fleet
 			$dmg_to_distribute--;
 		}
 		
+		// TODO: Problem: ships getting removed from this mf before
+		//		calculations for damage to the other mf are computed.
 		// Remove some ships from this megafleet based on the damage distribution.
 		foreach ( $mf1_dmg_distr as $ship_type => $damage )
 		{
 			$mf_type_deaths = $damage / $ref_ships[$ship_type]->hp;
-			$this->ships[$ship_type] -= $mf_type_deaths;
+			$this->ships[$ship_type]->count -= round($mf_type_deaths);
+			if ($this->ships[$ship_type]->count < 0)
+				$this->ships[$ship_type]->count = 0;
 			// Remove a proportional number of ships of this type from each fleet in mf1.
 			foreach ( $this->fleets as $fleet )
 			{
 				// Proportion of this ship type that came from this fleet.
-				$proportion = $fleet->ships[$ship_type]->count / $ref_ships[$ship_type]->count;
+				$proportion = $fleet->ships[$ship_type]->count / $this->ships[$ship_type]->count;
 				$f_type_deaths = round($mf_type_deaths * $proportion);
-				$fleet->ships[$ship_type] -= $f_type_deaths;
+				$fleet->ships[$ship_type]->count -= $f_type_deaths;
+				if ( $fleet->ships[$ship_type]->count < 0 )
+					$fleet->ships[$ship_type]->count = 0;
 			}
 		}
 		

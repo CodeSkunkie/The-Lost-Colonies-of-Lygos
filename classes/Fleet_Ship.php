@@ -47,32 +47,39 @@ class Fleet_Ship extends Database_Row
 	public static function set_ships_in_fleet($fleet_id, $fships)
 	{
 		global $Mysql;
+		load_class('Ship');
 		
-		$qry = "";
 		// Iterate over all possible ship types.
-		foreach ( $type = 0; $type < count(Ship::$types); $type++ )
+		for ( $type = 0; $type < count(Ship::$types); $type++ )
 		{
 			// See if this ship type should be in the new fleet.
 			if ( !isset($fships[$type]) )
 			{
 				// This fleet has/(no longer has) no ships of this type.
-				$qry .= " DELETE FROM `fleet_ships` 
+				$Mysql->query(" DELETE FROM `fleet_ships` 
 					WHERE `fleet_id` = '". $fleet_id ."' AND
-						`type` = '". $type ."';\n";
+						`type` = '". $type ."'");
 			}
 			else
 			{
 				// This fleet should have some ships of this type.
 				$fship = $fships[$type];
-				$qry .= "INSERT INTO `fleet_ships` 
+				$Mysql->query("INSERT INTO `fleet_ships` 
 					SET `fleet_id` = '". $fleet_id ."',
 						`type` = '". $type ."',
 						`count` = '". $fship->count ."'
 					ON DUPLICATE KEY UPDATE
-						`count` = '". $fship->count ."'\n";
+						`count` = '". $fship->count ."'");
 			}
 		}
-		$qry = $Mysql->query($qry);
+	}
+	
+	// Removes this object from the database.
+	public function delete()
+	{
+		global $Mysql;
+		$Mysql->query("DELETE FROM `fleet_ships` 
+			WHERE `id` = '". $this->id ."' ");
 	}
 }
 

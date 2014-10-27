@@ -3,13 +3,12 @@
 	$this->require_login();
 
 	load_class('Fleet');
-	load_class('Traveling_Fleet');
 	load_class('Fleet_Ship');
 	load_class('Ship');
 	
 	// Sanitize inputs to this script.
 	$script_inputs = array('fleet_id', 'to_x_coord', 'to_y_coord', 
-		'primary_objective', 'secondary_objective');
+		'primary_objective', 'secondary_objective', 'from_colony_id');
 	for ( $i = 0; $i < count(Ship::$types); $i++ )
 		$script_inputs[] = 'ship'. $i .'_count';
 	foreach ( $script_inputs as $varname )
@@ -42,16 +41,13 @@
 				if ( $ship_count > $pool_fleet->ships[$i]->count )
 					return_warning('You cannot send more ships than you own.');
 				else
-					$pool_fleet->ships[$i]->count -= $ship_count
+					$pool_fleet->ships[$i]->count -= $ship_count;
 					
 				// Add the outgoing ships to an array.
-				$ships_to_send[$i] = new Fleet_Ship(
-					array(
-						'fleet_id' => $fleed_id,
+				$ships_to_send[$i] = new Fleet_Ship([
 						'type' => $i,
 						'count' => $ship_count
-					)
-				);
+				]);
 			}
 		}
 		
@@ -98,8 +94,7 @@
 		$departing_fleet->calculate_speed();
 		
 		// Calculate travel duration and arrival time.
-		$travel_duration = $departing_fleet->speed * $travel_distance * 60 * 45;
-		// (^ Here, a move speed of 1 can traverse a tile in 45 minutes.)
+		$travel_duration = $departing_fleet->travel_time($travel_distance);
 		$arrival_time = time() + $travel_duration;
 		
 		// Update the departing fleet with travel information.
@@ -121,13 +116,13 @@
 		
 		// Add this mission to the job queue.
 		$Mysql->query("INSERT INTO `job_queue` SET
-			`colony_id` = '". $colony_id ."',
+			`colony_id` = '". $from_colony_id ."',
 			`type` = 3,
 			`product_id` = '". $departing_fleet->id ."',
 			`product_type` = '". $departing_fleet->primary_objective ."',
 			`start_time` = ". time() .",
 			`duration` = '". $travel_duration ."',
-			`completion_time` = '". $departing_fleet->arrival_time ."'");	
+			`completion_time` = '". $departing_fleet->arrival_time ."'");
 	}
 	
 ?>

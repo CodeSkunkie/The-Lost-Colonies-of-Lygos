@@ -12,10 +12,10 @@ class Scout_Ship extends Ship
 	public $shield = 5;
 	public $capacity = 1;
 	public $cargo;
-	public $speed = 10;
+	public $speed = 1000;
 	public $level;
-	public $accuracy = 0.7;
-	public $evasion = 0.9;
+	public $accuracy = 70;
+	public $evasion = 90;
 	
 	public function build_duration()
 	{

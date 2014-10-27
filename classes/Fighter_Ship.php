@@ -12,10 +12,10 @@ class Fighter_Ship extends Ship
 	public $shield = 3;
 	public $capacity = 1;
 	public $cargo;
-	public $speed = 10;
+	public $speed = 1500;
 	public $level;
-	public $accuracy = 0.7;
-	public $evasion = 0.7;
+	public $accuracy = 70;
+	public $evasion = 70;
 	
 	public function build_duration()
 	{
