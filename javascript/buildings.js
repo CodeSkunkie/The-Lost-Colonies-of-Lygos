@@ -105,7 +105,12 @@ function select_building(type)
 		"text": "upgrade ",
 		"onclick": "javascript: upgrade_building('"+ colony_id +"', '"+ building.id +"', '"+ building.type +"' ); $(this).attr('disabled', 'disabled');"
 	}).appendTo('#building_info_text_div');
-	
+	if(building.type == 5){
+		$('<button/>', {
+			"text": "research ",
+			"onclick": "javascript: upgrade_research();"
+		}).appendTo('#building_info_text_div');
+	}
 	
 	// animate the opening of div1.
 	var building_info_div1_height = $('#building_info_div1').height();
@@ -173,6 +178,100 @@ function upgrade_building(colony_id, building_id, building_type)
 			}
 		}
 	);
+}
+
+function upgrade_research()
+{
+	$('#research').html('');
+	$('#research').show();	
+	$('#building_info_text_div').hide();	
+
+	$('<div/>', {
+		"id": 'research',
+	}).appendTo('#building_info_div2');
+
+	$('<button/>', {
+		"class": "back_button",
+		"text": "<- ",
+		"onclick": "javascript: back_research();"
+	}).appendTo('#research');
+
+	/*$('<div/>', {
+		"id": "research_title",
+		"text": "Ship Upgrades"
+	}).appendTo('#research');*/
+	$('<select/>', {
+		"id": "research_title",
+		"onchange": "javascript: change_research();"
+	}).appendTo('#research');
+
+	var select = document.getElementById("research_title");
+    var option = document.createElement('option');
+    option.text = "Miscellaneous Upgrades";
+    option.value = "Miscellaneous";
+    select.add(option, 0);
+    var option = document.createElement('option');
+    option.text = "Building Upgrades";
+    option.value = "Building";
+    select.add(option, 0);
+    var option = document.createElement('option');
+    option.text = "Ship Upgrades";
+    option.value = "Ship";
+    select.add(option, 0);
+
+	var ship_upgrades = [
+	    'Fighter',
+	    'Scout',
+	    'Cargo',
+	    'Tank'
+	];
+	for (var i = 0; i < ship_upgrades.length; i++)
+	{
+		$('<img>', {
+			"id": 'research_'+ ship_upgrades[i] +'_img',
+			"class": 'research_img',
+			"src": 'media/themes/'+ theme +'/images/'+ ship_upgrades[i] +'_icon.png',
+			"onclick": "javascript: select_research('"+ colony_id +"', '"+ ship_upgrades[i] +"')"
+		}).appendTo('#research');
+	}
+
+}
+
+function select_research(colony_id, research_type){
+	request_data('construct_research', 
+		{
+			"colony_id": colony_id,
+			"research_type": research_type
+		}, 
+		function(json_data) {
+			// Script successfully called.
+			// Check for warnings.
+			if ( typeof json_data.WARNING != 'undefined' )
+			{
+				if ( json_data.WARNING == 'insufficient_resources' )
+					alert('You do not have enough resources to perform the requested upgrade.');
+				else
+					alert(json_data.WARNING);
+			}
+			else
+			{
+				// No warnings were returned by the script.
+				fetch_jobs_queue();
+				refresh_resources_display();
+			}
+		}
+	);
+}
+
+function change_research(){
+	var title = document.getElementById("research_title");
+	var research = title.options[title.selectedIndex].value;
+	console.log(research);
+}
+
+function back_research(){
+	$('#research').hide();
+	$('#building_info_text_div').show();
 }
 
 

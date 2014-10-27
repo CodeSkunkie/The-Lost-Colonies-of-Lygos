@@ -28,15 +28,15 @@
 			// Retrieve some peripheral data for this job.
 			$product = Job::make_product_object($job['type'], $job['product_id'], 
 					$job['product_type'], $job['colony_id']);
-				
 			if ( property_exists( get_class($product), 'level') )
 			{
 				$job['old_level'] = $product->level;
 				$job['new_level'] = $product->level +1;
 			}
 			
-			if ( property_exists( get_class($product), 'name') )
+			if ( property_exists( get_class($product), 'name') ){
 				$job['product_name'] = $product->name;
+			}
 			else if ( get_class($product) == 'Fleet' )
 				$job['product_name'] = 'Fleet Movement';
 			
