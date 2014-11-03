@@ -71,16 +71,25 @@ abstract class Ship
 	
 	public function upgrade_duration()
 	{
-		return 300; // seconds
+		return 30; // seconds
 	}
 	
 	// This function gets called whenever a ship of this type is built.
 	// $colony is a reference to this building's colony.
-	public function finish_build($colony)
+	public function finish_construction($colony)
 	{
 		$additional_upkeep = $this->upkeep_cost();
 		foreach ( $additional_upkeep as $field => $val )
 			$colony->resources->$field->consumption_rate += $val;
+		
+		$fleet_array = Fleet::fleets_at($colony->x_coord,$colony->y_coord,$User->id);
+		if(!empty($fleet_array)){
+			$home_fleet = $fleet_array[0];
+			$home_fleet->get_ships();
+			$home_fleet->ships[$this->type]->count++;
+			$home_fleet->save_ships();
+		}
+		
 	}
 }
 

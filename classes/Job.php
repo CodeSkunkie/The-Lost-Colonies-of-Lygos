@@ -44,12 +44,14 @@ class Job extends Database_Row
 			}
 			else if ( Job::$types[$job_type] == 'Ship' )
 			{
-// TODO: (TJ)
-//				$building = Ship::construct_child([
-//					'type' => $product_type,
-//					'level' => 0,
-//					'colony_id' => $colony_id
-//				]);
+
+				$ship = Ship::construct_child([
+					'type' => $product_type,
+					'level' => 0,
+					'colony_id' => $colony_id
+				]);
+				
+				return $ship;
 			}
 			else if ( Job::$types[$job_type] == 'Research_Item' )
 			{

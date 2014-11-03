@@ -1,4 +1,8 @@
 
+.ship_display_div{
+	margin-top: 30px;
+}
+
 #ships_container {
 	position: relative;
 	height: 100%;
@@ -118,8 +122,9 @@
 }
 
 .ship_descript {
-	font-size:8pt;
+	font-size:10pt;
 	color:#FFFFFF;
+	margin-bottom:10px;
 }
 .ship_stats {
 	font-size:10pt;

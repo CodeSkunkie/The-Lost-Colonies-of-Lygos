@@ -17,16 +17,7 @@ class Cargo_Ship extends Ship
 	public $accuracy = 20;
 	public $evasion = 5;
 	
-	public function upgrade_duration()
-	{
-		
-	}
 	
-	// This function gets called whenever this ship gets built.
-	public function finish_build($colony)
-	{
-		
-	}
 }
 
 ?>

@@ -17,16 +17,7 @@ class Fighter_Ship extends Ship
 	public $accuracy = 70;
 	public $evasion = 70;
 	
-	public function upgrade_duration()
-	{
-		
-	}
 	
-	// This function gets called whenever this ship gets built.
-	public function finish_build($colony)
-	{
-		
-	}
 }
 
 ?>

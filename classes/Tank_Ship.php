@@ -17,16 +17,7 @@ class Tank_Ship extends Ship
 	public $accuracy = 95;
 	public $evasion = 7;
 	
-	public function upgrade_duration()
-	{
-		
-	}
 	
-	// This function gets called whenever this ship gets built.
-	public function finish_build($colony)
-	{
-		
-	}
 }
 
 ?>
