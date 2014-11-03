@@ -33,27 +33,35 @@ class Map_Tile extends Database_Row
 		$rand1 = mt_rand(1,10);
 		$this->objects = array();
 		
-		if ( false ) //$rand1 <= 4 )
+		if ( $rand1 <= 4 )
 		{
 			// Generate a single object for this tile.
-			$obj_type = mt_rand(1,5);
-			$this->objects[] = new World_Object();
+			array_push($this->objects, $this->random_object());
 		}
 		else if ( false ) //$rand1 <= 5 )
 		{
 			// Generate two objects for this tile.
+			array_push($this->objects, $this->random_object(), $this->random_object());
 		}
 		else
 		{
 			// generate no objects for this tile
+			array_push($this->objects, $this->random_object(5,5));
 		}
 		
 		foreach ( $this->objects as $new_object )
 		{
 			// Insert these world-objects into the DB.
-			
+			$new_object->save_data();
 		}
 		$this->object_count = count($objects);
+	}
+
+	private function random_object($min = 0, $max = 4) {
+		$obj_type = mt_rand($min,$max);
+		//$space_object = 
+
+		return $space_object;
 	}
 }
 
