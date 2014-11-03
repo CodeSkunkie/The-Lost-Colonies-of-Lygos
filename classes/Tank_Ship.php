@@ -12,14 +12,14 @@ class Tank_Ship extends Ship
 	public $shield = 5;
 	public $capacity = 2;
 	public $cargo;
-	public $speed = 2000;
+	public $speed = 500;
 	public $level;
 	public $accuracy = 95;
 	public $evasion = 7;
 	
-	public function build_duration()
+	public function upgrade_duration()
 	{
-		return $this->level+1 * 30;
+		
 	}
 	
 	// This function gets called whenever this ship gets built.

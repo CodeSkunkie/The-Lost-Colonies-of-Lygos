@@ -12,14 +12,14 @@ class Cargo_Ship extends Ship
 	public $shield = 5;
 	public $capacity = 10;
 	public $cargo;
-	public $speed = 5;
+	public $speed = 1000;
 	public $level;
 	public $accuracy = 20;
 	public $evasion = 5;
 	
-	public function build_duration()
+	public function upgrade_duration()
 	{
-		return $this->level+1 * 30;
+		
 	}
 	
 	// This function gets called whenever this ship gets built.

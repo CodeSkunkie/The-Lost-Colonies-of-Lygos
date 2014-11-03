@@ -41,8 +41,8 @@
 				`product_id` = 0,
 				`product_type` = '". $ship_type ."',
 				`start_time` = ". time() .",
-				`duration` = '". $building->build_duration() ."',
-				`completion_time` = '". (time() + $building->upgrade_duration()) ."'");	
+				`duration` = '". $ship->upgrade_duration() ."',
+				`completion_time` = '". (time() + $ship->upgrade_duration()) ."'");	
 			$colony->save_data();
 			
 		}

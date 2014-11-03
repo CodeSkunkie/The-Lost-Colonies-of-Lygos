@@ -106,6 +106,11 @@ function select_building(type)
 		"onclick": "javascript: upgrade_building('"+ colony_id +"', '"+ building.id +"', '"+ building.type +"' ); $(this).attr('disabled', 'disabled');"
 	}).appendTo('#building_info_text_div');
 	
+	//SHOW SHIP MENU ON HEADQUARTERS
+	if(building.type==0){
+		show_ship_menu();
+	}
+	
 	
 	// animate the opening of div1.
 	var building_info_div1_height = $('#building_info_div1').height();
@@ -271,4 +276,111 @@ function show_unbuilt_buildings_menu()
 
 function hide_unbuilt_buildings_menu() {
 	$('#unbuilt_building_menu').hide();
+}
+
+function show_ship_menu()
+{
+	request_data('get_ref_ships', {"colony_id": colony_id}, function(json_data) { 
+	
+		$('<div/>', {
+			"id":"ship_list"
+			}).html('').appendTo('#building_info_div2');
+		
+		for (var i in json_data.ships){
+			
+			var ship = json_data.ships[i];
+			// var name = json_data.name[i];
+			// var descript = json_data.descript[i];
+			// var attack = json_data.attack[i];
+			// var defense = json_data.defense[i];
+			// var hp = json_data.hp[i];
+			// var shield = json_data.shield[i];
+			// var capacity = json_data.capacity[i];
+			// var speed = json_data.speed[i];
+			// var accuracy = json_data.accuracy[i];
+			// var evasion = json_data.evasion[i];
+			var cost = json_data.cost[i];
+			var upkeep = json_data.upkeep[i];
+			var duration = json_data.duration[i];
+			
+			$('<div/>', {
+					"id": "ship"+ i +"_div",
+					"class": "ship_display_div"
+				}).appendTo('#ship_list');
+				$('<div/>', {
+					"id": "ship"+ i +"_img_div",
+					"class": "ship_img_div"
+				}).appendTo('#ship'+ i +'_div');
+				$('<img/>', {
+					"class": "ship_img",
+					"src": "media/themes/"+ theme +"/images/ship"+ i +".png", 
+					"width": "110"
+				}).appendTo('#ship'+ i +'_img_div');
+				$('<div/>', {
+					"id": "ship"+ i +"_info_div",
+					"class": "ship_info_div"
+				}).appendTo('#ship'+ i +'_div');
+				$('<div/>', {"style": "clear:left;"}).appendTo('#ship'+ i +'_div');
+				$('<div/>', {
+					"class": "ship_title",
+					"text": ship.name
+				}).appendTo('#ship'+ i +'_info_div');
+				$('<div/>', {
+					"class": "ship_descript",
+					"text": ship.long_descript
+				}).appendTo('#ship'+ i +'_info_div');
+				$('<div/>', {
+					"class": "ship_stats",
+					"text": "Attack: "+ ship.attack +", Defense: " + ship.defense
+				}).appendTo('#ship'+ i +'_info_div');
+				$('<div/>', {
+					"class": "ship_cost",
+					"html": 'construction cost: '+ resource_bundle_html(cost)
+				}).appendTo('#ship'+ i +'_info_div');
+				$('<div/>', {
+					"class": "ship_upkeep",
+					"html": "additional upkeep: "+ resource_upkeep_html(upkeep)
+				}).appendTo('#ship'+ i +'_info_div');
+				$('<div/>', {
+					"class": "ship_duration",
+					"html": "construction time: "+ format_time_duration(duration)
+				}).appendTo('#ship'+ i +'_info_div');
+				$('<button/>', {
+					"text": "construct "+ship.name,
+					"onclick": "javascript: construct_ship('"+ colony_id +"', '"+ i +"' ); "
+				}).appendTo('#ship'+ i +'_info_div');
+				$('<div/>', {"style": "clear:left;"}).appendTo('#ship_list');
+		}
+		
+	
+		
+		
+	});
+}
+
+function construct_ship(colony_id, ship_type)
+{
+	request_data('construct_ship', 
+		{
+			"colony_id": colony_id,
+			"ship_type": ship_type
+		}, 
+		function(json_data) {
+			// Script successfully called.
+			// Check for warnings.
+			if ( typeof json_data.WARNING != 'undefined' )
+			{
+				if ( json_data.WARNING == 'insufficient_resources' )
+					alert('You do not have enough resources to perform the requested upgrade.');
+				else
+					alert(json_data.WARNING);
+			}
+			else
+			{
+				// No warnings were returned by the script.
+				fetch_jobs_queue();
+				refresh_resources_display();
+			}
+		}
+	);
 }

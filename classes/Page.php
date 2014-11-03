@@ -78,6 +78,7 @@ class Page
 				
 				<link rel="stylesheet" type="text/css" href="media/themes/default/main.css" />
 				<link rel="stylesheet" type="text/css" href="media/themes/default/buildings.css" />
+				<link rel="stylesheet" type="text/css" href="media/themes/default/ships.css" />
 				<link rel="stylesheet" type="text/css" href="media/themes/default/job_queue.css" />
 				<link rel="stylesheet" type="text/css" href="media/themes/default/map.css" />
 				<link rel="stylesheet" type="text/css" href="media/themes/default/messaging.css" />

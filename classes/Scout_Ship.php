@@ -12,14 +12,14 @@ class Scout_Ship extends Ship
 	public $shield = 5;
 	public $capacity = 1;
 	public $cargo;
-	public $speed = 1000;
+	public $speed = 1500;
 	public $level;
 	public $accuracy = 70;
 	public $evasion = 90;
 	
 	public function build_duration()
 	{
-		return $this->level+1 * 30;
+		
 	}
 	
 	// This function gets called whenever this ship gets built.

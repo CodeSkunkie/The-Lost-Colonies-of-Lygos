@@ -48,30 +48,30 @@ abstract class Ship
 	public $long_descript;
 	
 	// Returns the upkeep cost for a given level of this ship.
-	protected function upkeep_cost()
+	public function upkeep_cost()
 	{
-		if ($this->$level == 0)
-			return new Resource_Bundle(0,0,0,0);
+		//if ($this->$level == 0)
+			//return new Resource_Bundle(0,0,0,0);
 		
 		return new Resource_Bundle(
 			0,
 			0,
 			0,
-			1 + round($this->$level * 0.2));
+			1);
 	}
 	
 	public function build_cost()
 	{
 		return new Resource_Bundle(
-			2 * $this->level + 5,
-			2 * $this->level + 5,
-			2 * $this->level + 5,
-			2 * $this->level + 5);
+			5,
+			5,
+			5,
+			5);
 	}
 	
-	public function build_duration()
+	public function upgrade_duration()
 	{
-		return ($this->level + 1) * 30; // seconds
+		return 300; // seconds
 	}
 	
 	// This function gets called whenever a ship of this type is built.

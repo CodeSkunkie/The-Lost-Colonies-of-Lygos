@@ -1,33 +1,31 @@
 
-#buildings_container {
+#ships_container {
 	position: relative;
 	height: 100%;
 }
-.building_img {
-	position: absolute;
+.ship_img {
+	position:absolute;
 	z-index: 100;
+	float:left;
 }
-#building_0img {
+#ship0_img {
 	left: 200px;
 	top: 98px;
 }
-#building_1img {
+#ship1_img {
 	left: 515px;
 	top: 64px;
 }
-#building_2img {
+#ship2_img {
 	left: 350px;
 	top: 240px;
 }
-#building_3img {
+#ship3_img {
 	left: 355px;
 	top: 340px;
 }
-#building_4img {
-	left: 325px;
-	top: 40px;
-}
-#building_info_div1 {
+
+#ship_info_div1 {
 	display: none;
 	position: absolute;
 	bottom: 10px;
@@ -41,7 +39,7 @@
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 }
-#building_info_div2 {
+#ship_info_div2 {
 	display: none;
 	position: absolute;
 	bottom: 10px;
@@ -55,7 +53,7 @@
 	-webkit-border-radius: 10px;
 	overflow:auto;
 }
-#building_title_div {
+#ship_title_div {
 	background-color: #3670ab;
 	color: white;
 	padding: 7px 5px;
@@ -66,25 +64,15 @@
 	-webkit-border-top-left-radius: 6px;
 	-webkit-border-top-right-radius: 6px;
 }
-#unselect_bldg_btn {
-	display: none;
-	position: absolute;
-	top: 20px;
-	right: 420px;
-}
-#building_info_text_div {
+
+#ship_info_text_div {
 	padding: 10px 20px;
 	text-align: left;
 }
 
-#build_new_buildings_link {
-	font-size: 20px;
-	position: absolute;
-	bottom: 10px;
-	right: 10px;
-}
 
-#unbuilt_building_menu {
+
+#ship_menu {
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -100,37 +88,53 @@
 	-webkit-border-radius: 10px;
 	padding:7px;
 }
-#unbuilt_building_menu_title {
+#ship_menu_title {
 	font-size: 20px;
 	margin-bottom: 7px;
 	padding: 7px;
 }
-#unbuilt_building_list {
+#ship_list {
 	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 }
-.unbuilt_building_div {
+.ship_div {
 	border: 2px solid #5a5a5a;
 	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	margin-bottom: 7px;
 }
-.unbuilt_building_img_div {
+.ship_img_div {
 	float: left;
 	padding: 5px;
 }
-.unbuilt_building_info_div {
+.ship_info_div {
 	float: left;
-	width: 475px;
+	text-align: left;
+	position: relative;
+	left: 120px;
+	width:230px;
 }
-.unbuilt_building_title {
+
+.ship_descript {
+	font-size:8pt;
+	color:#FFFFFF;
+}
+.ship_stats {
+	font-size:10pt;
+}
+.ship_cost {
+	font-size:10pt;
+}
+.ship_upkeep {
+	font-size:10pt;
+}
+.ship_duration {
+	font-size:10pt;
+}
+
+.ship_title {
 	font-size: 18px;
 	margin-bottom:5px;
-}
-#hide_unbuilt_buildings_menu_btn {
-	position: absolute;
-	top: 10px;
-	right: 12px;
 }
