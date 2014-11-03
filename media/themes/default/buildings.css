@@ -134,3 +134,37 @@
 	top: 10px;
 	right: 12px;
 }
+
+.back_button {
+	float: left;
+}
+
+#research_title{
+	float: right;
+}
+
+#research{
+	padding: 10px 20px;
+	text-align: left;
+}
+
+.research_img {
+	position: absolute;
+	z-index: 100;
+}
+#research_scout_img {
+	left: 70px;
+	top: 98px;
+}
+#research_fighter_img {
+	left: 150px;
+	top: 98px;
+}
+#research_tank_img {
+	left: 230px;
+	top: 98px;
+}
+#research_cargo_img {
+	left: 310px;
+	top: 98px;
+}
