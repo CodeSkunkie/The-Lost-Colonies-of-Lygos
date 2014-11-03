@@ -166,13 +166,13 @@ class Colony
 				`y_coord` = '". $y ."'");
 		if ( $qry->num_rows > 0 )
 		{
-			$fleet_row = $qry->fetch_assoc();
-			$fleet = new Fleet($fleet_row);
+			$row = $qry->fetch_assoc();
+			$colony = new Colony($row['id']);
 		}
 		else
-			$fleet = false;
+			$colony = false;
 		
-		return $fleet;
+		return $colony;
 	}
 }
 
