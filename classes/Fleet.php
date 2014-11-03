@@ -131,7 +131,7 @@ class Fleet extends Database_Row
 	// This function gets called when this fleet has reached its destination.
 	public function destination_reached()
 	{
-		global $Mysql;
+		global $Mysql, $User;
 		
 		// Is this fleet reaching its target or its home?
 		if ( $this->home_x_coord == $this->to_x_coord &&
@@ -206,13 +206,32 @@ class Fleet extends Database_Row
 				else if ( $mission == 'scout' )
 				{
 					// Retrieve world objects, colonies in this sector.
+					$objects_to_cache = [];
 					$a_colony = Colony::get_colony_at($this->to_x_coord, $this->to_y_coord);
 					if ( $a_colony )
 					{
-						// TODO: finish writing this bit.
-//						$Mysql->qry("INSERT INTO `player_tiles_cache`
-//							SET ");
+						$objects_to_cache[] = $a_colony;
 					}
+					
+					// TODO: retrieve world objects for this sector
+					// generates a new object if the region has not been explored.
+					// World_Object::scout($x, $y);
+
+					// retrieves pre-existing objects at the location.
+					// World_Object::objects_at($x, $y);
+					
+					$new_cache_str = serialize($objects_to_cache);
+					
+					$Mysql->query("INSERT INTO `player_tiles_cache`
+						SET `player_id` = '". $User->id ."', 
+							`x_coord` = '". $this->to_x_coord ."',
+							`y_coord` = '". $this->to_y_coord ."',
+							`player_has_vision` = 0,
+							`cache` = '". $new_cache_str ."',
+							`cache_time` = '". time() ."'
+						ON DUPLICATE KEY UPDATE
+							`cache` = '". $new_cache_str ."',
+							`cache_time` = '". time() ."'");
 				}
 				
 				// Reverse direction.

@@ -53,7 +53,8 @@
 				$product->destination_reached();
 			
 			// Save changes.
-			$product->save_data();
+			else if ( method_exists($product, 'save_data') )
+				$product->save_data();
 			
 			// Remove job from job queue.
 			$job->delete();
