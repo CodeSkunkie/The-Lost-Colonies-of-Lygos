@@ -18,7 +18,7 @@ class Wreckage_World_Object extends World_Object {
 		return new Resource_Bundle(mt_rand(0,3), mt_rand(0,10), mt_rand(0,20), mt_rand(0,10));
 	}
 
-	protected extract_mass() {
+	protected function extract_mass() {
 		// to be implemented later with depletable resources
 		// each space resource performs this function differently
 	}

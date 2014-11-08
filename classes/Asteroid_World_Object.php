@@ -8,7 +8,7 @@ class Asteroid_World_Object extends World_Object {
 	// Extra fields:
 	// TODO: Add any extra fields you need, but make sure to add the field
 	//		name to the $extra_fields array too.
-	public $name = 'Asteroid ' + substr(md5(mt_rand()), 0, 5);
+	public $name = 'Asteroid ' + mt_rand(0, 5);
 	public $long_descript = "One of the many 'space rocks' drifting lazily through the void. Has pockets of water and lots of metal.";
 	protected $resource_bundle = 'asteroid_resources';
 	protected $db_table_name = 'world_objects';
@@ -18,7 +18,7 @@ class Asteroid_World_Object extends World_Object {
 		return new Resource_Bundle(0,5,40,0);
 	}
 
-	protected extract_mass() {
+	protected function extract_mass() {
 		// to be implemented later with depletable resources
 		// each space resource performs this function differently
 	}

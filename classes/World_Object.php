@@ -30,6 +30,7 @@ abstract class World_Object extends Database_Row
 		return new $wo_class_name($fields, $fetch_data);
 	}
 
+	// this function should be called whenever a scout ship reaches a tile
 	public static function scout($x, $y) {
 		/*$dist = hex_distance(0,0,$x,$y);
 		$thinning = mt_rand(1,abs($dist - World_Object::$outer_rim));
@@ -40,7 +41,9 @@ abstract class World_Object extends Database_Row
 			WHERE `x_coord` = '". $x ."' AND `y_coord` = '". $y ."'");
 
 		if (($qry->num_rows) == 0) {
-			World_Object::random_object($x, $y);
+			return World_Object::random_object($x, $y);
+		} else {
+			return World_Object::objects_at($x, $y, $qry);
 		}
 	}
 
@@ -70,11 +73,13 @@ abstract class World_Object extends Database_Row
 			// Insert these world-objects into the DB.
 			$new_object->save_data();
 		}
+
+		return $random_objects;
 	}
 
 	public static function build_object($x, $y, $new_type) {
 		$space_object = World_Object::construct_child([
-			'type' => World_Object::$types[$new_type],
+			'type' => $new_type,
 			'x_coord' => $x,
 			'y_coord' => $y
 			]);
@@ -130,7 +135,7 @@ abstract class World_Object extends Database_Row
 		} else return false;
 	}
 
-	protected abstract function extract_mass(); // must be implemented by each space object
+	abstract protected function extract_mass(); // must be implemented by each space object
 
 	protected function destroy()
 	{
@@ -141,13 +146,20 @@ abstract class World_Object extends Database_Row
 	}
 
 	// Returns an array of world objects from DB
-	public static function objects_at($x, $y)
+	public static function objects_at($x, $y, $qry = false)
 	{
 		global $Mysql;
 
 		$objects = array();
-		$qry = $Mysql->query("SELCT * FROM `world_objects` 
-			WHERE `x_coord` = '". $x ."' AND `y_coord` = '". $y ."'");
+
+		if (!$qry) {
+			$qry = $Mysql->query("SELCT * FROM `world_objects` 
+				WHERE `x_coord` = '". $x ."' AND `y_coord` = '". $y ."'");
+			if (($qry->num_rows) == 0) {
+				return $objects;
+			}
+		}
+
 		while ( $object_row = $qry->fetch_assoc() )
 			$objects[] = new World_Object($object_row);
 		return $objects;

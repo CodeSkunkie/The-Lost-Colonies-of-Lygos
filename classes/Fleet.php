@@ -218,8 +218,14 @@ class Fleet extends Database_Row
 					// World_Object::scout($x, $y);
 
 					// retrieves pre-existing objects at the location.
-					// World_Object::objects_at($x, $y);
+					load_class('World_Object');
+					$objects_here = World_Object::objects_at($x, $y);
+					if (empty($objects_here)) $objects_here = World_Object::scout($x, $y);
 					
+					foreach ($objects_here as $world_object) {
+						$objects_to_cache[] = $world_object;
+					}
+
 					$new_cache_str = serialize($objects_to_cache);
 					
 					$Mysql->query("INSERT INTO `player_tiles_cache`

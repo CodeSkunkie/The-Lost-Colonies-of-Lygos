@@ -39,7 +39,7 @@ class NPC_Random_World_Object extends World_Object {
 		}
 	}
 
-	protected extract_mass() {
+	protected function extract_mass() {
 		// to be implemented later with depletable resources
 		// each space resource performs this function differently
 	}
