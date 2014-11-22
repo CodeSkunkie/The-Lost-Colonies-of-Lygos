@@ -8,7 +8,7 @@ class Star_World_Object extends World_Object {
 	// Extra fields:
 	// TODO: Add any extra fields you need, but make sure to add the field
 	//		name to the $extra_fields array too.
-	public $name = 'Star '.mt_rand(0, 3);
+	public $name = 'Star ';//.mt_rand(0, 3);
 	public $long_descript = "The most massive of celestial bodies. Full of energy.. and so tasty too!";
 	protected $resource_bundle = 'star_resources';
 	protected $db_table_name = 'world_objects';
