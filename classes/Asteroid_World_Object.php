@@ -22,6 +22,16 @@ class Asteroid_World_Object extends World_Object {
 		// to be implemented later with depletable resources
 		// each space resource performs this function differently
 	}
+	
+	// This method gets called when a fleet comes to collect resources from this object.
+	public yield_resources($fleet_capacity)
+	{
+		$metal = ceil($fleet_capacity * 0.8);
+		$water = ceil($fleet_capacity * 0.2);
+		$food = 0;
+		$energy = 0;
+		return new Resource_Bundle($food, $water ,$fleet_capacity, $energy);
+	}
 }
 
 

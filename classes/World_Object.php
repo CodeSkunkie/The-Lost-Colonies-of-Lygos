@@ -164,6 +164,14 @@ abstract class World_Object extends Database_Row
 			$objects[] = new World_Object($object_row);
 		return $objects;
 	}
+	
+	// If a world object is to return resources to raid parties, it should
+	// implement this method and return some resources based on the inputted
+	// cargo capacity of the raiding party.
+	public yield_resources($fleet_capacity)
+	{
+		return new Resource_Bundle(0,0,0,0);
+	}
 }
 
 ?>

@@ -100,7 +100,7 @@ class Fleet extends Database_Row
 		$ref_ships = Ship::get_reference_ships();
 
 		// List of stat names to tally.
-		$stat_names = array('attack', 'defense', 'shield', 'hp');
+		$stat_names = array('attack', 'defense', 'shield', 'hp', 'capacity');
 		
 		// Tally ship stats.
 		foreach ( $this->ships as $fship )
@@ -173,6 +173,8 @@ class Fleet extends Database_Row
 			// Perform the action for this fleet's mission(s).
 			$mission = Fleet::$objectives1[$this->primary_objective];
 			
+			// TODO: more missions to add:
+			//		 mine asteroid, collect energy from star
 			
 			if ( $mission == 'hold_position' )
 			{
@@ -238,6 +240,27 @@ class Fleet extends Database_Row
 						ON DUPLICATE KEY UPDATE
 							`cache` = '". $new_cache_str ."',
 							`cache_time` = '". time() ."'");
+				}
+				else if ( $mission == 'collect_resources' )
+				{
+					load_class('World_Object');
+					
+					// Make sure there is an object here to collect resources from.
+					$wobjs = World_Object::scout($this->to_x_coord, $this->to_y_coord);
+					
+					if ( !empty($wobs) )
+					{
+						// Grab the world-object at this location.
+						$wob = $wobs[0];
+						
+						// Calculate this fleet's aggregate stats.
+						$this->battle_prep();
+						
+						$yield = $wob->yield_resources($this->stats['capacity']);
+						
+						// TODO: Save this yield somewhere somehow so that it can be
+						// added to the colony's resources when the fleet arrives home.
+					}
 				}
 				
 				// Reverse direction.
