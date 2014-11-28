@@ -9,6 +9,7 @@ load_class('Fleet');
 
 $colony = new Colony($User->colony_ids[0]);
 $colony->update_resources();
+$colony->save_data();
 
 // If there are ships currently at this colony, retrieve their fleet_id.
 $fleets_result = Fleet::fleets_at($colony->x_coord, $colony->y_coord, $User->id);

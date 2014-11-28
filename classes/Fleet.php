@@ -17,11 +17,11 @@ class Fleet extends Database_Row
 	// $speed is in tiles per hour.
 	
 	// Additional data.
-	public $stats, $ships;
+	public $stats, $ships, $cargo;
 	
 	protected $db_table_name = 'fleets';
 	protected $extra_fields = array('extra_fields','db_table_name', 
-			'objectives1', 'objectives2', 'stats', 'ships');
+			'objectives1', 'objectives2', 'stats', 'ships', 'cargo');
 	
 	function __construct($id_or_db_row)
 	{
@@ -138,6 +138,15 @@ class Fleet extends Database_Row
 				 $this->home_y_coord == $this->to_y_coord  )
 		{
 			// This fleet just arrived back home.
+			
+			// If this fleet is carrying any resources, add them to the colony.
+			load_class('Colony');
+			$home_colony = Colony::get_colony_at($this->home_x_coord, $this->home_y_coord);
+			$this->get_cargo();
+			$home_colony->add_resources($this->cargo);
+			$home_colony->save_data();
+			$this->cargo = new Resource_Bundle(0,0,0,0);
+			
 			// Merge its ships into the home fleet if one exists.
 			$fleets_here = Fleet::fleets_at($this->home_x_coord, $this->home_y_coord, $this->owner);
 			if ( !empty($fleets_here) )
@@ -214,23 +223,27 @@ class Fleet extends Database_Row
 					{
 						$objects_to_cache[] = $a_colony;
 					}
-					
-					// TODO: retrieve world objects for this sector
-					// generates a new object if the region has not been explored.
-					// World_Object::scout($x, $y);
 
-					// retrieves pre-existing objects at the location.
+					
+					// Retrieve world objects for this sector, and 
+					// generate a new object(s) if the region has not been explored.
 					load_class('World_Object');
-					//$objects_here = World_Object::objects_at($this->to_x_coord, $this->to_y_coord);
-					//echo $objects_here;
 					$objects_here = World_Object::scout($this->to_x_coord, $this->to_y_coord);
 					
+					// Add objects to the array of objects to cache.
 					foreach ($objects_here as $world_object) {
-						$objects_to_cache[] = $world_object;
+						// Only save certain data about this object to the cache.
+						$objects_to_cache[] = array(
+							$world_object->type, 
+							$world_object->owner,
+							$world_object->building_type
+						);
 					}
-
+					
+					// Serialize the array for caching.
 					$new_cache_str = serialize($objects_to_cache);
 					
+					// Cache what this scout found.
 					$Mysql->query("INSERT INTO `player_tiles_cache`
 						SET `player_id` = '". $User->id ."', 
 							`x_coord` = '". $this->to_x_coord ."',
@@ -247,7 +260,7 @@ class Fleet extends Database_Row
 					load_class('World_Object');
 					
 					// Make sure there is an object here to collect resources from.
-					$wobjs = World_Object::scout($this->to_x_coord, $this->to_y_coord);
+					$wobs = World_Object::scout($this->to_x_coord, $this->to_y_coord);
 					
 					if ( !empty($wobs) )
 					{
@@ -257,14 +270,26 @@ class Fleet extends Database_Row
 						// Calculate this fleet's aggregate stats.
 						$this->battle_prep();
 						
+						// Ask the wob for a resource bundle.
 						$yield = $wob->yield_resources($this->stats['capacity']);
 						
-						// TODO: Save this yield somewhere somehow so that it can be
+						// Save this cargo to the DB so that it can be
 						// added to the colony's resources when the fleet arrives home.
+						$Mysql->query("INSERT INTO `fleet_cargo`
+						SET `fleet_id` = '". $this->id ."',
+							`food` = '". $yield->food ."',
+							`water` = '". $yield->water ."',
+							`metal` = '". $yield->metal ."',
+							`energy` = '". $yield->energy ."'
+						ON DUPLICATE KEY UPDATE
+							`food` = `food` + '". $yield->food ."',
+							`water` = `water` + '". $yield->water ."',
+							`metal` = `metal` + '". $yield->metal ."',
+							`energy` = `energy` + '". $yield->energy ."'");
 					}
 				}
 				
-				// Reverse direction.
+				// Reverse this fleet's direction.
 				
 				// Calculate travel distance.
 				$travel_distance = hex_distance(
@@ -332,9 +357,35 @@ class Fleet extends Database_Row
 		foreach ( $this->ships as $fship )
 			$fship->delete();
 		
-		// Now delete the fleet.
+		// Second, remove this fleet's cargo from the DB.
+		$Mysql->query("DELETE FROM`fleet_cargo`
+				WHERE `fleet_id` = '". $this->id ."'");
+		
+		// Lastly, delete the fleet.
 		$Mysql->query("DELETE FROM `fleets` 
 			WHERE `id` = '". $this->id ."' ");
+	}
+	
+	// This method retrieves cargo data for this fleet.
+	// If there is no cargo data, an empty resource bundle is returned.
+	public function get_cargo()
+	{
+		global $Mysql;
+		load_class('Resource_Bundle');
+		
+		// Store result in this variable:
+		$cargo = new Resource_Bundle(0,0,0,0);
+		
+		$qry = $Mysql->query("SELECT * FROM `fleet_cargo`
+			WHERE `fleet_id` = '". $this->id ."'");
+		if ( $qry->num_rows > 0 )
+		{
+			$row = $qry->fetch_assoc();
+			foreach ( $cargo as $res_name => $ignore )
+				$cargo->$res_name = $row[$res_name];
+		}
+		
+		$this->cargo = $cargo;
 	}
 }
 

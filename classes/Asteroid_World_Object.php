@@ -24,7 +24,7 @@ class Asteroid_World_Object extends World_Object {
 	}
 	
 	// This method gets called when a fleet comes to collect resources from this object.
-	public yield_resources($fleet_capacity)
+	public function yield_resources($fleet_capacity)
 	{
 		$metal = ceil($fleet_capacity * 0.8);
 		$water = ceil($fleet_capacity * 0.2);

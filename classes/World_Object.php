@@ -178,24 +178,17 @@ abstract class World_Object extends Database_Row
 	// If a world object is to return resources to raid parties, it should
 	// implement this method and return some resources based on the inputted
 	// cargo capacity of the raiding party.
-	public yield_resources($fleet_capacity)
+	public function yield_resources($fleet_capacity)
 	{
 		return new Resource_Bundle(0,0,0,0);
-
+	}
+	
 	public static function error_out($obj, $notifier) {
 		$str = "\r\n|=====NEW STUFF STARTS HERE=====|";
 		file_put_contents('php://stderr', print_r($str, TRUE));
 		file_put_contents('php://stderr', print_r($notifier, TRUE));
 		file_put_contents('php://stderr', print_r("\r\n", TRUE));
 		file_put_contents('php://stderr', print_r($obj, TRUE));
-	}
-	
-	// If a world object is to return resources to raid parties, it should
-	// implement this method and return some resources based on the inputted
-	// cargo capacity of the raiding party.
-	public yield_resources($fleet_capacity)
-	{
-		return new Resource_Bundle(0,0,0,0);
 	}
 }
 
