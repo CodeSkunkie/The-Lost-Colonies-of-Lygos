@@ -112,12 +112,8 @@ function draw_map(tiles, name) {
 	// This event listener must be made anew each time the
 	// elemnts it's listening to get re-created.
 	$('.map_tile_div_select').click(function(event) {
-		var offset = $('#game_secondary_screen').position();
-		var mouse_x = event.clientX - offset.left - 25;
-		var mouse_y = event.clientY - offset.top - 40;
-		// TODO: fix the positioning to be independent of window size.
-		$('#sector_menu').css('left', mouse_x +'px');
-		$('#sector_menu').css('top', mouse_y +'px');
+		$('#sector_menu').css('left', $(this).position().left +'px');
+		$('#sector_menu').css('top', $(this).position().top +'px');
 		$('#sector_menu').show(100);
 		
 		// Get the x and y coordinates for the sector the user clicked.
