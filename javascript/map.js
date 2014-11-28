@@ -136,7 +136,7 @@ function draw_map(tiles, name) {
 				// See if there is even a fleet at home.
 				if ( home_fleet !== false )
 				{
-					var sector_actions = ['scouting', 'attack', 'holdpos'];
+					var sector_actions = ['scouting', 'attack', 'holdpos', 'harvest'];
 					for ( var i in sector_actions )
 					{
 						var saction = sector_actions[i];
@@ -254,6 +254,31 @@ function draw_map(tiles, name) {
 					{
 						$('.dispatch_fleet_btn').hide();
 						$('#holdpos_popup').hide();
+						$('.ship_selector').html('');
+						fetch_jobs_queue();
+					}
+				}
+			);
+		});
+		$('#dispatch_harvest_button').unbind('click');
+		$('#dispatch_harvest_button').click(function() {
+			var request_parameters = {"fleet_id": home_fleet_id, 
+				"to_x_coord": sector_x,
+				"to_y_coord": sector_y,
+				"primary_objective": 4,
+				"secondary_objective": 0,
+				"from_colony_id": colony_id};
+			for ( var i = 0; i < 4; i++  )
+				request_parameters['ship'+ i +'_count'] = $('#harvest_ship'+ i +'_count').val();
+			request_data('dispatch_fleet', 
+				request_parameters,
+				function(json_data) {
+					if ( typeof json_data.WARNING != 'undefined' )
+						alert('Warning: '+ json_data.WARNING);
+					else
+					{
+						$('.dispatch_fleet_btn').hide();
+						$('#harvest_popup').hide();
 						$('.ship_selector').html('');
 						fetch_jobs_queue();
 					}

@@ -67,6 +67,9 @@ if ( !empty($fleets_result) )
 					<li onclick="$('#holdpos_popup').show(200);">
 						Occupy
 					</li>
+					<li onclick="$('#harvest_popup').show(200);">
+						Harvest
+					</li>
 				</ul>
 			</div>
 			<div id="scouting_popup" class="popup_dialogue">
@@ -115,6 +118,22 @@ if ( !empty($fleets_result) )
 					</div>
 					<div class="button1_div">
 						<a id="dispatch_holdpos_button" class="button1 dispatch_fleet_btn" >Dispatch </a>
+					</div>
+				</div>
+			</div>
+			<div id="harvest_popup" class="popup_dialogue">
+				<div class="popup_title">
+					Assemble a Fleet to Harvest Resources
+					<img class="popup_x" src="media/themes/default/images/x.png" 
+							onclick="$('#harvest_popup').hide();" />
+				</div>
+				<div class="popup_content">
+					Select ships to send:
+					<div id="harvest_ship_selector" class="ship_selector">
+						<div style="clear:left"></div>
+					</div>
+					<div class="button1_div">
+						<a id="dispatch_harvest_button" class="button1 dispatch_fleet_btn" >Dispatch </a>
 					</div>
 				</div>
 			</div>

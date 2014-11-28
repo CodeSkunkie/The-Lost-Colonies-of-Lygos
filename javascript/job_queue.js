@@ -66,8 +66,9 @@ function refresh_jobs_queue_offline()
 			// Refresh the jobs queue to look for new jobs.
 			fetch_jobs_queue();
 			// Refresh the visibility of the map after successful scouting mission
-			if(job.product_name == 'Fleet Movement' && job.product_type == "1") {
-					refresh_map('map');
+			if(job.type == "3" && job.product_type == "2") {
+				console.log('refreshing map');
+				refresh_map('map');
 			}
 		}
 		$("#job"+ i +"_progress_bar_inner1").css("width", percent_completed +"%");
