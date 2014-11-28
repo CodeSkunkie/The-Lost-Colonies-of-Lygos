@@ -14,17 +14,27 @@ class NPC_Random_World_Object extends World_Object {
 	public $name = 'Abandoned Colony Building';
 	public $long_descript = "A lost and forgotten building from another colony. Salvagable resources depend on its original purpose.";
 	private $building_type = mt_rand(0,7);
-	protected $resource_bundle = 'NPC_resources';
 	protected $db_table_name = 'world_objects';
-	protected $extra_fields = array('db_table_name', 'extra_fields', 'name', 'long_descript', 'resource_bundle');
+	protected $extra_fields = array('db_table_name', 'extra_fields', 'name', 'long_descript');
 
 	protected function NPC_resources() {
+	}
+	
+	// This method gets called when a fleet comes to collect resources from this object.
+	public function yield_resources($fleet_capacity)
+	{
 		switch ($this->building_type) {
 			case 0:
-				return new Resource_Bundle(3,3,15,9);
+				$food = ceil($fleet_capacity * 0.1);
+				$water = ceil($fleet_capacity * 0.1);
+				$metal = ceil($fleet_capacity * 0.6);
+				$energy = ceil($fleet_capacity * 0.2);
 				break;
 			case 2:
-				return new Resource_Bundle(9,21,12,12);
+				$food = ceil($fleet_capacity * 0.2);
+				$water = ceil($fleet_capacity * 0.4);
+				$metal = ceil($fleet_capacity * 0.2);
+				$energy = ceil($fleet_capacity * 0.2);
 				break;
 			case 1:
 			case 3:
@@ -32,18 +42,20 @@ class NPC_Random_World_Object extends World_Object {
 			case 5:
 			case 6:
 			case 7:
-				return new Resource_Bundle(6,12,18,24);
+				$food = ceil($fleet_capacity * 0.1);
+				$water = ceil($fleet_capacity * 0.2);
+				$metal = ceil($fleet_capacity * 0.3);
+				$energy = ceil($fleet_capacity * 0.4);
 				break;
 			default:
-				return new Resource_Bundle(0,0,0,0);
+				$food = ceil($fleet_capacity * 0);
+				$water = ceil($fleet_capacity * 0);
+				$metal = ceil($fleet_capacity * 0);
+				$energy = ceil($fleet_capacity * 0);
 		}
+		
+		return new Resource_Bundle($food, $water ,$metal, $energy);
 	}
-
-	protected function extract_mass() {
-		// to be implemented later with depletable resources
-		// each space resource performs this function differently
-	}
-
 }
 
 

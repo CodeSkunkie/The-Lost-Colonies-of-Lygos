@@ -10,19 +10,9 @@ class Asteroid_World_Object extends World_Object {
 	//		name to the $extra_fields array too.
 	public $name = 'Asteroid ';//.mt_rand(0, 5);
 	public $long_descript = "One of the many 'space rocks' drifting lazily through the void. Has pockets of water and lots of metal.";
-	protected $resource_bundle = 'asteroid_resources';
 	protected $db_table_name = 'world_objects';
-	protected $extra_fields = array('db_table_name', 'extra_fields', 'name', 'long_descript', 'resource_bundle');
+	protected $extra_fields = array('db_table_name', 'extra_fields', 'name', 'long_descript');
 
-	protected function asteroid_resources() {
-		return new Resource_Bundle(0,5,40,0);
-	}
-
-	protected function extract_mass() {
-		// to be implemented later with depletable resources
-		// each space resource performs this function differently
-	}
-	
 	// This method gets called when a fleet comes to collect resources from this object.
 	public function yield_resources($fleet_capacity)
 	{
@@ -30,7 +20,7 @@ class Asteroid_World_Object extends World_Object {
 		$water = ceil($fleet_capacity * 0.2);
 		$food = 0;
 		$energy = 0;
-		return new Resource_Bundle($food, $water ,$fleet_capacity, $energy);
+		return new Resource_Bundle($food, $water , $metal, $energy);
 	}
 }
 

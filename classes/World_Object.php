@@ -19,9 +19,8 @@ abstract class World_Object extends Database_Row
 	//		name to the $extra_fields array too.
 	public $name;
 	public $long_descript;
-	protected $resource_bundle; // name of protected function in child classes; MUST be defined
 	protected $db_table_name = 'world_objects';
-	protected $extra_fields = array('db_table_name', 'extra_fields', 'name', 'long_descript', 'resource_bundle');
+	protected $extra_fields = array('db_table_name', 'extra_fields', 'name', 'long_descript');
 
 	// Given a research item type number, return its class name.
 	public static function type2classname($type)
@@ -64,15 +63,10 @@ abstract class World_Object extends Database_Row
 		$rand1 = mt_rand(1,10);
 		$random_objects = array();
 		
-		if ( $rand1 <= (4 * $percent) )
+		if ( $rand1 <= (5 * $percent) )
 		{
 			// Generate a single object for this tile.
 			$random_objects[] = self::build_object($x, $y, mt_rand(0,4));
-		}
-		else if ( $rand1 <= (5 * $percent) )
-		{
-			// Generate two objects for this tile.
-			array_push($random_objects, self::build_object($x, $y, mt_rand(0,4)), self::build_object($x, $y, mt_rand(0,4)));
 		}
 		else
 		{
@@ -97,11 +91,16 @@ abstract class World_Object extends Database_Row
 			]);
 		return $space_object;
 	}
-
+	
+	// This function uses some ellipse math to determine the gradual sparcity of
+	// world objects as a function of distance from the center of the map.
 	public static function dropoff($dist) {
 		if ($dist <= self::$outer_rim) return 1;
 
-		$radicand = 1 - pow((($dist - self::$outer_rim)/(self::$outer_rim / 4)), 2);
+		// Any tiles beyond the input distance times this multiplyer are garunteed to be empty.
+		$absolute_void_multiplier = 4;
+
+		$radicand = 1 - pow((($dist - self::$outer_rim)/(self::$outer_rim / $absolute_void_multiplier)), 2);
 
 		if ($radicand <= 0) {
 			return 0;
@@ -109,10 +108,7 @@ abstract class World_Object extends Database_Row
 
 		return sqrt($radicand);
 	}
-
-	// TODO: What methods might world objects need?
-	//'Asteroid', 'Planet', 'Star', 'Wreckage', 'NPC_Random'
-
+	
 	// shamelessly borrowed from colony_building
 	function __construct($fields, $fetch_data = true)
 	{
@@ -123,26 +119,6 @@ abstract class World_Object extends Database_Row
 		if ( $this->exists() && $fetch_data )
 			$this->fetch_data();
 	}
-
-	public function has_resources() {
-		if($this->mass == 0) {
-			$this->destroy();  //<- handled by war engine, mining ships, here?
-			return false;
-		}
-
-		return true;
-	}
-
-	public function extract_resources() {
-		if ($this->has_resources()) {
-			if (!$this->mass == -1) {
-				$this->extract_mass();
-			}
-			return $this->resource_bundle();
-		} else return false;
-	}
-
-	abstract protected function extract_mass(); // must be implemented by each space object
 
 	protected function destroy()
 	{

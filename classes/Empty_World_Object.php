@@ -10,18 +10,9 @@ class Empty_World_Object extends World_Object {
 	//		name to the $extra_fields array too.
 	public $name = 'The Void';
 	public $long_descript = "The empty vastness of space. Nothing to see here. Move along.";
-	protected $resource_bundle = 'void_resources';
 	protected $db_table_name = 'world_objects';
-	protected $extra_fields = array('db_table_name', 'extra_fields', 'name', 'long_descript', 'resource_bundle');
+	protected $extra_fields = array('db_table_name', 'extra_fields', 'name', 'long_descript');
 
-	protected function void_resources() {
-		return new Resource_Bundle(0,0,0,0);
-	}
-
-	protected function extract_mass() {
-		// to be implemented later with depletable resources
-		// each space resource performs this function differently
-	}
 }
 
 

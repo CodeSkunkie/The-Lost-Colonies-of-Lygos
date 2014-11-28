@@ -10,18 +10,8 @@ class Wreckage_World_Object extends World_Object {
 	//		name to the $extra_fields array too.
 	public $name = 'Space Junk';
 	public $long_descript = "With so many battles occuring between different colonies, it is surprising you don't see more wreckage around. There might be some salvageable resources here.";
-	protected $resource_bundle = 'random_resources';
 	protected $db_table_name = 'world_objects';
-	protected $extra_fields = array('db_table_name', 'extra_fields', 'name', 'long_descript', 'resource_bundle');
-
-	protected function random_resources() {
-		return new Resource_Bundle(mt_rand(0,3), mt_rand(0,10), mt_rand(0,20), mt_rand(0,10));
-	}
-
-	protected function extract_mass() {
-		// to be implemented later with depletable resources
-		// each space resource performs this function differently
-	}
+	protected $extra_fields = array('db_table_name', 'extra_fields', 'name', 'long_descript');
 	
 	// This method gets called when a fleet comes to collect resources from this object.
 	public function yield_resources($fleet_capacity)
@@ -30,7 +20,7 @@ class Wreckage_World_Object extends World_Object {
 		$water = ceil($fleet_capacity * 0.1);
 		$food = ceil($fleet_capacity * 0.1);;
 		$energy = ceil($fleet_capacity * 0.2);;
-		return new Resource_Bundle($food, $water ,$fleet_capacity, $energy);
+		return new Resource_Bundle($food, $water , $metal, $energy);
 	}
 }
 
