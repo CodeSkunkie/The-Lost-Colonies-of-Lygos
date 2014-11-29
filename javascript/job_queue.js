@@ -67,7 +67,6 @@ function refresh_jobs_queue_offline()
 			fetch_jobs_queue();
 			// Refresh the visibility of the map after successful scouting mission
 			if(job.type == "3" && job.product_type == "2") {
-				console.log('refreshing map');
 				refresh_map('map');
 			}
 		}

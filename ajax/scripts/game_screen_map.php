@@ -24,12 +24,17 @@
 		`y_coord` <= '". $max_y ."' AND
 		`y_coord` >= '". $min_y ."'");
 	
+	// 2D array to hold tile data. Indexes are the x and y coordinates respectively.
 	$tiles_data = array();
 	while ( $tile_cache_row = $cache_qry->fetch_assoc() )
 	{
 		$tile_data = array();
 		foreach( $tile_cache_row as $field => $val )
 			$tile_data[$field] = $val;
+		// Unserialize the cache string back into an array.
+		$tile_data['cache'] = unserialize($tile_data['cache']);
+		
+		// Add tile to the 2D array for return.
 		if ( !isset($tile_data['x_coord']) )
 			$tile_data['x_coord'] = array();
 		$tiles_data[$tile_data['x_coord']][$tile_data['y_coord']] = $tile_data;

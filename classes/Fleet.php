@@ -234,9 +234,11 @@ class Fleet extends Database_Row
 					foreach ($objects_here as $world_object) {
 						// Only save certain data about this object to the cache.
 						$objects_to_cache[] = array(
-							$world_object->type, 
-							$world_object->owner,
-							$world_object->building_type
+							"type" => $world_object->type, 
+							"x_coord" => $world_object->x_coord,
+							"y_coord" => $world_object->y_coord, 
+							"owner" => $world_object->owner,
+							"building_type" => $world_object->building_type
 						);
 					}
 					

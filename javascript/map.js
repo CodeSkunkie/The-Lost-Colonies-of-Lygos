@@ -1,4 +1,6 @@
 var sectors_click_listener_enabled = false;
+var loaded_world_objs = [];
+var sector_info_content_div_default_html = '';
 
 // This function is called when someone clicks the map hologram link. brian
 $('#link_div_map').click(function() {
@@ -41,6 +43,8 @@ function draw_map(tiles, name) {
 	// used to number tiles with coordinates
 	var rel_x=0;
 	var rel_y=-2;
+	// Clear out the previously loaded world objects.
+	loaded_world_objs = [];
 
 	// 22 map tiles are shown at once, center tile is 12th tile (i=11)
 	// 1st tile is (center-0,center-2)
@@ -107,10 +111,27 @@ function draw_map(tiles, name) {
 		div_x_offset-=18;
 		div_y_offset+=31;
 		rel_x++;
+		
+		// See if this player has any cached data for this tile.
+		if ( typeof(tiles[center_tile_x+rel_x]) != "undefined" &&
+				typeof(tiles[center_tile_x+rel_x][center_tile_y+rel_y]) != "undefined" ) 
+		{
+			// Add this tile's cache data to a global array for later use in 
+			// the sector info display.
+			var tile = tiles[center_tile_x+rel_x][center_tile_y+rel_y];
+			if (tile.player_has_vision == "1") {
+				// 
+			}
+			else if (tile.player_has_vision == "0" && tile.cache != "") {
+				loaded_world_objs.push(tile.cache[0]);
+			}
+		}
+		
 	}
 	
 	// This event listener must be made anew each time the
 	// elemnts it's listening to get re-created.
+	$('.map_tile_div_select').unbind();
 	$('.map_tile_div_select').click(function(event) {
 		$('#sector_menu').css('left', $(this).position().left +'px');
 		$('#sector_menu').css('top', $(this).position().top +'px');
@@ -288,6 +309,34 @@ function draw_map(tiles, name) {
 	});
 	sectors_click_listener_enabled = true;
 	
+	// Add event listener for the sector info display.
+	$('.map_tile_div_select').mouseover(function(event) {
+		// Get the x and y coordinates for the sector the user is hovering over.
+		var sector_x = $(this).attr('x');
+		var sector_y = $(this).attr('y');
+		
+		// save the default sector info helpfull message for later replacement.
+		sector_info_content_div_default_html = $('#sector_info_content_div').html();
+		
+		var wob_names = new Array('Asteroids', 'A Planet', 'A Star', 'Wreckage', 'Ruins', 'Empty space');
+		
+		// Search through the list of loaded world objects to see if 
+		// this user has any cached info for this tile.
+		for ( var i in loaded_world_objs )
+		{
+			var wob = loaded_world_objs[i];
+			if ( wob.x_coord == sector_x && wob.y_coord == sector_y )
+			{
+				$('#sector_info_content_div').html('This sector contains: <br />'+
+						wob_names[wob.type]);
+			}
+		}
+	});
+	
+	$('.map_tile_div_select').mouseout(function(event) {
+		$('#sector_info_content_div').html(sector_info_content_div_default_html);
+	});
+	
 	// Display this screen.
 	change_screen(name);
 }
@@ -355,6 +404,9 @@ function refresh_map(name) {
 			// used to number tiles with coordinates
 			var rel_x=0;
 			var rel_y=-2;
+			
+			// Clear out the previously loaded world objects.
+			loaded_world_objs = [];
 
 			for (var i=0; i<23; i++) {
 				// sets up tile coordinates
@@ -382,6 +434,21 @@ function refresh_map(name) {
 				
 				// helps with tile coordinates
 				rel_x++;
+				
+				// See if this player has any cached data for this tile.
+				if ( typeof(tiles[center_tile_x+rel_x]) != "undefined" &&
+						typeof(tiles[center_tile_x+rel_x][center_tile_y+rel_y]) != "undefined" ) 
+				{
+					// Add this tile's cache data to a global array for later use in 
+					// the sector info display.
+					var tile = tiles[center_tile_x+rel_x][center_tile_y+rel_y];
+					if (tile.player_has_vision == "1") {
+						// 
+					}
+					else if (tile.player_has_vision == "0" && tile.cache != "") {
+						loaded_world_objs.push(tile.cache[0]);
+					}
+				}
 			}
 
 		}
