@@ -71,7 +71,7 @@ abstract class Ship
 	
 	public function upgrade_duration()
 	{
-		return 30; // seconds
+		return 20; // seconds
 	}
 	
 	// This function gets called whenever a ship of this type is built.

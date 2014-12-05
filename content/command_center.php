@@ -159,6 +159,11 @@ if ( !empty($fleets_result) )
 			<div id="message_viewer"></div>
 			<div id="message_composer"></div>
 		</div>
+		<div class="game_screen" id="alerts_screen">
+			<div id="alerts_main_title">ALERTS</div>
+			<img src="media/themes/default/images/refresh.png" onclick="javascript:get_alerts();" id="refresh_alerts">
+			<div id="alerts_list"></div>
+		</div>
 	</div>
 	
 	
@@ -186,6 +191,13 @@ if ( !empty($fleets_result) )
 		<div class="menu_title_mini">MESSAGING</div>
 		<img src="media/themes/default/images/maximize.gif" onclick="javascript:maximize_messages();" class="maximize_screen">
 		<table id="message_display_table_mini"></table>
+		
+	</div>
+	
+	<div id="alerts_div_mini"  >
+		<div class="menu_title_mini">ALERTS</div>
+		<img src="media/themes/default/images/maximize.gif" onclick="javascript:maximize_alerts();" class="maximize_screen">
+		<div id="alerts_list_mini"></div>
 		
 	</div>
 	
@@ -243,4 +255,5 @@ if ( !empty($fleets_result) )
 <script src="javascript/job_queue.js"></script>
 <script src="javascript/map.js"></script>
 <script src="javascript/messaging.js"></script>
+<script src="javascript/alerts.js"></script>
 <script src="javascript/resources.js"></script>

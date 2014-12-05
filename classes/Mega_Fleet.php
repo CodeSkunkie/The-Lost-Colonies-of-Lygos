@@ -77,6 +77,7 @@ class Mega_Fleet
 		// TODO: remove the fleet row if all ships were destroyed?
 		
 		// TODO: generate battle reports for players.
+		
 	}
 	
 	// This function distributes damage to ships within the megafleet.

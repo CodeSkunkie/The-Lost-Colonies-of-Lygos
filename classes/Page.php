@@ -82,6 +82,7 @@ class Page
 				<link rel="stylesheet" type="text/css" href="media/themes/default/job_queue.css" />
 				<link rel="stylesheet" type="text/css" href="media/themes/default/map.css" />
 				<link rel="stylesheet" type="text/css" href="media/themes/default/messaging.css" />
+				<link rel="stylesheet" type="text/css" href="media/themes/default/alerts.css" />
 				<link rel="stylesheet" type="text/css" href="media/themes/default/resources.css" />
 				
 				<script src="javascript/jquery-1.9.0.min.js" ></script>

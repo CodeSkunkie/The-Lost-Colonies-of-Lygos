@@ -1,0 +1,125 @@
+#alerts_div_mini {
+	position:absolute;
+	top:28px;
+	left:846px;
+	height:108px;
+	width:140px;
+	color:#ffffff;
+	text-align:left;
+	overflow:auto;
+}
+
+#alerts_list_mini {
+	position:absolute;
+	top:30px;
+	width:100%;
+	border: none;
+	background-color:#5a5a5a;
+	color:#000000;
+	font-size:11px;
+	padding:0px;
+}
+
+#alerts_main_title {
+	color:#ffffff;
+	font-weight:bold;
+	font-size:14px;
+	position:relative;
+	margin:10px;
+}
+
+.alert_container {
+	position:relative;
+	margin-bottom:10px;
+}
+
+.alert_img {
+	float:left;
+	margin-left:30px;
+}
+
+.alert_contents {
+	display:none;
+	position:relative;
+	font-size:10pt;
+	margin-left:90px;
+	text-align:left;
+	color:#000000;
+	background-color:#dddddd;
+}
+
+.alert_contents:hover {
+	display:none;
+	position:relative;
+	font-size:10pt;
+	margin-left:90px;
+	text-align:left;
+	color:#000000;
+	background-color:#ffffff;
+}
+
+.battle_report {
+	color:#ffffff;
+	position:relative;
+	margin-left:70px;
+	text-align:left;
+	background-color:#ea8493;
+	font-weight:bold;
+}
+
+.battle_report:hover {
+	color:#ffffff;
+	position:relative;
+	margin-left:70px;
+	text-align:left;
+	background-color:#ff0000;
+	font-weight:bold;
+}
+
+.battle_report_mini {
+	color:#ffffff;
+	position:relative;
+	text-align:left;
+	background-color:#ea8493;
+	font-weight:bold;
+	font-size:10pt;
+	margin-bottom:2px;
+}
+
+.battle_report_mini:hover {
+	color:#ffffff;
+	position:relative;
+	text-align:left;
+	background-color:#ff0000;
+	font-weight:bold;
+	font-size:10pt;
+	margin-bottom:2px;
+}
+
+	
+.alerts_spacer {
+	border: none;
+	padding:0px;
+	width:100%;
+	height:4px;
+	
+}
+
+.alerts_col_mini{
+	border: 1px solid #000000;
+	padding:0px;
+	text-align:left;
+}
+
+
+
+
+#refresh_alerts {
+	position:absolute;
+	left:138px;
+}
+
+
+
+
+

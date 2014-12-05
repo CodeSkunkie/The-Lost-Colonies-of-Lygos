@@ -213,6 +213,8 @@ class Fleet extends Database_Row
 					
 					// FIGHT!
 					Mega_Fleet::fleet_battle($mf1, $mf2);
+					$battle_report_qry = "INSERT INTO `alerts` (`id`, `player_id`, `timestamp`, `alert_type`, `alert_contents`) VALUES (NULL, '".$User->id."', '".time()."', '0', 'Battle completed. No stats available at this time. (unlockable feature)')";
+					$Mysql->query($battle_report_qry);
 				}
 				else if ( $mission == 'scout' )
 				{
