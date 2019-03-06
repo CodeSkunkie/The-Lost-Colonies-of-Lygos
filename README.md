@@ -1,0 +1,1 @@
+Capstone project at Georgia Institute of Technology. An online MMO RTS space exploration and colonization game written in JavaScript, CSS, HTML, MySQL.
